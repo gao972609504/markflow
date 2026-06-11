@@ -2,7 +2,7 @@
   "name": "markflow",
   "version": "2.0.0",
   "description": "A lightweight, beautiful Typora-like Markdown editor built with Electron + React + CodeMirror 6",
-  "author": "MarkFlow Contributors",
+  "author": "MarkFlow Contributors <markflow@example.com>",
   "license": "MIT",
   "main": "./out/main/index.js",
   "displayName": "MarkFlow",
@@ -51,16 +51,10 @@
       "package.json"
     ],
     "win": {
-      "icon": "resources/icon.jpg",
+      "icon": "resources/icon.png",
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "portable",
           "arch": [
             "x64"
           ]
@@ -68,7 +62,7 @@
       ]
     },
     "mac": {
-      "icon": "resources/icon.jpg",
+      "icon": "resources/icon.png",
       "target": [
         {
           "target": "dmg",
@@ -80,14 +74,8 @@
       ]
     },
     "linux": {
-      "icon": "resources/icon.jpg",
+      "icon": "resources/icon.png",
       "target": [
-        {
-          "target": "AppImage",
-          "arch": [
-            "x64"
-          ]
-        },
         {
           "target": "deb",
           "arch": [

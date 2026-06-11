@@ -69,8 +69,8 @@ GitHub 风格双主题，标题层级分明，代码块圆角着色。
 
 <table>
 <tr>
-<th width="50%"><text-align="center">📝 编辑体验</th>
-<th width="50%"><text-align="center">📁 文件管理</th>
+<th width="50%" align="center">📝 编辑体验</th>
+<th width="50%" align="center">📁 文件管理</th>
 </tr>
 <tr>
 <td>
@@ -99,8 +99,8 @@ GitHub 风格双主题，标题层级分明，代码块圆角着色。
 </td>
 </tr>
 <tr>
-<th width="50%"><text-align="center">🎯 写作辅助</th>
-<th width="50%"><text-align="center">🛠️ 编辑工具</th>
+<th width="50%" align="center">🎯 写作辅助</th>
+<th width="50%" align="center">🛠️ 编辑工具</th>
 </tr>
 <tr>
 <td>
@@ -129,7 +129,7 @@ GitHub 风格双主题，标题层级分明，代码块圆角着色。
 </td>
 </tr>
 <tr>
-<th colspan="2"><text-align="center">🎨 个性化</th>
+<th colspan="2" align="center">🎨 个性化</th>
 </tr>
 <tr>
 <td colspan="2" align="center">
@@ -330,39 +330,13 @@ git push origin feature/amazing-feature
 
 ## 🙏 致谢
 
-<table>
-<tr>
-<td align="center" width="80">
-<a href="https://codemirror.net/"><img src="https://codemirror.net/favicon.ico" width="32" /></a><br/>
-<b>CodeMirror 6</b>
-</td>
-<td align="center" width="80">
-<a href="https://www.electronjs.org/"><img src="https://www.electronjs.org/assets/img/logo.svg" width="32" /></a><br/>
-<b>Electron</b>
-</td>
-<td align="center" width="80">
-<a href="https://react.dev/"><img src="https://react.dev/favicon.ico" width="32" /></a><br/>
-<b>React</b>
-</td>
-<td align="center" width="80">
-<a href="https://katex.org/"><img src="https://katex.org/favicon.png" width="32" /></a><br/>
-<b>KaTeX</b>
-</td>
-<td align="center" width="80">
-<a href="https://highlightjs.org/"><img src="https://highlightjs.org/static/icon.png" width="32" /></a><br/>
-<b>highlight.js</b>
-</td>
-<td align="center" width="80">
-<a href="https://typora.io/"><img src="https://typora.io/img/favicon-64.png" width="32" /></a><br/>
-<b>Typora</b>
-</td>
-</tr>
-<tr>
-<td colspan="6" align="center">
-<small>灵感来源 & 开源依赖</small>
-</td>
-</tr>
-</table>
+- [CodeMirror 6](https://codemirror.net/) — 强大的代码编辑器框架
+- [Electron](https://www.electronjs.org/) — 跨平台桌面应用框架
+- [React](https://react.dev/) — UI 渲染框架
+- [KaTeX](https://katex.org/) — 快速数学公式渲染
+- [highlight.js](https://highlightjs.org/) — 代码语法高亮
+- [markdown-it](https://github.com/markdown-it/markdown-it) — Markdown 解析器
+- 灵感来源：[Typora](https://typora.io/) — 优秀的 Markdown 写作体验标杆
 
 ---
 
@@ -688,39 +662,13 @@ git push origin feature/amazing-feature
 
 ## 🙏 Acknowledgments
 
-<table>
-<tr>
-<td align="center" width="80">
-<a href="https://codemirror.net/"><img src="https://codemirror.net/favicon.ico" width="32" /></a><br/>
-<b>CodeMirror 6</b>
-</td>
-<td align="center" width="80">
-<a href="https://www.electronjs.org/"><img src="https://www.electronjs.org/assets/img/logo.svg" width="32" /></a><br/>
-<b>Electron</b>
-</td>
-<td align="center" width="80">
-<a href="https://react.dev/"><img src="https://react.dev/favicon.ico" width="32" /></a><br/>
-<b>React</b>
-</td>
-<td align="center" width="80">
-<a href="https://katex.org/"><img src="https://katex.org/favicon.png" width="32" /></a><br/>
-<b>KaTeX</b>
-</td>
-<td align="center" width="80">
-<a href="https://highlightjs.org/"><img src="https://highlightjs.org/static/icon.png" width="32" /></a><br/>
-<b>highlight.js</b>
-</td>
-<td align="center" width="80">
-<a href="https://typora.io/"><img src="https://typora.io/img/favicon-64.png" width="32" /></a><br/>
-<b>Typora</b>
-</td>
-</tr>
-<tr>
-<td colspan="6" align="center">
-<small>Inspiration & Open Source Dependencies</small>
-</td>
-</tr>
-</table>
+- [CodeMirror 6](https://codemirror.net/) — Powerful code editor framework
+- [Electron](https://www.electronjs.org/) — Cross-platform desktop app framework
+- [React](https://react.dev/) — UI rendering framework
+- [KaTeX](https://katex.org/) — Fast math formula rendering
+- [highlight.js](https://highlightjs.org/) — Code syntax highlighting
+- [markdown-it](https://github.com/markdown-it/markdown-it) — Markdown parser
+- Inspired by: [Typora](https://typora.io/) — The gold standard for Markdown writing experience
 
 ---
 
