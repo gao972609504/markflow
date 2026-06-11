@@ -159,6 +159,41 @@ export class CheckboxWidget extends WidgetType {
   eq(other: CheckboxWidget) { return this.checked === other.checked && this.lineFrom === other.lineFrom }
 }
 
+// ============ 代码块头部 Widget ============
+
+export class CodeBlockHeaderWidget extends WidgetType {
+  constructor(readonly lang: string, readonly codeContent: string) { super() }
+  toDOM() {
+    const header = document.createElement('div')
+    header.className = 'cm-code-block-header'
+
+    const langLabel = document.createElement('span')
+    langLabel.className = 'cm-code-lang'
+    langLabel.textContent = this.lang || 'code'
+    header.appendChild(langLabel)
+
+    const copyBtn = document.createElement('button')
+    copyBtn.className = 'cm-code-copy-btn'
+    copyBtn.textContent = '复制'
+    copyBtn.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      navigator.clipboard.writeText(this.codeContent).then(() => {
+        copyBtn.textContent = '已复制!'
+        copyBtn.classList.add('cm-code-copy-done')
+        setTimeout(() => {
+          copyBtn.textContent = '复制'
+          copyBtn.classList.remove('cm-code-copy-done')
+        }, 2000)
+      })
+    })
+    header.appendChild(copyBtn)
+    return header
+  }
+  eq(other: CodeBlockHeaderWidget) { return this.lang === other.lang && this.codeContent === other.codeContent }
+  ignoreEvent() { return false }
+}
+
 // ============ 工具函数 ============
 
 /** 从 DOM 元素向上查找最近的 EditorView */

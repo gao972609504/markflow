@@ -62,6 +62,49 @@
   opacity: 0.7;
 }
 
+/* 代码块头部 Widget（语言标签 + 复制按钮） */
+.cm-code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 12px;
+  margin-bottom: 2px;
+  background: var(--bg-tertiary, rgba(0,0,0,0.04));
+  border-radius: 6px 6px 0 0;
+  font-size: 12px;
+}
+
+.cm-code-lang {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cm-code-copy-btn {
+  padding: 2px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cm-code-copy-btn:hover {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.cm-code-copy-done {
+  color: #4caf50;
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
 /* === TOC 目录 Widget 样式 === */

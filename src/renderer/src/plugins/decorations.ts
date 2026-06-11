@@ -5,7 +5,7 @@
 import { EditorView, Decoration, DecorationSet } from '@codemirror/view'
 import { EditorState, RangeSet } from '@codemirror/state'
 import { useEditorStore } from '../store/editorStore'
-import { ImageWidget, CheckboxWidget, TocWidget, EmojiWidget, CalloutWidget, FootnoteRefWidget } from './widgets'
+import { ImageWidget, CheckboxWidget, TocWidget, EmojiWidget, CalloutWidget, FootnoteRefWidget, CodeBlockHeaderWidget } from './widgets'
 import { emojiMap, emojiPattern } from '../utils/emoji'
 
 // ============ 装饰常量 ============
@@ -40,6 +40,9 @@ export function buildDecorations(view: EditorView): DecorationSet {
   let calloutType = ''
   let calloutContent: string[] = []
   let calloutStartFrom = 0
+  let codeBlockLang = ''
+  let codeBlockStartFrom = 0
+  let codeBlockContentLines: string[] = []
 
   const cursorLine = doc.lineAt(view.state.selection.main.head).number
   const focusMode = useEditorStore.getState().focusMode
@@ -102,19 +105,35 @@ export function buildDecorations(view: EditorView): DecorationSet {
 
     // ── 围栏代码块 ──
     if (/^\s{0,3}```/.test(t)) {
-      inCodeBlock = !inCodeBlock
-      const isFirst = inCodeBlock
-      deco.push({ from: line.from, to: line.from, value: isFirst
-        ? Decoration.line({ class: 'cm-code-block-line cm-code-block-first' })
-        : Decoration.line({ class: 'cm-code-block-line cm-code-block-last' })
-      })
-      if (!on) {
-        const fenceEnd = t.indexOf('`') + 3
-        deco.push({ from: line.from, to: line.from + Math.min(fenceEnd, t.length), value: hideMark })
+      if (!inCodeBlock) {
+        // 开始代码块
+        inCodeBlock = true
+        codeBlockLang = t.replace(/^\s{0,3}```/, '').trim()
+        codeBlockStartFrom = line.from
+        codeBlockContentLines = []
+        deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-code-block-line cm-code-block-first' }) })
+        if (!on) {
+          const fenceEnd = t.indexOf('`') + 3
+          deco.push({ from: line.from, to: line.from + Math.min(fenceEnd, t.length), value: hideMark })
+        }
+      } else {
+        // 结束代码块
+        inCodeBlock = false
+        deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-code-block-line cm-code-block-last' }) })
+        if (!on) {
+          deco.push({ from: line.from, to: line.to, value: hideMark })
+        }
+        // 添加代码块头部（语言标签 + 复制按钮）
+        const codeContent = codeBlockContentLines.join('\n')
+        deco.push({
+          from: codeBlockStartFrom, to: codeBlockStartFrom,
+          value: Decoration.widget({ widget: new CodeBlockHeaderWidget(codeBlockLang, codeContent), side: -1 }).range(codeBlockStartFrom)
+        })
       }
       continue
     }
     if (inCodeBlock) {
+      codeBlockContentLines.push(t)
       deco.push({ from: line.from, to: line.from, value: codeLine })
       continue
     }
