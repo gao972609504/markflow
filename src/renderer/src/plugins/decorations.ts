@@ -319,6 +319,14 @@ function inlineDeco(text: string, lf: number, on: boolean, deco: { from: number;
     if (!on) { deco.push({ from: f, to: f + 2, value: hideMark }); deco.push({ from: t - 2, to: t, value: hideMark }) }
   }
 
+  // 下划线 ++text++
+  const ulRe = /\+\+([^+]+)\+\+/g
+  while ((m = ulRe.exec(text))) {
+    const f = lf + m.index, t = f + m[0].length
+    deco.push({ from: f, to: t, value: Decoration.mark({ class: 'cm-underline' }) })
+    if (!on) { deco.push({ from: f, to: f + 2, value: hideMark }); deco.push({ from: t - 2, to: t, value: hideMark }) }
+  }
+
   // 上标 ^text^
   const supRe = /\^([^^]+)\^/g
   while ((m = supRe.exec(text))) {

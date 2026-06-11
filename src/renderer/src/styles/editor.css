@@ -500,3 +500,4 @@
   margin: 2px 4px;
 }
 .cm-center-text { text-align: center; display: block; font-style: italic; opacity: 0.9; }
+.cm-underline { text-decoration: underline; }
