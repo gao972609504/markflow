@@ -1,10 +1,13 @@
 import React from 'react'
 import { Tab, useEditorStore } from '../store/editorStore'
 
-interface StatusBarProps { tab: Tab }
+interface StatusBarProps {
+  tab: Tab
+  autoSaveStatus?: 'idle' | 'saving' | 'saved'
+}
 
-export function StatusBar({ tab }: StatusBarProps) {
-  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline } = useEditorStore()
+export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
+  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave } = useEditorStore()
 
   const lineCount = tab.content.split('\n').length
   const charCount = tab.content.length
@@ -26,8 +29,21 @@ export function StatusBar({ tab }: StatusBarProps) {
         <span className="status-item" title="行数">{lineCount} 行</span>
         <span className="status-item" title="段落数">{paragraphCount} 段</span>
         <span className="status-item" title="预计阅读时间">📖 {readingTime}</span>
+        {tab.isModified && autoSave && autoSaveStatus === 'saving' && (
+          <span className="status-item status-auto-saving">⏳ 保存中...</span>
+        )}
+        {autoSaveStatus === 'saved' && (
+          <span className="status-item status-auto-saved">✅ 已自动保存</span>
+        )}
       </div>
       <div className="status-right">
+        <button
+          className={`status-btn ${autoSave ? 'status-btn-active' : ''}`}
+          onClick={toggleAutoSave}
+          title={`自动保存: ${autoSave ? '已开启' : '已关闭'}`}
+        >
+          💾 自动保存
+        </button>
         <button
           className={`status-btn ${outlineVisible ? 'status-btn-active' : ''}`}
           onClick={toggleOutline}

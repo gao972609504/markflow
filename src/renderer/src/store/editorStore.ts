@@ -31,6 +31,8 @@ interface EditorState {
   focusMode: boolean
   typewriterMode: boolean
   outlineVisible: boolean
+  autoSave: boolean
+  autoSaveDelay: number
 
   createTab: (filePath?: string, content?: string) => string
   closeTab: (id: string) => void
@@ -48,6 +50,7 @@ interface EditorState {
   toggleFocusMode: () => void
   toggleTypewriterMode: () => void
   toggleOutline: () => void
+  toggleAutoSave: () => void
   getActiveTab: () => Tab | undefined
 }
 
@@ -76,6 +79,8 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   focusMode: false,
   typewriterMode: false,
   outlineVisible: false,
+  autoSave: true,
+  autoSaveDelay: 2000,
 
   createTab: (filePath?: string, content?: string) => {
     const id = `tab-${++tabCounter}`
@@ -134,6 +139,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   toggleFocusMode: () => set(state => ({ focusMode: !state.focusMode })),
   toggleTypewriterMode: () => set(state => ({ typewriterMode: !state.typewriterMode })),
   toggleOutline: () => set(state => ({ outlineVisible: !state.outlineVisible })),
+  toggleAutoSave: () => set(state => ({ autoSave: !state.autoSave })),
 
   getActiveTab: () => {
     const state = get()

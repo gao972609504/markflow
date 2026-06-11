@@ -38,7 +38,29 @@ export default function App() {
   const { theme, sidebarVisible, showFindReplace, activeTabId, tabs } = useEditorStore()
   const activeTab = tabs.find((t) => t.id === activeTabId)
   const [isDragging, setIsDragging] = useState(false)
+  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
   const dragCounterRef = useRef(0)
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // ── 自动保存（防抖） ──
+  useEffect(() => {
+    if (!activeTab?.isModified || !activeTab?.filePath) return
+    const { autoSave, autoSaveDelay } = useEditorStore.getState()
+    if (!autoSave) return
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
+    autoSaveTimerRef.current = setTimeout(() => {
+      if (!window.api) return
+      setAutoSaveStatus('saving')
+      window.api.writeFile(activeTab.filePath!, activeTab.content).then((success) => {
+        if (success) {
+          useEditorStore.getState().markTabSaved(activeTab.id)
+          setAutoSaveStatus('saved')
+          setTimeout(() => setAutoSaveStatus('idle'), 2000)
+        }
+      }).catch(() => setAutoSaveStatus('idle'))
+    }, autoSaveDelay)
+    return () => { if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current) }
+  }, [activeTab?.content, activeTab?.isModified, activeTab?.filePath])
 
   // ── 拖拽打开文件 ──
   const handleDragEnter = useCallback((e: React.DragEvent) => {
@@ -244,7 +266,7 @@ export default function App() {
               </div>
             </div>
           )}
-          {activeTab && <StatusBar tab={activeTab} />}
+          {activeTab && <StatusBar tab={activeTab} autoSaveStatus={autoSaveStatus} />}
         </div>
       </div>
     </div>

@@ -356,3 +356,18 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* 自动保存状态指示 */
+.status-auto-saving {
+  animation: pulse 1s infinite;
+}
+
+.status-auto-saved {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
