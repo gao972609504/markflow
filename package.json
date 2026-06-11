@@ -55,31 +55,13 @@
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
         },
         {
           "target": "portable",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
         }
       ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDir": true,
-      "installerLanguages": [
-        "zh-CN",
-        "en-US"
-      ],
-      "language": "2052",
-      "shortcutName": "MarkFlow",
-      "artifactName": "MarkFlow-Setup-${version}.${ext}"
-    },
-    "portable": {
-      "artifactName": "MarkFlow-Portable-${version}.${ext}"
     },
     "mac": {
       "icon": "resources/icon.icns",
