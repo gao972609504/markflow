@@ -507,6 +507,16 @@ function autoContinueList(view: EditorView): boolean {
     })
     return true
   }
+  // Callout 块自动闭合：输入 :::type 后按 Enter 自动添加闭合 :::
+  const callout = t.match(/^(\s*):::(tip|info|warning|danger|note|quote|success|bug|example|question)\s*$/i)
+  if (callout) {
+    const insert = `\n\n${callout[1]}:::`
+    view.dispatch({
+      changes: { from: head, insert },
+      selection: { anchor: head + 1 }
+    })
+    return true
+  }
 
   const ul = t.match(/^(\s*)([-*+])\s(.*)$/)
   if (ul) {
