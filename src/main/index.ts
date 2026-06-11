@@ -110,8 +110,8 @@ function createMenu(): void {
           dialog.showMessageBox(mainWindow!, {
             type: 'info',
             title: '关于 MarkFlow',
-            message: 'MarkFlow v1.0.0',
-            detail: '一个轻量美观的 Markdown 编辑器\n基于 Electron + React 构建'
+            message: 'MarkFlow v2.0.0',
+            detail: '功能丰富的 Markdown 编辑器 | 100+ 特性迭代 | 实时渲染\n基于 Electron + React 构建'
           })
         }}
       ]
