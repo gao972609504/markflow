@@ -122,6 +122,16 @@ export default function App() {
             const match = tabs.find(t => t.filePath === session.activeTabPath)
             if (match) useEditorStore.getState().setActiveTab(match.id)
           }
+          // 恢复光标位置
+          if (session.cursorPositions) {
+            const currentState = useEditorStore.getState()
+            for (const tab of currentState.tabs) {
+              if (tab.filePath && session.cursorPositions[tab.filePath]) {
+                const pos = session.cursorPositions[tab.filePath]
+                currentState.updateTabCursor(tab.id, pos.line, pos.col)
+              }
+            }
+          }
         })()
       } else {
         clearInterval(check)

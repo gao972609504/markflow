@@ -173,7 +173,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   fontFamily: loadPersistedFontFamily(),
   tabSize: 2,
   wordGoal: 0,
-  lastSession: null as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null } | null,
+  lastSession: null as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null; cursorPositions?: Record<string, { line: number; col: number }> } | null,
 
   createTab: (filePath?: string, content?: string) => {
     const id = `tab-${++tabCounter}`
@@ -283,7 +283,11 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     const session = {
       tabPaths: state.tabs.map(t => t.filePath || `__untitled__:${t.title}`),
       activeTabPath: state.tabs.find(t => t.id === state.activeTabId)?.filePath || null,
-      folderPath: state.folderPath
+      folderPath: state.folderPath,
+      cursorPositions: state.tabs.reduce<Record<string, { line: number; col: number }>>((acc, t) => {
+        if (t.filePath) acc[t.filePath] = { line: t.cursorLine, col: t.cursorCol }
+        return acc
+      }, {})
     }
     try { localStorage.setItem('markflow-session', JSON.stringify(session)) } catch { /* noop */ }
   },
@@ -292,7 +296,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     try {
       const raw = localStorage.getItem('markflow-session')
       if (!raw) return
-      const session = JSON.parse(raw) as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null }
+      const session = JSON.parse(raw) as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null; cursorPositions?: Record<string, { line: number; col: number }> }
       if (session.folderPath && window.api) {
         window.api.readdir(session.folderPath).then(tree => {
           set({ fileTree: tree, folderPath: session.folderPath })
