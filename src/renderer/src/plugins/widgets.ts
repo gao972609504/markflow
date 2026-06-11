@@ -16,6 +16,26 @@ export class ImageWidget extends WidgetType {
     img.className = 'cm-inline-image'
     img.loading = 'lazy'
     img.onerror = () => { img.style.display = 'none' }
+    img.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      // 创建大图预览弹窗
+      const overlay = document.createElement('div')
+      overlay.className = 'cm-image-preview-overlay'
+      const previewImg = document.createElement('img')
+      previewImg.src = this.src
+      previewImg.alt = this.alt
+      previewImg.className = 'cm-image-preview-img'
+      overlay.appendChild(previewImg)
+      // 点击关闭
+      overlay.addEventListener('click', () => overlay.remove())
+      // ESC 关闭
+      const escHandler = (ev: KeyboardEvent) => {
+        if (ev.key === 'Escape') { overlay.remove(); document.removeEventListener('keydown', escHandler) }
+      }
+      document.addEventListener('keydown', escHandler)
+      document.body.appendChild(overlay)
+    })
     return img
   }
   eq(other: ImageWidget) { return this.src === other.src && this.alt === other.alt }

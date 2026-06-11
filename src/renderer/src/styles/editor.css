@@ -154,6 +154,41 @@
   border-left: 2px solid #ffc107 !important;
 }
 
+/* 图片点击放大预览 */
+.cm-inline-image {
+  cursor: zoom-in;
+  border-radius: 6px;
+  transition: opacity 0.15s;
+}
+
+.cm-inline-image:hover {
+  opacity: 0.85;
+}
+
+.cm-image-preview-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  animation: cm-preview-fadein 0.2s ease;
+}
+
+@keyframes cm-preview-fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.cm-image-preview-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
 /* === TOC 目录 Widget 样式 === */
