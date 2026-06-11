@@ -5,7 +5,8 @@
 import { EditorView, Decoration, DecorationSet } from '@codemirror/view'
 import { EditorState, RangeSet } from '@codemirror/state'
 import { useEditorStore } from '../store/editorStore'
-import { ImageWidget, CheckboxWidget, TocWidget } from './widgets'
+import { ImageWidget, CheckboxWidget, TocWidget, EmojiWidget } from './widgets'
+import { emojiMap, emojiPattern } from '../utils/emoji'
 
 // ============ 装饰常量 ============
 
@@ -190,5 +191,17 @@ function inlineDeco(text: string, lf: number, on: boolean, deco: { from: number;
     const f = lf + m.index, t = f + m[0].length
     deco.push({ from: f, to: t, value: linkMark })
     if (!on) { deco.push({ from: f, to: f + 1, value: hideMark }); deco.push({ from: f + 1 + m[1].length, to: t, value: hideMark }) }
+  }
+
+  // Emoji 短代码 :shortcode:
+  const emRe = new RegExp(emojiPattern.source, 'g')
+  while ((m = emRe.exec(text))) {
+    const emoji = emojiMap[m[1]]
+    if (emoji) {
+      const f = lf + m.index, t = f + m[0].length
+      if (!on) {
+        deco.push({ from: f, to: t, value: Decoration.replace({ widget: new EmojiWidget(emoji) }) })
+      }
+    }
   }
 }

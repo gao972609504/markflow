@@ -60,6 +60,20 @@ export class TocWidget extends WidgetType {
   ignoreEvent() { return false }
 }
 
+// ============ Emoji 渲染 Widget ============
+
+export class EmojiWidget extends WidgetType {
+  constructor(readonly emoji: string) { super() }
+  toDOM() {
+    const span = document.createElement('span')
+    span.textContent = this.emoji
+    span.className = 'cm-emoji-rendered'
+    return span
+  }
+  eq(other: EmojiWidget) { return this.emoji === other.emoji }
+  ignoreEvent() { return false }
+}
+
 // ============ 复选框 Widget ============
 
 export class CheckboxWidget extends WidgetType {

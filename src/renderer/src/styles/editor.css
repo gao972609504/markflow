@@ -115,6 +115,12 @@
   font-style: italic;
 }
 
+/* === Emoji 渲染 === */
+.cm-emoji-rendered {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
 .cm-table-widget {
