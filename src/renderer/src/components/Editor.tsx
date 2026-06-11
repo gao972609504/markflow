@@ -17,6 +17,44 @@ import { createEditorTheme } from '../plugins/theme'
 
 interface EditorProps { tab: Tab }
 
+// ============ 选中文字高亮所有匹配项 ============
+
+const selectionHighlightMark = Decoration.mark({ class: 'cm-selection-match' })
+
+function createSelectionHighlightPlugin() {
+  return ViewPlugin.fromClass(
+    class {
+      deco
+      constructor(view: EditorView) { this.deco = this.build(view) }
+      update(u: ViewUpdate) {
+        if (u.selectionSet || u.docChanged) this.deco = this.build(u.view)
+      }
+      build(view: EditorView) {
+        const sel = view.state.selection.main
+        if (sel.from === sel.to) return Decoration.none
+        const text = view.state.sliceDoc(sel.from, sel.to)
+        if (!text || text.length < 2 || text.includes('\n')) return Decoration.none
+        const deco: { from: number; to: number; value: Decoration }[] = []
+        const doc = view.state.doc
+        const search = text.toLowerCase()
+        for (let pos = 0; pos < doc.length;) {
+          const chunk = doc.sliceString(pos, Math.min(pos + 10000, doc.length)).toLowerCase()
+          const idx = chunk.indexOf(search)
+          if (idx < 0) { pos += 10000; continue }
+          const matchFrom = pos + idx
+          const matchTo = matchFrom + text.length
+          if (!(matchFrom >= sel.from && matchTo <= sel.to)) {
+            deco.push({ from: matchFrom, to: matchTo, value: selectionHighlightMark })
+          }
+          pos = matchTo
+        }
+        return deco.length ? Decoration.set(deco.map(d => d.value.range(d.from, d.to)), true) : Decoration.none
+      }
+    },
+    { decorations: v => v.deco }
+  )
+}
+
 // ============ ViewPlugin ============
 
 function createWysiwygPlugin() {
@@ -134,6 +172,7 @@ export function Editor({ tab }: EditorProps) {
         ]),
         updateHandler,
         pasteHandler,
+        createSelectionHighlightPlugin(),
         createWysiwygPlugin(),
         createTypewriterPlugin(),
       ]

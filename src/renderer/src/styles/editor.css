@@ -136,6 +136,13 @@
   outline: 1px dashed rgba(255, 152, 0, 0.4);
 }
 
+/* 选中文字匹配高亮 */
+.cm-selection-match {
+  background: rgba(255, 200, 0, 0.25);
+  border-radius: 2px;
+  outline: 1px solid rgba(255, 200, 0, 0.4);
+}
+
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
 /* === TOC 目录 Widget 样式 === */
