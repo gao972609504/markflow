@@ -168,6 +168,7 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Mod-Shift-k', run: deleteLine },
           { key: 'Mod-Enter', run: insertLineBelow },
           { key: 'Mod-Shift-Enter', run: insertLineAbove },
+          { key: 'Mod-Shift-f', run: formatMarkdownTable },
           { key: 'Enter', run: v => autoContinueList(v) },
         ]),
         updateHandler,
@@ -333,5 +334,70 @@ function insertLineAbove(view: EditorView): boolean {
     changes: { from: line.from, to: line.from, insert: indent + '\n' },
     selection: { anchor: line.from + indent.length }
   })
+  return true
+}
+
+// ============ Markdown 表格自动格式化 ============
+
+export function formatMarkdownTable(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const doc = view.state.doc
+  const lineNum = doc.lineAt(head).number
+
+  // 向上查找表格起始行
+  let startLine = lineNum
+  while (startLine > 1 && /^\|/.test(doc.line(startLine - 1).text.trim())) startLine--
+  // 向下查找表格结束行
+  let endLine = lineNum
+  while (endLine < doc.lines && /^\|/.test(doc.line(endLine + 1).text.trim())) endLine++
+
+  if (startLine === endLine) return false // 不是表格
+
+  // 解析表格行
+  const rows: string[][] = []
+  const isSeparator: boolean[] = []
+  for (let i = startLine; i <= endLine; i++) {
+    const text = doc.line(i).text.trim()
+    const cells = text.split('|').map(c => c.trim()).filter((_, idx, arr) => idx > 0 && idx < arr.length)
+    rows.push(cells)
+    isSeparator.push(/^\|[\s\-:|]+\|$/.test(text))
+  }
+
+  if (rows.length === 0) return false
+
+  // 计算每列最大宽度
+  const colCount = Math.max(...rows.map(r => r.length))
+  const maxWidths: number[] = []
+  for (let c = 0; c < colCount; c++) {
+    maxWidths[c] = Math.max(3, ...rows.map(r => (r[c] || '').length))
+  }
+
+  // 重新格式化
+  const changes: { from: number; to: number; insert: string }[] = []
+  for (let i = 0; i < rows.length; i++) {
+    const line = doc.line(startLine + i)
+    const cells = rows[i]
+    let formatted: string
+    if (isSeparator[i]) {
+      formatted = '|' + cells.map((c, ci) => {
+        const w = maxWidths[ci] || 3
+        if (c.includes(':') && c.endsWith(':')) return ' ' + ':'.padEnd(w - 1, '-') + ':'
+        if (c.endsWith(':')) return ' '.padEnd(w - 1, '-') + ':'
+        if (c.startsWith(':')) return ':' + '-'.padEnd(w - 1, '-')
+        return ' ' + '-'.repeat(w - 2) + ' '
+      }).join('|') + '|'
+    } else {
+      formatted = '| ' + cells.map((c, ci) => {
+        const w = maxWidths[ci] || 3
+        return c.padEnd(w)
+      }).join(' | ') + ' |'
+    }
+    if (line.text !== formatted) {
+      changes.push({ from: line.from, to: line.to, insert: formatted })
+    }
+  }
+
+  if (changes.length === 0) return false
+  view.dispatch({ changes })
   return true
 }

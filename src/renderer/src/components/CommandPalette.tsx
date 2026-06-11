@@ -32,6 +32,10 @@ function getCommands(): Command[] {
     { id: 'editor.italic', label: '斜体选区', category: '格式', shortcut: 'Ctrl+I', action: () => {} },
     { id: 'editor.code', label: '行内代码选区', category: '格式', shortcut: 'Ctrl+`', action: () => {} },
     { id: 'editor.strikethrough', label: '删除线选区', category: '格式', shortcut: 'Ctrl+Shift+X', action: () => {} },
+    { id: 'editor.format-table', label: '格式化表格', category: '格式', shortcut: 'Ctrl+Shift+F', action: () => {
+      const cmContent = document.querySelector('.cm-content')
+      if (cmContent) cmContent.dispatchEvent(new KeyboardEvent('keydown', { key: 'F', ctrlKey: true, shiftKey: true, bubbles: true }))
+    }},
   ]
 }
 
