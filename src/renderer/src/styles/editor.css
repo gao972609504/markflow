@@ -223,6 +223,15 @@
   background: rgba(88, 166, 255, 0.2);
 }
 
+/* === 标题自动编号 === */
+.cm-heading[data-heading-num] .cm-lineContent::before {
+  content: attr(data-heading-num) " ";
+  color: var(--accent-color);
+  font-weight: 700;
+  opacity: 0.6;
+  margin-right: 4px;
+}
+
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
 .cm-table-widget {

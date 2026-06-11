@@ -7,7 +7,7 @@ interface StatusBarProps {
 }
 
 export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
-  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize } = useEditorStore()
+  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize, headingNumbering, toggleHeadingNumbering } = useEditorStore()
 
   const lineCount = tab.content.split('\n').length
   const charCount = tab.content.length
@@ -43,6 +43,13 @@ export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
           title={`自动保存: ${autoSave ? '已开启' : '已关闭'}`}
         >
           💾 自动保存
+        </button>
+        <button
+          className={`status-btn ${headingNumbering ? 'status-btn-active' : ''}`}
+          onClick={toggleHeadingNumbering}
+          title="标题自动编号"
+        >
+          🔢 编号
         </button>
         <button
           className={`status-btn ${outlineVisible ? 'status-btn-active' : ''}`}

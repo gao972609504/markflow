@@ -42,11 +42,23 @@ export function buildDecorations(view: EditorView): DecorationSet {
   const cursorLine = doc.lineAt(view.state.selection.main.head).number
   const focusMode = useEditorStore.getState().focusMode
 
-  // ── 收集所有标题（供 [TOC] 使用） ──
-  const headings: { level: number; text: string }[] = []
+  // ── 收集所有标题（供 [TOC] 和编号使用） ──
+  const headings: { level: number; text: string; lineNum: number }[] = []
   for (let i = 1; i <= doc.lines; i++) {
     const hm = doc.line(i).text.match(/^(#{1,6})\s+(.+)$/)
-    if (hm) headings.push({ level: hm[1].length, text: hm[2].trim() })
+    if (hm) headings.push({ level: hm[1].length, text: hm[2].trim(), lineNum: i })
+  }
+
+  // ── 计算标题编号 ──
+  const headingNumbers = new Map<number, string>()
+  const headingNumbering = useEditorStore.getState().headingNumbering
+  if (headingNumbering && headings.length > 0) {
+    const counters = [0, 0, 0, 0, 0, 0]
+    for (const h of headings) {
+      counters[h.level - 1]++
+      for (let j = h.level; j < 6; j++) counters[j] = 0
+      headingNumbers.set(h.lineNum, counters.slice(0, h.level).join('.'))
+    }
   }
 
   for (let i = 1; i <= doc.lines; i++) {
@@ -102,7 +114,7 @@ export function buildDecorations(view: EditorView): DecorationSet {
     // ── [TOC] 目录标记 ──
     if (/^\[TOC\]\s*$/i.test(t.trim())) {
       deco.push({ from: line.from, to: line.to, value: hideMark })
-      deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new TocWidget(headings), side: 1 }).range(line.to) })
+      deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new TocWidget(headings.map(h => ({ level: h.level, text: h.text }))), side: 1 }).range(line.to) })
       deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-toc-line' }) })
       continue
     }
@@ -118,6 +130,13 @@ export function buildDecorations(view: EditorView): DecorationSet {
       const lv = hm[1].length
       deco.push({ from: line.from, to: line.from, value: headingLine(lv) })
       if (!on) deco.push({ from: line.from, to: line.from + lv + 1, value: hideMark })
+      // 标题编号
+      if (headingNumbering && headingNumbers.has(i)) {
+        const num = headingNumbers.get(i)!
+        deco.push({
+          from: line.from, to: line.from, value: Decoration.line({ attributes: { 'data-heading-num': num } })
+        })
+      }
     }
 
     // ── 引用块 ──

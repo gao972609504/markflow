@@ -37,6 +37,7 @@ interface EditorState {
   showQuickOpen: boolean
   showCommandPalette: boolean
   showGoToLine: boolean
+  headingNumbering: boolean
   fontSize: number
 
   createTab: (filePath?: string, content?: string) => string
@@ -60,6 +61,7 @@ interface EditorState {
   setShowQuickOpen: (show: boolean) => void
   setShowCommandPalette: (show: boolean) => void
   setShowGoToLine: (show: boolean) => void
+  toggleHeadingNumbering: () => void
   setFontSize: (size: number) => void
   resetFontSize: () => void
   saveSession: () => void
@@ -110,6 +112,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   showQuickOpen: false,
   showCommandPalette: false,
   showGoToLine: false,
+  headingNumbering: false,
   fontSize: loadPersistedFontSize(),
   lastSession: null as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null } | null,
 
@@ -175,6 +178,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setShowQuickOpen: (show: boolean) => set({ showQuickOpen: show }),
   setShowCommandPalette: (show: boolean) => set({ showCommandPalette: show }),
   setShowGoToLine: (show: boolean) => set({ showGoToLine: show }),
+  toggleHeadingNumbering: () => set(state => ({ headingNumbering: !state.headingNumbering })),
   setFontSize: (size: number) => { persistFontSize(size); set({ fontSize: size }) },
   resetFontSize: () => { const defaultSize = 15.5; persistFontSize(defaultSize); set({ fontSize: defaultSize }) },
 
