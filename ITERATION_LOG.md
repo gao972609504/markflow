@@ -198,3 +198,8 @@
 - 编辑器左侧显示修改/新增行标记
 - 绿色边框标记新增行，黄色边框标记修改行
 - 与保存前的原始内容对比，保存后标记自动清除
+
+### Iteration 49/100 — 编辑器字体切换
+- 状态栏点击字体按钮循环切换：默认、JetBrains Mono、Fira Code、Cascadia Code、Source Code Pro、Consolas、Menlo、Monaco
+- 字体设置自动持久化到 localStorage
+- 编辑器实时应用新字体

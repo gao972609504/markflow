@@ -7,7 +7,7 @@ interface StatusBarProps {
 }
 
 export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
-  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap, showLineNumbers, toggleLineNumbers, wordGoal, setWordGoal } = useEditorStore()
+  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap, showLineNumbers, toggleLineNumbers, wordGoal, setWordGoal, fontFamily, setFontFamily } = useEditorStore()
 
   // ── 番茄钟计时器 ──
   const [pomoRunning, setPomoRunning] = useState(false)
@@ -168,6 +168,19 @@ export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
         <span className="status-item" title="字体大小 (Ctrl++/- 调整, Ctrl+0 重置)">
           🔤 {fontSize.toFixed(1)}px
         </span>
+        <button
+          className="status-btn"
+          title="切换编辑器字体"
+          onClick={() => {
+            const fonts = ['默认', 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Source Code Pro', 'Consolas', 'Menlo', 'Monaco']
+            const current = fontFamily || '默认'
+            const idx = fonts.indexOf(current)
+            const next = fonts[(idx + 1) % fonts.length]
+            setFontFamily(next === '默认' ? '' : next)
+          }}
+        >
+          🔠 {fontFamily || '默认'}
+        </button>
         <button
           className={`status-btn ${wordWrap ? 'status-btn-active' : ''}`}
           onClick={toggleWordWrap}

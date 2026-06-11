@@ -6,7 +6,8 @@ import { EditorView } from '@codemirror/view'
 
 export const monoFont = '"JetBrains Mono", "Fira Code", "Cascadia Code", "SF Mono", Consolas, monospace'
 
-export function createEditorTheme(isDark: boolean, fontSize: number = 15.5) {
+export function createEditorTheme(isDark: boolean, fontSize: number = 15.5, fontFamily: string = '') {
+  const editorFont = fontFamily ? `"${fontFamily}", ${monoFont}` : monoFont
   const c = {
     bg: isDark ? '#0d1117' : '#ffffff',
     bg2: isDark ? '#161b22' : '#f6f8fa',
@@ -85,7 +86,7 @@ export function createEditorTheme(isDark: boolean, fontSize: number = 15.5) {
     '.cm-inline-code': {
       background: c.codeBg, border: `1px solid ${c.border}`, borderRadius: '6px',
       padding: '0.2em 0.4em',
-      fontFamily: monoFont,
+      fontFamily: editorFont,
       fontSize: '0.85em',
     },
     '.cm-link-rendered': { color: c.accent, cursor: 'pointer', fontWeight: '500' },
@@ -104,7 +105,7 @@ export function createEditorTheme(isDark: boolean, fontSize: number = 15.5) {
     // 代码块 — 左边框 + 圆角
     '.cm-code-block-line': {
       background: `${c.codeBlockBg} !important`,
-      fontFamily: monoFont,
+      fontFamily: editorFont,
       fontSize: '13.5px', lineHeight: '1.65', padding: '1px 16px',
       borderLeft: `3px solid ${c.accent}`,
     },

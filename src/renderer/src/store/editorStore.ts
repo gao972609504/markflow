@@ -48,6 +48,7 @@ interface EditorState {
   zenMode: boolean
   fontSize: number
   wordGoal: number
+  fontFamily: string
 
   createTab: (filePath?: string, content?: string) => string  closeTab: (id: string) => void
   setActiveTab: (id: string) => void
@@ -80,6 +81,7 @@ interface EditorState {
   setFontSize: (size: number) => void
   resetFontSize: () => void
   setWordGoal: (goal: number) => void
+  setFontFamily: (family: string) => void
   toggleTabPin: (id: string) => void
   saveSession: () => void
   restoreSession: () => void
@@ -112,6 +114,18 @@ function persistFontSize(size: number) {
   try { localStorage.setItem('markflow-font-size', String(size)) } catch { /* noop */ }
 }
 
+function loadPersistedFontFamily(): string {
+  try {
+    const stored = localStorage.getItem('markflow-font-family')
+    if (stored) return stored
+  } catch { /* noop */ }
+  return ''
+}
+
+function persistFontFamily(family: string) {
+  try { localStorage.setItem('markflow-font-family', family) } catch { /* noop */ }
+}
+
 export const useEditorStore = create<EditorState>((set, get) => ({
   tabs: [],
   activeTabId: null,
@@ -138,6 +152,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   closedTabsHistory: [],
   zenMode: false,
   fontSize: loadPersistedFontSize(),
+  fontFamily: loadPersistedFontFamily(),
   wordGoal: 0,
   lastSession: null as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null } | null,
 
@@ -230,6 +245,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setFontSize: (size: number) => { persistFontSize(size); set({ fontSize: size }) },
   resetFontSize: () => { const defaultSize = 15.5; persistFontSize(defaultSize); set({ fontSize: defaultSize }) },
   setWordGoal: (goal: number) => set({ wordGoal: Math.max(0, goal) }),
+  setFontFamily: (family: string) => { persistFontFamily(family); set({ fontFamily: family }) },
 
   saveSession: () => {
     const state = get()
