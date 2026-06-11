@@ -6,6 +6,30 @@ import { homedir } from 'os'
 
 let mainWindow: BrowserWindow | null = null
 
+// 生成 HTML 目录
+function generateToc(html: string): string {
+  const headings = html.match(/<h([1-6])[^>]*>(.*?)<\/h\1>/g)
+  if (!headings || headings.length === 0) return ''
+  let toc = '<nav class="toc"><h3>目录</h3><ul>'
+  for (const h of headings) {
+    const level = h.match(/<h([1-6])/)?.[1]
+    const text = h.replace(/<[^>]+>/g, '').trim()
+    const id = text.toLowerCase().replace(/[^\w一-鿿]+/g, '-')
+    toc += `<li class="toc-level-${level}"><a href="#${id}">${text}</a></li>`
+  }
+  toc += '</ul></nav>'
+  return toc
+}
+
+// 为 HTML 标题添加 id 锚点
+function addHeadingIds(html: string): string {
+  return html.replace(/<h([1-6])([^>]*)>(.*?)<\/h\1>/g, (_match, level, attrs, content) => {
+    const text = content.replace(/<[^>]+>/g, '').trim()
+    const id = text.toLowerCase().replace(/[^\w一-鿿]+/g, '-')
+    return `<h${level} id="${id}"${attrs}>${content}</h${level}>`
+  })
+}
+
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1200,
@@ -201,10 +225,18 @@ ipcMain.handle('export:html', async (_event, html: string) => {
     th, td { border: 1px solid #dfe2e5; padding: 6px 13px; }
     img { max-width: 100%; }
     h1,h2,h3,h4,h5,h6 { border-bottom: 1px solid #eaecef; padding-bottom: .3em; }
+    .toc { background: #f6f8fa; border: 1px solid #d1d9e0; border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; }
+    .toc h3 { border: none; margin-top: 0; padding-bottom: 8px; }
+    .toc ul { list-style: none; padding-left: 0; }
+    .toc a { color: #0969da; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .toc-level-2 { padding-left: 20px; }
+    .toc-level-3 { padding-left: 40px; }
+    .toc-level-4 { padding-left: 60px; }
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 </head>
-<body>${html}</body>
+<body>${generateToc(html)}${addHeadingIds(html)}</body>
 </html>`
     await writeFile(result.filePath, fullHtml, 'utf-8')
     return result.filePath
