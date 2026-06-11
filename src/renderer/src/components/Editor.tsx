@@ -95,6 +95,12 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Mod-i', run: v => (wrapSel(v, '*'), true) },
           { key: 'Mod-`', run: v => (wrapSel(v, '`'), true) },
           { key: 'Mod-Shift-x', run: v => (wrapSel(v, '~~'), true) },
+          { key: 'Alt-ArrowUp', run: moveLineUp },
+          { key: 'Alt-ArrowDown', run: moveLineDown },
+          { key: 'Mod-d', run: duplicateLine },
+          { key: 'Mod-Shift-k', run: deleteLine },
+          { key: 'Mod-Enter', run: insertLineBelow },
+          { key: 'Mod-Shift-Enter', run: insertLineAbove },
           { key: 'Enter', run: v => autoContinueList(v) },
         ]),
         updateHandler,
@@ -183,4 +189,80 @@ function autoContinueList(view: EditorView): boolean {
     return true
   }
   return false
+}
+
+// ============ 行操作工具函数 ============
+
+function moveLineUp(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const line = view.state.doc.lineAt(head)
+  if (line.number <= 1) return false
+  const prevLine = view.state.doc.line(line.number - 1)
+  view.dispatch({
+    changes: [
+      { from: prevLine.from, to: prevLine.to, insert: line.text },
+      { from: line.from, to: line.to, insert: prevLine.text }
+    ],
+    selection: { anchor: head - prevLine.text.length - 1 }
+  })
+  return true
+}
+
+function moveLineDown(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const line = view.state.doc.lineAt(head)
+  if (line.number >= view.state.doc.lines) return false
+  const nextLine = view.state.doc.line(line.number + 1)
+  view.dispatch({
+    changes: [
+      { from: line.from, to: line.to, insert: nextLine.text },
+      { from: nextLine.from, to: nextLine.to, insert: line.text }
+    ],
+    selection: { anchor: head + nextLine.text.length + 1 }
+  })
+  return true
+}
+
+function duplicateLine(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const line = view.state.doc.lineAt(head)
+  view.dispatch({
+    changes: { from: line.to, to: line.to, insert: '\n' + line.text },
+    selection: { anchor: head + line.text.length + 1 }
+  })
+  return true
+}
+
+function deleteLine(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const line = view.state.doc.lineAt(head)
+  const from = line.from
+  const to = line.to + (line.to < view.state.doc.length ? 1 : 0)
+  view.dispatch({
+    changes: { from, to: Math.min(to, view.state.doc.length), insert: '' },
+    selection: { anchor: from }
+  })
+  return true
+}
+
+function insertLineBelow(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const line = view.state.doc.lineAt(head)
+  const indent = line.text.match(/^\s*/)?.[0] || ''
+  view.dispatch({
+    changes: { from: line.to, to: line.to, insert: '\n' + indent },
+    selection: { anchor: line.to + 1 + indent.length }
+  })
+  return true
+}
+
+function insertLineAbove(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const line = view.state.doc.lineAt(head)
+  const indent = line.text.match(/^\s*/)?.[0] || ''
+  view.dispatch({
+    changes: { from: line.from, to: line.from, insert: indent + '\n' },
+    selection: { anchor: line.from + indent.length }
+  })
+  return true
 }
