@@ -397,6 +397,42 @@ export function Editor({ tab }: EditorProps) {
               return true
             }
             return false
+          },
+          contextmenu(event, view) {
+            event.preventDefault()
+            document.querySelector('.cm-editor-ctx-menu')?.remove()
+            const menu = document.createElement('div')
+            menu.className = 'context-menu cm-editor-ctx-menu'
+            menu.style.left = `${event.clientX}px`
+            menu.style.top = `${event.clientY}px`
+            const items: { label?: string; action?: () => void; divider?: true }[] = [
+              { label: '✂️ 剪切', action: () => document.execCommand('cut') },
+              { label: '📋 复制', action: () => document.execCommand('copy') },
+              { label: '📌 粘贴', action: () => document.execCommand('paste') },
+              { divider: true },
+              { label: '☑️ 全选', action: () => view.dispatch({ selection: { anchor: 0, head: view.state.doc.length } }) },
+              { divider: true },
+              { label: '** 加粗', action: () => wrapSel(view, '**') },
+              { label: '* 斜体', action: () => wrapSel(view, '*') },
+              { label: '` 代码', action: () => wrapSel(view, '`') },
+              { label: '~~ 删除线', action: () => wrapSel(view, '~~') },
+            ]
+            for (const item of items) {
+              if (item.divider) {
+                const d = document.createElement('div')
+                d.className = 'context-menu-divider'
+                menu.appendChild(d)
+              } else if (item.label && item.action) {
+                const el = document.createElement('div')
+                el.className = 'context-menu-item'
+                el.textContent = item.label
+                el.addEventListener('click', () => { item.action!(); menu.remove() })
+                menu.appendChild(el)
+              }
+            }
+            document.addEventListener('click', () => menu.remove(), { once: true })
+            document.body.appendChild(menu)
+            return true
           }
         }),
         createSelectionHighlightPlugin(),
