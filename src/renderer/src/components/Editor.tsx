@@ -350,6 +350,8 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Mod-Shift-BracketRight', run: demoteHeading },
           { key: 'Tab', run: expandSnippet },
           { key: 'Enter', run: v => autoContinueList(v) },
+          { key: 'Backspace', run: renumberLists },
+          { key: 'Delete', run: renumberLists },
         ]),
         updateHandler,
         pasteHandler,
@@ -798,4 +800,44 @@ function demoteHeading(view: EditorView): boolean {
     selection: { anchor: head + 1 }
   })
   return true
+}
+
+// ============ 有序列表自动编号 ============
+
+function renumberLists(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const doc = view.state.doc
+  const lineNum = doc.lineAt(head).number
+  // 找到当前行的缩进和列表编号
+  const currentLine = doc.line(lineNum)
+  const listMatch = currentLine.text.match(/^(\s*)(\d+)\.\s/)
+  if (!listMatch) return false
+  const indent = listMatch[1].length
+  const changes: { from: number; to: number; insert: string }[] = []
+  // 从当前行向上找到列表开始
+  let startLine = lineNum
+  while (startLine > 1) {
+    const prev = doc.line(startLine - 1)
+    const prevMatch = prev.text.match(new RegExp(`^\\s{0,${indent}}\\d+\\.\\s`))
+    if (prevMatch && prev.text.match(/^(\s*)/)![1].length === indent) startLine--
+    else break
+  }
+  // 重新编号
+  let num = 1
+  for (let i = startLine; i <= doc.lines; i++) {
+    const l = doc.line(i)
+    const m = l.text.match(new RegExp(`^(\\s{${indent}})(\\d+)\\.(\\s.*)$`))
+    if (!m) break
+    if (parseInt(m[2]) !== num) {
+      changes.push({ from: l.from + indent, to: l.from + indent + m[2].length, insert: String(num) })
+    }
+    num++
+  }
+  if (changes.length === 0) return false
+  // 延迟执行，让原始 Backspace/Delete 先完成
+  setTimeout(() => {
+    const v = view
+    if (v) v.dispatch({ changes })
+  }, 0)
+  return false // 不阻止原始操作
 }
