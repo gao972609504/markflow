@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="logo.jpg" alt="MarkFlow Logo" width="120" height="120" />
+
 # ✨ MarkFlow
 
 **轻量美观的类 Typora Markdown 所见即所得编辑器**
@@ -391,6 +393,8 @@ MarkFlow 的诞生离不开以下开源项目：
 <div id="-english">
 
 <div align="center">
+
+<img src="logo.jpg" alt="MarkFlow Logo" width="120" height="120" />
 
 # ✨ MarkFlow
 
