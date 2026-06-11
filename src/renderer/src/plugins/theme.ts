@@ -49,6 +49,17 @@ export function createEditorTheme(isDark: boolean, fontSize: number = 15.5, font
       padding: '20px 0',
       letterSpacing: '0.01em',
       caretColor: c.cursor,
+      position: 'relative',
+    },
+    '.cm-content::after': {
+      content: '""',
+      position: 'absolute',
+      top: '0',
+      bottom: '0',
+      left: `calc(24px + 80ch + 24px)`,
+      borderLeft: `1px dashed ${isDark ? '#30363d' : '#d1d9e0'}`,
+      pointerEvents: 'none',
+      zIndex: '1',
     },
     '.cm-line': { padding: '3px 24px' },
     '.cm-content[contenteditable="true"] .cm-line:only-child:empty::before': {
