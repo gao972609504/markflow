@@ -3,6 +3,7 @@
  * — 图片行内预览、任务列表复选框
  */
 import { WidgetType, EditorView } from '@codemirror/view'
+import katex from 'katex'
 
 // ============ 图片行内预览 Widget ============
 
@@ -191,6 +192,29 @@ export class CodeBlockHeaderWidget extends WidgetType {
     return header
   }
   eq(other: CodeBlockHeaderWidget) { return this.lang === other.lang && this.codeContent === other.codeContent }
+  ignoreEvent() { return false }
+}
+
+// ============ KaTeX 数学公式 Widget ============
+
+export class KatexWidget extends WidgetType {
+  constructor(readonly latex: string, readonly displayMode: boolean) { super() }
+  toDOM() {
+    const container = document.createElement('div')
+    container.className = this.displayMode ? 'cm-katex-block' : 'cm-katex-inline'
+    try {
+      katex.render(this.latex, container, {
+        displayMode: this.displayMode,
+        throwOnError: false,
+        trust: true,
+      })
+    } catch {
+      container.textContent = this.latex
+      container.className += ' cm-katex-error'
+    }
+    return container
+  }
+  eq(other: KatexWidget) { return this.latex === other.latex && this.displayMode === other.displayMode }
   ignoreEvent() { return false }
 }
 

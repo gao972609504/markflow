@@ -5,7 +5,7 @@
 import { EditorView, Decoration, DecorationSet } from '@codemirror/view'
 import { EditorState, RangeSet } from '@codemirror/state'
 import { useEditorStore } from '../store/editorStore'
-import { ImageWidget, CheckboxWidget, TocWidget, EmojiWidget, CalloutWidget, FootnoteRefWidget, CodeBlockHeaderWidget } from './widgets'
+import { ImageWidget, CheckboxWidget, TocWidget, EmojiWidget, CalloutWidget, FootnoteRefWidget, CodeBlockHeaderWidget, KatexWidget } from './widgets'
 import { emojiMap, emojiPattern } from '../utils/emoji'
 
 // ============ 装饰常量 ============
@@ -43,6 +43,9 @@ export function buildDecorations(view: EditorView): DecorationSet {
   let codeBlockLang = ''
   let codeBlockStartFrom = 0
   let codeBlockContentLines: string[] = []
+  let inMathBlock = false
+  let mathBlockStartFrom = 0
+  let mathBlockContent: string[] = []
 
   const cursorLine = doc.lineAt(view.state.selection.main.head).number
   const focusMode = useEditorStore.getState().focusMode
@@ -135,6 +138,38 @@ export function buildDecorations(view: EditorView): DecorationSet {
     if (inCodeBlock) {
       codeBlockContentLines.push(t)
       deco.push({ from: line.from, to: line.from, value: codeLine })
+      continue
+    }
+
+    // ── 显示数学块 $$...$$ ──
+    if (/^\s*\$\$\s*$/.test(t) && !inMathBlock) {
+      // 单行 $$ 公式：$$ E = mc^2 $$
+      const singleLine = t.match(/^\s*\$\$\s+(.+?)\s+\$\$\s*$/)
+      if (singleLine) {
+        deco.push({ from: line.from, to: line.to, value: hideMark })
+        deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new KatexWidget(singleLine[1], true), side: 1 }).range(line.to) })
+        deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-math-block-line' }) })
+        continue
+      }
+      inMathBlock = true
+      mathBlockStartFrom = line.from
+      mathBlockContent = []
+      deco.push({ from: line.from, to: line.to, value: hideMark })
+      deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-math-block-line' }) })
+      continue
+    }
+    if (inMathBlock) {
+      if (/^\s*\$\$\s*$/.test(t)) {
+        inMathBlock = false
+        const latex = mathBlockContent.join('\n')
+        deco.push({ from: line.from, to: line.to, value: hideMark })
+        deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new KatexWidget(latex, true), side: 1 }).range(line.to) })
+        deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-math-block-line' }) })
+        continue
+      }
+      mathBlockContent.push(t)
+      deco.push({ from: line.from, to: line.to, value: hideMark })
+      deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-math-block-line' }) })
       continue
     }
 
@@ -377,6 +412,17 @@ function inlineDeco(text: string, lf: number, on: boolean, deco: { from: number;
       const hashStart = m[0].startsWith(' ') ? m.index + 1 : m.index
       const f = lf + hashStart, t = lf + m.index + m[0].length
       deco.push({ from: f, to: t, value: Decoration.mark({ class: 'cm-tag' }) })
+    }
+  }
+
+  // 行内数学 $...$（排除 $$ 和货币用法）
+  const inlineMathRe = /(?<!\$)\$(?!\$)([^\s$](?:[^\$]*[^\s$])?)\$(?!\$)/g
+  while ((m = inlineMathRe.exec(text))) {
+    const f = lf + m.index, t = f + m[0].length
+    if (!on) {
+      deco.push({ from: f, to: t, value: Decoration.replace({ widget: new KatexWidget(m[1], false) }) })
+    } else {
+      deco.push({ from: f, to: t, value: Decoration.mark({ class: 'cm-math-inline-active' }) })
     }
   }
 }

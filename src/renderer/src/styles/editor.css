@@ -105,6 +105,37 @@
   background: rgba(76, 175, 80, 0.1);
 }
 
+/* === KaTeX 数学公式 === */
+.cm-katex-block {
+  margin: 8px 0;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.cm-katex-inline {
+  display: inline;
+  vertical-align: middle;
+}
+
+.cm-katex-error {
+  color: #e53935;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.cm-math-block-line {
+  min-height: 0 !important;
+}
+
+.cm-math-inline-active {
+  background: rgba(255, 152, 0, 0.15);
+  border-radius: 2px;
+  outline: 1px dashed rgba(255, 152, 0, 0.4);
+}
+
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
 /* === TOC 目录 Widget 样式 === */
