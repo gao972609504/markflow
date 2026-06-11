@@ -94,13 +94,15 @@
     "@codemirror/state": "^6.4.0",
     "@codemirror/view": "^6.33.0",
     "@markwhen/codemirror-tables": "^0.1.1",
-    "@rollup/rollup-linux-x64-gnu": "^4.61.1",
     "highlight.js": "^11.10.0",
-    "katex": "^0.16.11",
+    "katex": "^0.16.0",
     "markdown-it": "^14.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zustand": "^4.5.5"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.61.1"
   },
   "devDependencies": {
     "@types/katex": "^0.16.7",
