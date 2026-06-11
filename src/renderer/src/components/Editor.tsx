@@ -354,7 +354,7 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Mod-4', run: v => foldToLevel(v, 4) },
           { key: 'Mod-Shift-1', run: unfoldAll },
           { key: 'Mod-Shift-T', run: insertTable },
-          { key: 'Tab', run: expandSnippet },
+          { key: 'Tab', run: v => tableCellNav(v, true) || expandSnippet(v) },
           { key: 'Enter', run: v => autoContinueList(v) },
           { key: 'Backspace', run: renumberLists },
           { key: 'Delete', run: renumberLists },
@@ -981,5 +981,61 @@ function insertTable(view: EditorView): boolean {
   const table = '\n' + [header, sep, ...rows_str].join('\n') + '\n'
   const pos = view.state.selection.main.head
   view.dispatch({ changes: { from: pos, insert: table }, selection: { anchor: pos + table.length } })
+  return true
+}
+
+// ============ 表格单元格 Tab 导航 ============
+
+function tableCellNav(view: EditorView, forward: boolean): boolean {
+  const { head } = view.state.selection.main
+  const doc = view.state.doc
+  const lineNum = doc.lineAt(head).number
+  const line = doc.line(lineNum)
+  // 检查当前行是否是表格行
+  if (!/^\|/.test(line.text.trim())) return false
+  // 也要检查上下文是否是表格（至少有分隔行）
+  if (lineNum > 1 && !/^\|/.test(doc.line(lineNum - 1).text.trim()) && !/^\|/.test(doc.line(Math.min(lineNum + 1, doc.lines)).text.trim())) return false
+
+  const colOffset = head - line.from
+  const cells = line.text.split('|')
+  // 计算 pipe 位置
+  let pos = 0
+  let cellIdx = 0
+  for (let i = 0; i < cells.length; i++) {
+    pos += cells[i].length + 1 // +1 for |
+    if (pos > colOffset) { cellIdx = i; break }
+  }
+
+  if (forward) {
+    // 移动到下一个 cell 或下一行第一个 cell
+    if (cellIdx < cells.length - 2) {
+      const nextPipeIdx = cells.slice(0, cellIdx + 1).join('|').length + 1
+      const nextCellEnd = cells.slice(0, cellIdx + 2).join('|').length
+      view.dispatch({ selection: { anchor: line.from + nextPipeIdx, head: line.from + nextCellEnd } })
+    } else if (lineNum < doc.lines) {
+      const nextLine = doc.line(lineNum + 1)
+      if (/^\|/.test(nextLine.text.trim())) {
+        const firstPipe = nextLine.text.indexOf('|')
+        const secondPipe = nextLine.text.indexOf('|', firstPipe + 1)
+        if (secondPipe > firstPipe) {
+          view.dispatch({ selection: { anchor: nextLine.from + firstPipe + 1, head: nextLine.from + secondPipe } })
+        }
+      }
+    }
+  } else {
+    if (cellIdx > 1) {
+      const prevPipeIdx = cells.slice(0, cellIdx - 1).join('|').length + 1
+      const prevCellEnd = cells.slice(0, cellIdx).join('|').length
+      view.dispatch({ selection: { anchor: line.from + prevPipeIdx, head: line.from + prevCellEnd } })
+    } else if (lineNum > 1) {
+      const prevLine = doc.line(lineNum - 1)
+      if (/^\|/.test(prevLine.text.trim())) {
+        const prevCells = prevLine.text.split('|')
+        const lastStart = prevCells.slice(0, prevCells.length - 2).join('|').length + 1
+        const lastEnd = prevCells.slice(0, prevCells.length - 1).join('|').length
+        view.dispatch({ selection: { anchor: prevLine.from + lastStart, head: prevLine.from + lastEnd } })
+      }
+    }
+  }
   return true
 }
