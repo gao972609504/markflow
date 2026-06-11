@@ -34,6 +34,9 @@ export function createEditorTheme(isDark: boolean, fontSize: number = 15.5, font
 
   return EditorView.theme({
     '&': { backgroundColor: c.bg, color: c.text, height: '100%' },
+    '.cm-scroller': {
+      scrollBehavior: 'smooth',
+    },
     '.cm-content': {
       fontFamily: '"Segoe UI", "Noto Sans", system-ui, -apple-system, Helvetica, Arial, sans-serif',
       fontSize: `${fontSize}px`,
@@ -46,7 +49,11 @@ export function createEditorTheme(isDark: boolean, fontSize: number = 15.5, font
     '.cm-gutters': { backgroundColor: c.gutter, color: c.gutterColor, border: 'none', minWidth: '40px' },
     '.cm-activeLineGutter': { backgroundColor: c.activeGutterBg, color: c.activeGutterColor },
     '.cm-activeLine': { backgroundColor: 'transparent' },
-    '.cm-cursor': { borderLeftWidth: '2px', borderLeftColor: c.cursor },
+    '.cm-cursor': { borderLeftWidth: '2px', borderLeftColor: c.cursor, animation: 'cm-blink 1.2s step-end infinite' },
+    '@keyframes cm-blink': {
+      '0%, 100%': { borderLeftColor: c.cursor },
+      '50%': { borderLeftColor: 'transparent' }
+    },
     '.cm-selectionBackground': { backgroundColor: `${c.sel} !important` },
     '&.cm-focused .cm-selectionBackground': { backgroundColor: `${c.sel} !important` },
 
