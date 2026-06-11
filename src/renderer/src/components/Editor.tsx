@@ -354,6 +354,8 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Mod-4', run: v => foldToLevel(v, 4) },
           { key: 'Mod-Shift-1', run: unfoldAll },
           { key: 'Mod-Shift-T', run: insertTable },
+          { key: 'Mod-]', run: indentListItem },
+          { key: 'Mod-[', run: dedentListItem },
           { key: 'Tab', run: v => tableCellNav(v, true) || expandSnippet(v) },
           { key: 'Enter', run: v => autoContinueList(v) },
           { key: 'Backspace', run: renumberLists },
@@ -1037,5 +1039,37 @@ function tableCellNav(view: EditorView, forward: boolean): boolean {
       }
     }
   }
+  return true
+}
+
+// ============ 列表项缩进/反缩进 ============
+
+function indentListItem(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const line = view.state.doc.lineAt(head)
+  const listMatch = line.text.match(/^(\s*)([-*+]|\d+\.)\s/)
+  if (!listMatch) return false
+  const indent = listMatch[1]
+  const ts = useEditorStore.getState().tabSize
+  view.dispatch({
+    changes: { from: line.from, to: line.from + indent.length, insert: indent + ' '.repeat(ts) },
+    selection: { anchor: head + ts }
+  })
+  return true
+}
+
+function dedentListItem(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const line = view.state.doc.lineAt(head)
+  const listMatch = line.text.match(/^(\s+)([-*+]|\d+\.)\s/)
+  if (!listMatch) return false
+  const indent = listMatch[1]
+  const ts = useEditorStore.getState().tabSize
+  const removeCount = Math.min(ts, indent.length)
+  if (removeCount === 0) return false
+  view.dispatch({
+    changes: { from: line.from, to: line.from + removeCount, insert: '' },
+    selection: { anchor: head - removeCount }
+  })
   return true
 }
