@@ -446,6 +446,26 @@ export function Editor({ tab }: EditorProps) {
                   }
                 }
               }
+              // 检查是否在脚注引用 [^xxx] 内
+              const fnRefRe = /\[\^([^\]]+)\]/g
+              while ((m = fnRefRe.exec(text))) {
+                const start = m.index
+                const end = start + m[0].length
+                if (offset >= start && offset <= end) {
+                  event.preventDefault()
+                  const fnName = m[1]
+                  // 搜索脚注定义 [^xxx]:
+                  for (let li = 1; li <= view.state.doc.lines; li++) {
+                    const dl = view.state.doc.line(li)
+                    const defMatch = dl.text.match(new RegExp(`^\\[^${fnName}\\]:\\s`))
+                    if (defMatch) {
+                      view.dispatch({ selection: { anchor: dl.from }, effects: EditorView.scrollIntoView(dl.from) })
+                      return true
+                    }
+                  }
+                  return true
+                }
+              }
               // 添加额外光标
               event.preventDefault()
               const sel = view.state.selection
