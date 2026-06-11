@@ -7,7 +7,7 @@ interface StatusBarProps {
 }
 
 export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
-  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap } = useEditorStore()
+  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap, showLineNumbers, toggleLineNumbers } = useEditorStore()
 
   const lineCount = tab.content.split('\n').length
   const charCount = tab.content.length
@@ -91,6 +91,13 @@ export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
           title="自动换行"
         >
           ↩️ 换行
+        </button>
+        <button
+          className={`status-btn ${showLineNumbers ? 'status-btn-active' : ''}`}
+          onClick={toggleLineNumbers}
+          title="显示行号"
+        >
+          🔢 行号
         </button>
         <span className="status-item">UTF-8</span>
         <span className="status-item">Markdown</span>
