@@ -5,7 +5,7 @@
 import { EditorView, Decoration, DecorationSet } from '@codemirror/view'
 import { EditorState, RangeSet } from '@codemirror/state'
 import { useEditorStore } from '../store/editorStore'
-import { ImageWidget, CheckboxWidget } from './widgets'
+import { ImageWidget, CheckboxWidget, TocWidget } from './widgets'
 
 // ============ 装饰常量 ============
 
@@ -37,6 +37,13 @@ export function buildDecorations(view: EditorView): DecorationSet {
   const cursorLine = doc.lineAt(view.state.selection.main.head).number
   const focusMode = useEditorStore.getState().focusMode
 
+  // ── 收集所有标题（供 [TOC] 使用） ──
+  const headings: { level: number; text: string }[] = []
+  for (let i = 1; i <= doc.lines; i++) {
+    const hm = doc.line(i).text.match(/^(#{1,6})\s+(.+)$/)
+    if (hm) headings.push({ level: hm[1].length, text: hm[2].trim() })
+  }
+
   for (let i = 1; i <= doc.lines; i++) {
     const line = doc.line(i)
     const t = line.text
@@ -58,6 +65,14 @@ export function buildDecorations(view: EditorView): DecorationSet {
     }
     if (inCodeBlock) {
       deco.push({ from: line.from, to: line.from, value: codeLine })
+      continue
+    }
+
+    // ── [TOC] 目录标记 ──
+    if (/^\[TOC\]\s*$/i.test(t.trim())) {
+      deco.push({ from: line.from, to: line.to, value: hideMark })
+      deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new TocWidget(headings), side: 1 }).range(line.to) })
+      deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-toc-line' }) })
       continue
     }
 

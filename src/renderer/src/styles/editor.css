@@ -64,6 +64,59 @@
 
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
+/* === TOC 目录 Widget 样式 === */
+.cm-toc-line {
+  padding: 0 !important;
+}
+
+.cm-toc-widget {
+  margin: 12px 24px;
+  padding: 16px 20px;
+  background: var(--bg-secondary, #f6f8fa);
+  border: 1px solid var(--border-color, #d1d9e0);
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.cm-toc-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2328);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color, #d1d9e0);
+}
+
+.cm-toc-item {
+  padding: 3px 0;
+  font-size: 13px;
+  color: var(--accent-color, #0969da);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cm-toc-item:hover {
+  text-decoration: underline;
+}
+
+.cm-toc-level-1 { padding-left: 0; font-weight: 600; }
+.cm-toc-level-2 { padding-left: 16px; }
+.cm-toc-level-3 { padding-left: 32px; }
+.cm-toc-level-4 { padding-left: 48px; font-size: 12px; }
+.cm-toc-level-5 { padding-left: 64px; font-size: 12px; }
+.cm-toc-level-6 { padding-left: 80px; font-size: 12px; }
+
+.cm-toc-empty {
+  color: var(--text-muted, #8b949e);
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* === @markwhen/codemirror-tables 表格 Widget 样式 === */
+
 .cm-table-widget {
   margin: 8px 0;
   border-radius: 6px;

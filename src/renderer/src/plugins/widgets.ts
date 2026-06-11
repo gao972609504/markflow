@@ -20,6 +20,46 @@ export class ImageWidget extends WidgetType {
   eq(other: ImageWidget) { return this.src === other.src && this.alt === other.alt }
 }
 
+// ============ TOC 目录 Widget ============
+
+interface TocEntry {
+  level: number
+  text: string
+}
+
+export class TocWidget extends WidgetType {
+  constructor(readonly entries: TocEntry[]) { super() }
+  toDOM() {
+    const container = document.createElement('div')
+    container.className = 'cm-toc-widget'
+    const title = document.createElement('div')
+    title.className = 'cm-toc-title'
+    title.textContent = '目录'
+    container.appendChild(title)
+
+    for (const entry of this.entries) {
+      const item = document.createElement('div')
+      item.className = `cm-toc-item cm-toc-level-${entry.level}`
+      item.textContent = entry.text
+      container.appendChild(item)
+    }
+
+    if (this.entries.length === 0) {
+      const empty = document.createElement('div')
+      empty.className = 'cm-toc-empty'
+      empty.textContent = '暂无标题'
+      container.appendChild(empty)
+    }
+
+    return container
+  }
+  eq(other: TocWidget) {
+    if (this.entries.length !== other.entries.length) return false
+    return this.entries.every((e, i) => e.level === other.entries[i].level && e.text === other.entries[i].text)
+  }
+  ignoreEvent() { return false }
+}
+
 // ============ 复选框 Widget ============
 
 export class CheckboxWidget extends WidgetType {
