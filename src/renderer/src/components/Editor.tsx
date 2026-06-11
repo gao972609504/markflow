@@ -56,7 +56,7 @@ function createTypewriterPlugin() {
 export function Editor({ tab }: EditorProps) {
   const editorRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
-  const { updateTabContent, updateTabCursor, theme, focusMode, typewriterMode } = useEditorStore()
+  const { updateTabContent, updateTabCursor, setScrollProgress, theme, focusMode, typewriterMode } = useEditorStore()
   const isDark = theme === 'dark'
 
   useEffect(() => {
@@ -68,6 +68,11 @@ export function Editor({ tab }: EditorProps) {
         const head = update.state.selection.main.head
         const line = update.state.doc.lineAt(head)
         updateTabCursor(tab.id, line.number, head - line.from + 1)
+      }
+      if (update.geometryChanged || update.viewportChanged) {
+        const el = update.view.scrollDOM
+        const progress = el.scrollHeight <= el.clientHeight ? 0 : el.scrollTop / (el.scrollHeight - el.clientHeight) * 100
+        setScrollProgress(Math.min(100, Math.max(0, progress)))
       }
     })
 

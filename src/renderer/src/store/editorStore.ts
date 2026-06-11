@@ -33,6 +33,7 @@ interface EditorState {
   outlineVisible: boolean
   autoSave: boolean
   autoSaveDelay: number
+  scrollProgress: number
 
   createTab: (filePath?: string, content?: string) => string
   closeTab: (id: string) => void
@@ -51,6 +52,7 @@ interface EditorState {
   toggleTypewriterMode: () => void
   toggleOutline: () => void
   toggleAutoSave: () => void
+  setScrollProgress: (progress: number) => void
   getActiveTab: () => Tab | undefined
 }
 
@@ -81,6 +83,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   outlineVisible: false,
   autoSave: true,
   autoSaveDelay: 2000,
+  scrollProgress: 0,
 
   createTab: (filePath?: string, content?: string) => {
     const id = `tab-${++tabCounter}`
@@ -140,6 +143,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   toggleTypewriterMode: () => set(state => ({ typewriterMode: !state.typewriterMode })),
   toggleOutline: () => set(state => ({ outlineVisible: !state.outlineVisible })),
   toggleAutoSave: () => set(state => ({ autoSave: !state.autoSave })),
+  setScrollProgress: (progress: number) => set({ scrollProgress: progress }),
 
   getActiveTab: () => {
     const state = get()

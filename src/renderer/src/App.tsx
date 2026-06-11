@@ -35,7 +35,7 @@ declare global {
 }
 
 export default function App() {
-  const { theme, sidebarVisible, showFindReplace, activeTabId, tabs } = useEditorStore()
+  const { theme, sidebarVisible, showFindReplace, activeTabId, tabs, scrollProgress } = useEditorStore()
   const activeTab = tabs.find((t) => t.id === activeTabId)
   const [isDragging, setIsDragging] = useState(false)
   const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
@@ -230,6 +230,7 @@ export default function App() {
         {sidebarVisible && <FileTree />}
         <OutlinePanel />
         <div className="editor-panel">
+          {activeTab && <div className="reading-progress-bar" style={{ width: `${scrollProgress}%` }} />}
           <TabBar />
           {showFindReplace && <FindReplace />}
           {activeTab ? (
