@@ -114,6 +114,20 @@ export class CalloutWidget extends WidgetType {
   ignoreEvent() { return false }
 }
 
+// ============ 脚注引用 Widget ============
+
+export class FootnoteRefWidget extends WidgetType {
+  constructor(readonly id: string) { super() }
+  toDOM() {
+    const sup = document.createElement('sup')
+    sup.className = 'cm-footnote-ref'
+    sup.textContent = this.id
+    return sup
+  }
+  eq(other: FootnoteRefWidget) { return this.id === other.id }
+  ignoreEvent() { return false }
+}
+
 // ============ 复选框 Widget ============
 
 export class CheckboxWidget extends WidgetType {

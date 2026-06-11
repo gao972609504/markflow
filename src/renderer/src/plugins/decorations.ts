@@ -5,7 +5,7 @@
 import { EditorView, Decoration, DecorationSet } from '@codemirror/view'
 import { EditorState, RangeSet } from '@codemirror/state'
 import { useEditorStore } from '../store/editorStore'
-import { ImageWidget, CheckboxWidget, TocWidget, EmojiWidget, CalloutWidget } from './widgets'
+import { ImageWidget, CheckboxWidget, TocWidget, EmojiWidget, CalloutWidget, FootnoteRefWidget } from './widgets'
 import { emojiMap, emojiPattern } from '../utils/emoji'
 
 // ============ 装饰常量 ============
@@ -232,6 +232,27 @@ function inlineDeco(text: string, lf: number, on: boolean, deco: { from: number;
       if (!on) {
         deco.push({ from: f, to: t, value: Decoration.replace({ widget: new EmojiWidget(emoji) }) })
       }
+    }
+  }
+
+  // 脚注引用 [^id]
+  const fnRefRe = /\[\^([^\]]+)\]/g
+  while ((m = fnRefRe.exec(text))) {
+    const f = lf + m.index, t = f + m[0].length
+    if (!on) {
+      deco.push({ from: f, to: t, value: Decoration.replace({ widget: new FootnoteRefWidget(m[1]) }) })
+    } else {
+      deco.push({ from: f, to: t, value: Decoration.mark({ class: 'cm-footnote-ref-active' }) })
+    }
+  }
+
+  // 脚注定义 [^id]: text
+  const fnDefRe = /^\[\^([^\]]+)\]:\s+(.+)$/
+  const fnDef = t.match(fnDefRe)
+  if (fnDef) {
+    deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-footnote-def' }) })
+    if (!on) {
+      deco.push({ from: line.from, to: line.from + fnDef[0].indexOf(':') + 2, value: hideMark })
     }
   }
 }

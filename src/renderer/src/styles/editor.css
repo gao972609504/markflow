@@ -176,6 +176,29 @@
 .cm-callout-question { border-left-color: #00bcd4; background: rgba(0, 188, 212, 0.08); }
 .cm-callout-question .cm-callout-label { color: #00bcd4; }
 
+/* === 脚注 === */
+.cm-footnote-ref {
+  color: var(--accent-color);
+  font-size: 0.75em;
+  font-weight: 600;
+  cursor: pointer;
+  vertical-align: super;
+  line-height: 0;
+}
+
+.cm-footnote-ref-active {
+  color: var(--accent-color);
+  background: var(--active-bg);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.cm-footnote-def {
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
 .cm-table-widget {
