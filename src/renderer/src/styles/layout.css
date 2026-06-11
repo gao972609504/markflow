@@ -671,6 +671,45 @@
   align-items: center;
 }
 
+/* 面包屑导航 */
+.breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  padding: 2px 12px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+  color: var(--text-muted);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.breadcrumb-bar::-webkit-scrollbar {
+  height: 0;
+}
+
+.breadcrumb-item {
+  padding: 1px 4px;
+  border-radius: 3px;
+  cursor: default;
+  transition: color 0.15s;
+}
+
+.breadcrumb-item:hover {
+  color: var(--text-primary);
+  background: var(--hover-bg);
+}
+
+.breadcrumb-active {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.breadcrumb-sep {
+  margin: 0 2px;
+  opacity: 0.4;
+}
+
 .insert-toolbar {
   position: relative;
 }

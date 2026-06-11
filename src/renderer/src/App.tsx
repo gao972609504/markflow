@@ -348,6 +348,16 @@ export default function App() {
         <div className={`editor-panel${zenMode ? ' zen-mode' : ''}`}>
           {activeTab && !zenMode && <div className="reading-progress-bar" style={{ width: `${scrollProgress}%` }} />}
           {!zenMode && <TabBar />}
+          {activeTab && activeTab.filePath && !zenMode && (
+            <div className="breadcrumb-bar">
+              {activeTab.filePath.split(/[/\\]/).map((segment, idx, arr) => (
+                <React.Fragment key={idx}>
+                  {idx > 0 && <span className="breadcrumb-sep">/</span>}
+                  <span className={`breadcrumb-item${idx === arr.length - 1 ? ' breadcrumb-active' : ''}`}>{segment}</span>
+                </React.Fragment>
+              ))}
+            </div>
+          )}
           {!zenMode && <div className="editor-toolbar-row">
             <InsertToolbar />
           </div>}
