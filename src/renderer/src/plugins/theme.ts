@@ -61,6 +61,17 @@ export function createEditorTheme(isDark: boolean, fontSize: number = 15.5, font
       pointerEvents: 'none',
       zIndex: '1',
     },
+    // 多标尺线（40、120字符位置）
+    '.cm-content::before': {
+      content: '""',
+      position: 'absolute',
+      top: '0',
+      bottom: '0',
+      left: `calc(24px + 120ch + 24px)`,
+      borderLeft: `1px dotted ${isDark ? '#21262d' : '#e8eaed'}`,
+      pointerEvents: 'none',
+      zIndex: '1',
+    },
     '.cm-line': { padding: '3px 24px' },
     '.cm-paragraph-gap': { height: '8px' },
     '.cm-content[contenteditable="true"] .cm-line:only-child:empty::before': {
