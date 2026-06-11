@@ -262,6 +262,20 @@
   color: var(--text-secondary);
 }
 
+/* === 标签 #tag === */
+.cm-tag {
+  color: var(--accent-color);
+  background: rgba(9, 105, 218, 0.08);
+  border-radius: 3px;
+  padding: 0 3px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+[data-theme="dark"] .cm-tag {
+  background: rgba(88, 166, 255, 0.1);
+}
+
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
 .cm-table-widget {

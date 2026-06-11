@@ -320,9 +320,18 @@ function inlineDeco(text: string, lf: number, on: boolean, deco: { from: number;
       if (!m[2]) {
         deco.push({ from: t - 2, to: t, value: hideMark })
       } else {
-        // [[file|display]] — hide |display]] part except display text
         deco.push({ from: f + 2 + m[1].length, to: t, value: hideMark })
       }
+    }
+  }
+
+  // 标签 #tag（排除标题 # 开头的行）
+  if (!hm) {
+    const tagRe = /(?:^|\s)#([a-zA-Z一-鿿][\w一-鿿-]*)/g
+    while ((m = tagRe.exec(text))) {
+      const hashStart = m[0].startsWith(' ') ? m.index + 1 : m.index
+      const f = lf + hashStart, t = lf + m.index + m[0].length
+      deco.push({ from: f, to: t, value: Decoration.mark({ class: 'cm-tag' }) })
     }
   }
 }

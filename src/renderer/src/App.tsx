@@ -10,6 +10,7 @@ import { QuickOpen } from './components/QuickOpen'
 import { CommandPalette } from './components/CommandPalette'
 import { GoToLine } from './components/GoToLine'
 import { InsertToolbar } from './components/InsertToolbar'
+import { TagPanel } from './components/TagPanel'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -311,6 +312,7 @@ export default function App() {
       <div className="main-layout">
         {sidebarVisible && <FileTree />}
         <OutlinePanel />
+        <TagPanel />
         <div className="editor-panel">
           {activeTab && <div className="reading-progress-bar" style={{ width: `${scrollProgress}%` }} />}
           <TabBar />

@@ -38,6 +38,7 @@ interface EditorState {
   showCommandPalette: boolean
   showGoToLine: boolean
   headingNumbering: boolean
+  tagPanelVisible: boolean
   fontSize: number
 
   createTab: (filePath?: string, content?: string) => string
@@ -62,6 +63,7 @@ interface EditorState {
   setShowCommandPalette: (show: boolean) => void
   setShowGoToLine: (show: boolean) => void
   toggleHeadingNumbering: () => void
+  toggleTagPanel: () => void
   setFontSize: (size: number) => void
   resetFontSize: () => void
   saveSession: () => void
@@ -113,6 +115,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   showCommandPalette: false,
   showGoToLine: false,
   headingNumbering: false,
+  tagPanelVisible: false,
   fontSize: loadPersistedFontSize(),
   lastSession: null as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null } | null,
 
@@ -179,6 +182,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setShowCommandPalette: (show: boolean) => set({ showCommandPalette: show }),
   setShowGoToLine: (show: boolean) => set({ showGoToLine: show }),
   toggleHeadingNumbering: () => set(state => ({ headingNumbering: !state.headingNumbering })),
+  toggleTagPanel: () => set(state => ({ tagPanelVisible: !state.tagPanelVisible })),
   setFontSize: (size: number) => { persistFontSize(size); set({ fontSize: size }) },
   resetFontSize: () => { const defaultSize = 15.5; persistFontSize(defaultSize); set({ fontSize: defaultSize }) },
 

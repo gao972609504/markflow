@@ -7,7 +7,7 @@ interface StatusBarProps {
 }
 
 export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
-  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize, headingNumbering, toggleHeadingNumbering } = useEditorStore()
+  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel } = useEditorStore()
 
   const lineCount = tab.content.split('\n').length
   const charCount = tab.content.length
@@ -50,6 +50,13 @@ export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
           title="标题自动编号"
         >
           🔢 编号
+        </button>
+        <button
+          className={`status-btn ${tagPanelVisible ? 'status-btn-active' : ''}`}
+          onClick={toggleTagPanel}
+          title="标签面板"
+        >
+          🏷️ 标签
         </button>
         <button
           className={`status-btn ${outlineVisible ? 'status-btn-active' : ''}`}
