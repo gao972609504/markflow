@@ -476,6 +476,31 @@ export function Editor({ tab }: EditorProps) {
             }
             return false
           },
+          mousemove(event, view) {
+            const pos = view.posAtCoords({ x: event.clientX, y: event.clientY })
+            if (pos === null) return false
+            const line = view.state.doc.lineAt(pos)
+            const text = line.text
+            const offset = pos - line.from
+            // 检查链接
+            const linkRe = /[([^]]+)](([^)]+))/g
+            let m
+            document.querySelector('.cm-link-tooltip')?.remove()
+            while ((m = linkRe.exec(text))) {
+              if (offset >= m.index && offset <= m.index + m[0].length) {
+                const url = m[2]
+                const tip = document.createElement('div')
+                tip.className = 'cm-link-tooltip'
+                tip.textContent = url.length > 60 ? url.slice(0, 57) + '...' : url
+                tip.style.cssText = 'position:fixed;z-index:9999;padding:4px 8px;border-radius:4px;font-size:12px;max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none;background:#333;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.2)'
+                tip.style.left = event.clientX + 10 + 'px'
+                tip.style.top = event.clientY + 20 + 'px'
+                document.body.appendChild(tip)
+                return false
+              }
+            }
+            return false
+          },
           contextmenu(event, view) {
             event.preventDefault()
             document.querySelector('.cm-editor-ctx-menu')?.remove()
