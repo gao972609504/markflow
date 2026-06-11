@@ -437,6 +437,17 @@ function autoContinueList(view: EditorView): boolean {
   const line = view.state.doc.lineAt(head)
   const t = line.text
 
+  // 代码块自动闭合：输入 ``` 后按 Enter 自动添加闭合 ```
+  const fence = t.match(/^(\s*)```\s*(\w*)\s*$/)
+  if (fence && head >= line.from + fence[1].length + 3) {
+    const insert = `\n\n${fence[1]}\`\`\``
+    view.dispatch({
+      changes: { from: head, insert },
+      selection: { anchor: head + 1 }
+    })
+    return true
+  }
+
   const ul = t.match(/^(\s*)([-*+])\s(.*)$/)
   if (ul) {
     if (!ul[3].trim()) { view.dispatch({ changes: { from: line.from, to: line.to, insert: '' }, selection: { anchor: line.from } }); return true }
