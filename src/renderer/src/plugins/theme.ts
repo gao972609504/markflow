@@ -62,6 +62,7 @@ export function createEditorTheme(isDark: boolean, fontSize: number = 15.5, font
       zIndex: '1',
     },
     '.cm-line': { padding: '3px 24px' },
+    '.cm-paragraph-gap': { height: '8px' },
     '.cm-content[contenteditable="true"] .cm-line:only-child:empty::before': {
       content: '"开始写作吧… (Ctrl+N 新建文件)"',
       color: c.textMuted,

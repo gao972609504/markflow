@@ -115,6 +115,34 @@ function createSelectionHighlightPlugin() {
   )
 }
 
+// ============ 段落间距 ============
+
+const paragraphGap = Decoration.line({ class: 'cm-paragraph-gap' })
+
+function createParagraphGapPlugin() {
+  return ViewPlugin.fromClass(
+    class {
+      deco
+      constructor(view: EditorView) { this.deco = this.build(view) }
+      update(u: ViewUpdate) {
+        if (u.docChanged || u.viewportChanged) this.deco = this.build(u.view)
+      }
+      build(view: EditorView) {
+        const deco: { from: number; to: number; value: Decoration }[] = []
+        const doc = view.state.doc
+        for (let i = 1; i <= doc.lines; i++) {
+          const line = doc.line(i)
+          if (line.text.trim() === '' && i > 1 && doc.line(i - 1).text.trim() !== '' {
+            deco.push({ from: line.from, to: line.from, value: paragraphGap })
+          }
+        }
+        return deco.length ? Decoration.set(deco.map(d => d.value.range(d.from, d.to)), true) : Decoration.none
+      }
+    },
+    { decorations: v => v.deco }
+  )
+}
+
 // ============ 缩进参考线 ============
 
 function createIndentGuidesPlugin() {
@@ -459,6 +487,7 @@ export function Editor({ tab }: EditorProps) {
         }),
         createSelectionHighlightPlugin(),
         createIndentGuidesPlugin(),
+        createParagraphGapPlugin(),
         createLineDiffPlugin(tab.originalContent),
         createWysiwygPlugin(),
         createTypewriterPlugin(),
