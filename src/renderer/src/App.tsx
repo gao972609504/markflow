@@ -71,7 +71,7 @@ export default function App() {
     },
     {
       name: '技术文档', icon: '🔧',
-      content: `# 技术文档\n\n## 概述\n\n\n\n## 技术架构\n\n\n\n## API 接口\n\n### 接口名称\n\n**请求方式：** `GET`\n**路径：** `/api/endpoint`\n\n#### 参数\n\n| 参数 | 类型 | 必填 | 说明 |\n| --- | --- | --- | --- |\n|  |  |  |  |\n\n#### 返回值\n\n\`\`\`json\n{}\n\`\`\`\n\n## 注意事项\n\n> \n`
+      content: `# 技术文档\n\n## 概述\n\n\n\n## 技术架构\n\n\n\n## API 接口\n\n### 接口名称\n\n**请求方式：** \`GET\`\n**路径：** \`/api/endpoint\`\n\n#### 参数\n\n| 参数 | 类型 | 必填 | 说明 |\n| --- | --- | --- | --- |\n|  |  |  |  |\n\n#### 返回值\n\n\`\`\`json\n{}\n\`\`\`\n\n## 注意事项\n\n> \n`
     },
     {
       name: '读书笔记', icon: '📚',
@@ -294,9 +294,6 @@ export default function App() {
     return () => cleanups.forEach((fn) => fn())
   }, [])
 
-  // 键盘快捷键
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
 
   // 文件外部变更检测：窗口获得焦点时检查
   useEffect(() => {

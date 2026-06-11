@@ -132,7 +132,7 @@ function createParagraphGapPlugin() {
         const doc = view.state.doc
         for (let i = 1; i <= doc.lines; i++) {
           const line = doc.line(i)
-          if (line.text.trim() === '' && i > 1 && doc.line(i - 1).text.trim() !== '' {
+          if (line.text.trim() === '' && i > 1 && doc.line(i - 1).text.trim() !== '') {
             deco.push({ from: line.from, to: line.from, value: paragraphGap })
           }
         }
@@ -483,7 +483,7 @@ export function Editor({ tab }: EditorProps) {
             const text = line.text
             const offset = pos - line.from
             // 检查链接
-            const linkRe = /[([^]]+)](([^)]+))/g
+            const linkRe = /\[([^\]]+)\]\(([^)]+)\)/g
             let m
             document.querySelector('.cm-link-tooltip')?.remove()
             while ((m = linkRe.exec(text))) {
