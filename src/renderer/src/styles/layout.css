@@ -220,6 +220,16 @@
   color: var(--text-primary);
 }
 
+.tab-pinned {
+  min-width: 50px !important;
+  max-width: 140px !important;
+}
+
+.tab-pin-icon {
+  font-size: 10px;
+  margin-right: 2px;
+}
+
 /* 状态栏 */
 .status-bar {
   display: flex;

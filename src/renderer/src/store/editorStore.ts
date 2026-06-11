@@ -9,6 +9,7 @@ export interface Tab {
   isModified: boolean
   cursorLine: number
   cursorCol: number
+  pinned: boolean
 }
 
 export interface FileTreeNode {
@@ -78,6 +79,7 @@ interface EditorState {
   toggleZenMode: () => void
   setFontSize: (size: number) => void
   resetFontSize: () => void
+  toggleTabPin: (id: string) => void
   saveSession: () => void
   restoreSession: () => void
   getActiveTab: () => Tab | undefined
@@ -140,7 +142,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   createTab: (filePath?: string, content?: string) => {
     const id = `tab-${++tabCounter}`
     const title = filePath ? filePath.split(/[/\\]/).pop()! : '未命名'
-    const tab: Tab = { id, filePath: filePath || null, title, content: content || '', originalContent: content || '', isModified: false, cursorLine: 1, cursorCol: 1 }
+    const tab: Tab = { id, filePath: filePath || null, title, content: content || '', originalContent: content || '', isModified: false, cursorLine: 1, cursorCol: 1, pinned: false }
     set(state => ({ tabs: [...state.tabs, tab], activeTabId: id }))
     return id
   },
@@ -148,6 +150,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   closeTab: (id: string) => {
     set(state => {
       const tab = state.tabs.find(t => t.id === id)
+      if (tab?.pinned) return state // 不能关闭固定标签
       const newTabs = state.tabs.filter(t => t.id !== id)
       let newActiveId = state.activeTabId
       if (state.activeTabId === id) {
@@ -182,6 +185,10 @@ export const useEditorStore = create<EditorState>((set, get) => ({
 
   renameTab: (id: string, title: string) => {
     set(state => ({ tabs: state.tabs.map(t => t.id === id ? { ...t, title } : t) }))
+  },
+
+  toggleTabPin: (id: string) => {
+    set(state => ({ tabs: state.tabs.map(t => t.id === id ? { ...t, pinned: !t.pinned } : t) }))
   },
 
   setFileTree: (tree: FileTreeNode[], folderPath: string) => set({ fileTree: tree, folderPath }),

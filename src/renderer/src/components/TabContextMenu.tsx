@@ -72,6 +72,9 @@ export function useTabContextMenu() {
         </div>
       )}
       <div className="context-menu-divider" />
+      <div className="context-menu-item" onClick={() => { useEditorStore.getState().toggleTabPin(menu.tabId); hide() }}>
+        {useEditorStore.getState().tabs.find(t => t.id === menu.tabId)?.pinned ? '📍 取消固定' : '📌 固定标签'}
+      </div>
       <div className="context-menu-item" onClick={() => closeTab(menu.tabId)}>
         ✕ 关闭
       </div>

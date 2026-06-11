@@ -15,23 +15,26 @@ export function TabBar() {
           {tabs.map((tab, index) => (
             <div
               key={tab.id}
-              className={`tab-item ${tab.id === activeTabId ? 'active' : ''}`}
+              className={`tab-item ${tab.id === activeTabId ? 'active' : ''} ${tab.pinned ? 'tab-pinned' : ''}`}
               onClick={() => setActiveTab(tab.id)}
               onContextMenu={(e) => showContextMenu(e, tab.id, index, tab.filePath, tab.title)}
             >
               <span className="tab-title">
+                {tab.pinned && <span className="tab-pin-icon">📌</span>}
                 {tab.isModified && <span className="tab-modified">●</span>}
                 {tab.title}
               </span>
-              <button
-                className="tab-close"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  closeTab(tab.id)
-                }}
-              >
-                ×
-              </button>
+              {!tab.pinned && (
+                <button
+                  className="tab-close"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    closeTab(tab.id)
+                  }}
+                >
+                  ×
+                </button>
+              )}
             </div>
           ))}
         </div>
