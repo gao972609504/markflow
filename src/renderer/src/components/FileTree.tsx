@@ -388,6 +388,10 @@ export function FileTree() {
               <div className="context-menu-item" onClick={() => startRename(ctxMenu.node!)}>
                 <span>✏️</span> 重命名
               </div>
+              <div className="context-menu-item" onClick={() => useEditorStore.getState().toggleFavorite(ctxMenu.node!.path)}>
+                <span>{useEditorStore.getState().isFavorite(ctxMenu.node!.path) ? '⭐' : '☆'}</span>
+                {useEditorStore.getState().isFavorite(ctxMenu.node!.path) ? '取消收藏' : '收藏'}
+              </div>
               <div className="context-menu-item" onClick={() => handleDelete(ctxMenu.node!)}>
                 <span>🗑️</span> 删除
               </div>

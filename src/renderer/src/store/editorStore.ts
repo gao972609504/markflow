@@ -53,6 +53,9 @@ interface EditorState {
   fontFamily: string
   tabSize: number
   bookmarks: Record<string, { line: number; label: string }[]> // tabId -> bookmarks
+  favoriteFiles: string[]
+  toggleFavorite: (filePath: string) => void
+  isFavorite: (filePath: string) => boolean
 
   createTab: (filePath?: string, content?: string) => string  closeTab: (id: string) => void
   setActiveTab: (id: string) => void
@@ -179,6 +182,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   tabSize: 2,
   wordGoal: 0,
   bookmarks: {},
+  favoriteFiles: JSON.parse(localStorage.getItem('markflow-favorites') || '[]'),
   lastSession: null as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null; cursorPositions?: Record<string, { line: number; col: number }> } | null,
 
   createTab: (filePath?: string, content?: string) => {
@@ -293,6 +297,14 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     bookmarks: { ...state.bookmarks, [tabId]: (state.bookmarks[tabId] || []).filter(b => b.line !== line) }
   })),
   getBookmarks: (tabId: string) => get().bookmarks[tabId] || [],
+  toggleFavorite: (filePath: string) => set(state => {
+    const favs = state.favoriteFiles.includes(filePath)
+      ? state.favoriteFiles.filter(f => f !== filePath)
+      : [...state.favoriteFiles, filePath]
+    try { localStorage.setItem('markflow-favorites', JSON.stringify(favs)) } catch { /* noop */ }
+    return { favoriteFiles: favs }
+  }),
+  isFavorite: (filePath: string) => get().favoriteFiles.includes(filePath),
 
   saveSession: () => {
     const state = get()
