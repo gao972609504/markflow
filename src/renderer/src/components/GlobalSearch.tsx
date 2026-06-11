@@ -10,10 +10,6 @@ export function GlobalSearch() {
   const doSearch = useCallback(async () => {
     if (!query.trim() || !folderPath || !window.api) return
     setSearching(true)
-    try {
-      const content = await window.api.readFile(folderPath + '/.markflow-search')
-      // Fallback: search through open tabs
-    } catch { /* ignore */ }
     // Search through open tabs
     const store = useEditorStore.getState()
     const allResults: { filePath: string; line: number; text: string }[] = []
@@ -68,7 +64,7 @@ export function GlobalSearch() {
         {results.length > 0 && (
           <div style={{ maxHeight: '300px', overflow: 'auto' }}>
             {results.map((r, i) => (
-              <div key={i} className="recent-file-item" style={{ padding: '6px 8px', cursor: 'pointer' }}
+              <div key={`${r.filePath}:${r.line}`} className="recent-file-item" style={{ padding: '6px 8px', cursor: 'pointer' }}
                 onClick={() => openResult(r.filePath, r.line)}>
                 <span style={{ color: 'var(--text-muted, #666)', fontSize: '12px' }}>
                   {r.filePath.split(/[/\\]/).pop()}:L{r.line}

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { useEditorStore } from '../store/editorStore'
+import { getEditorView } from '../plugins/widgets'
 
 export function FindReplace() {
   const [findText, setFindText] = useState('')
@@ -45,7 +46,7 @@ export function FindReplace() {
     if (!findText || !activeTab) return
     const editorEl = document.querySelector('.cm-editor')
     if (!editorEl) return
-    const view = (editorEl as any).cmView?.view
+    const view = getEditorView(editorEl as HTMLElement)
     if (!view) return
 
     try {

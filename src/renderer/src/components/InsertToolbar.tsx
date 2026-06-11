@@ -3,6 +3,7 @@
  * — 提供常用 Markdown 元素的快速插入按钮
  */
 import React, { useState, useRef, useEffect } from 'react'
+import { getEditorView } from '../plugins/widgets'
 
 interface Snippet {
   label: string
@@ -46,7 +47,7 @@ export function InsertToolbar() {
   const insertSnippet = (snippet: Snippet) => {
     const editorEl = document.querySelector('.cm-editor')
     if (!editorEl) return
-    const view = (editorEl as any).cmView?.view
+    const view = getEditorView(editorEl as HTMLElement)
     if (!view) return
 
     const { head } = view.state.selection.main

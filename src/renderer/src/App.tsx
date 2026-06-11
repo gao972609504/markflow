@@ -239,7 +239,7 @@ export default function App() {
           window.api.saveFileAs(tab.content).then((newPath) => {
             if (newPath) {
               store.markTabSaved(tab.id)
-              store.renameTab(tab.id, newPath.split(/[/\\]/).pop()!)
+              store.updateTabFilePath(tab.id, newPath)
             }
           }).catch((err) => {
             console.error('另存为失败:', err)
@@ -370,8 +370,8 @@ export default function App() {
         e.preventDefault()
         useEditorStore.getState().setShowGoToLine(true)
       }
-      // Ctrl+Shift+S 文档统计
-      if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+      // Ctrl+Shift+D 文档统计
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
         e.preventDefault()
         useEditorStore.getState().setShowDocStats(true)
       }

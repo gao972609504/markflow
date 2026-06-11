@@ -51,3 +51,7 @@ test-*.js
 
 # Coverage
 coverage/
+
+# Local Claude config (personal agent instructions, not for repo)
+CLAUDE.md
+.claude/

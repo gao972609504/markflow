@@ -4,6 +4,7 @@
  */
 import React, { useState, useRef, useEffect } from 'react'
 import { useEditorStore } from '../store/editorStore'
+import { getEditorView } from '../plugins/widgets'
 
 export function GoToLine() {
   const { showGoToLine, setShowGoToLine } = useEditorStore()
@@ -19,7 +20,7 @@ export function GoToLine() {
     if (isNaN(num) || num < 1) return
     const editorEl = document.querySelector('.cm-editor')
     if (!editorEl) return
-    const view = (editorEl as any).cmView?.view
+    const view = getEditorView(editorEl as HTMLElement)
     if (!view) return
     const targetLine = Math.min(num, view.state.doc.lines)
     const lineInfo = view.state.doc.line(targetLine)

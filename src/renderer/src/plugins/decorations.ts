@@ -135,7 +135,7 @@ export function buildDecorations(view: EditorView): DecorationSet {
         const codeContent = codeBlockContentLines.join('\n')
         deco.push({
           from: codeBlockStartFrom, to: codeBlockStartFrom,
-          value: Decoration.widget({ widget: new CodeBlockHeaderWidget(codeBlockLang, codeContent), side: -1 }).range(codeBlockStartFrom)
+          value: Decoration.widget({ widget: new CodeBlockHeaderWidget(codeBlockLang, codeContent), side: -1 })
         })
       }
       continue
@@ -153,7 +153,7 @@ export function buildDecorations(view: EditorView): DecorationSet {
       const singleLine = t.match(/^\s*\$\$\s+(.+?)\s+\$\$\s*$/)
       if (singleLine) {
         deco.push({ from: line.from, to: line.to, value: hideMark })
-        deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new KatexWidget(singleLine[1], true), side: 1 }).range(line.to) })
+        deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new KatexWidget(singleLine[1], true), side: 1 }) })
         deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-math-block-line' }) })
         continue
       }
@@ -169,7 +169,7 @@ export function buildDecorations(view: EditorView): DecorationSet {
         inMathBlock = false
         const latex = mathBlockContent.join('\n')
         deco.push({ from: line.from, to: line.to, value: hideMark })
-        deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new KatexWidget(latex, true), side: 1 }).range(line.to) })
+        deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new KatexWidget(latex, true), side: 1 }) })
         deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-math-block-line' }) })
         continue
       }
@@ -185,7 +185,7 @@ export function buildDecorations(view: EditorView): DecorationSet {
         // 结束 callout
         const content = calloutContent.join('\n')
         deco.push({ from: calloutStartFrom, to: line.to, value: hideMark })
-        deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new CalloutWidget(calloutType, content), side: 1 }).range(line.to) })
+        deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new CalloutWidget(calloutType, content), side: 1 }) })
         deco.push({ from: calloutStartFrom, to: calloutStartFrom, value: Decoration.line({ class: 'cm-callout-line' }) })
         inCallout = false
         calloutContent = []
@@ -208,7 +208,7 @@ export function buildDecorations(view: EditorView): DecorationSet {
     // ── [TOC] 目录标记 ──
     if (/^\[TOC\]\s*$/i.test(t.trim())) {
       deco.push({ from: line.from, to: line.to, value: hideMark })
-      deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new TocWidget(headings.map(h => ({ level: h.level, text: h.text }))), side: 1 }).range(line.to) })
+      deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new TocWidget(headings.map(h => ({ level: h.level, text: h.text }))), side: 1 }) })
       deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-toc-line' }) })
       continue
     }
@@ -265,7 +265,7 @@ export function buildDecorations(view: EditorView): DecorationSet {
     if (tk) {
       const cs = line.from + tk[1].length
       const checked = tk[2] !== ' '
-      deco.push({ from: cs, to: cs + 3, value: Decoration.widget({ widget: new CheckboxWidget(checked, line.from), side: -1 }).range(cs) })
+      deco.push({ from: cs, to: cs + 3, value: Decoration.widget({ widget: new CheckboxWidget(checked, line.from), side: -1 }) })
       if (!on) {
         deco.push({ from: cs, to: cs + 3, value: hideMark })
         if (checked) deco.push({ from: cs, to: line.to, value: taskChecked })
@@ -366,7 +366,7 @@ function inlineDeco(text: string, lf: number, on: boolean, deco: { from: number;
     const alt = m[1], src = m[2]
     if (!on) {
       deco.push({ from: f, to: t, value: hideMark })
-      deco.push({ from: t, to: t, value: Decoration.widget({ widget: new ImageWidget(src, alt), side: 1 }).range(t) })
+      deco.push({ from: t, to: t, value: Decoration.widget({ widget: new ImageWidget(src, alt), side: 1 }) })
     }
   }
 
@@ -403,11 +403,11 @@ function inlineDeco(text: string, lf: number, on: boolean, deco: { from: number;
 
   // 脚注定义 [^id]: text
   const fnDefRe = /^\[\^([^\]]+)\]:\s+(.+)$/
-  const fnDef = t.match(fnDefRe)
+  const fnDef = text.match(fnDefRe)
   if (fnDef) {
-    deco.push({ from: line.from, to: line.from, value: Decoration.line({ class: 'cm-footnote-def' }) })
+    deco.push({ from: lf, to: lf, value: Decoration.line({ class: 'cm-footnote-def' }) })
     if (!on) {
-      deco.push({ from: line.from, to: line.from + fnDef[0].indexOf(':') + 2, value: hideMark })
+      deco.push({ from: lf, to: lf + fnDef[0].indexOf(':') + 2, value: hideMark })
     }
   }
 
@@ -428,7 +428,7 @@ function inlineDeco(text: string, lf: number, on: boolean, deco: { from: number;
   }
 
   // 标签 #tag（排除标题 # 开头的行）
-  if (!hm) {
+  if (!/^(#{1,6})\s/.test(text)) {
     const tagRe = /(?:^|\s)#([a-zA-Z一-鿿][\w一-鿿-]*)/g
     while ((m = tagRe.exec(text))) {
       const hashStart = m[0].startsWith(' ') ? m.index + 1 : m.index

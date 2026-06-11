@@ -250,5 +250,7 @@ export class KatexWidget extends WidgetType {
 
 /** 从 DOM 元素向上查找最近的 EditorView */
 export function getEditorView(el: HTMLElement): EditorView | undefined {
-  return el.closest('.cm-editor')?.cmView?.view as EditorView | undefined
+  const editorEl = el.closest('.cm-editor')
+  if (!editorEl) return undefined
+  return (editorEl as any).cmView?.view as EditorView | undefined
 }

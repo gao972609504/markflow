@@ -55,6 +55,7 @@ interface EditorState {
   tabSize: number
   bookmarks: Record<string, { line: number; label: string }[]> // tabId -> bookmarks
   favoriteFiles: string[]
+  lastSession: { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null; cursorPositions?: Record<string, { line: number; col: number }> } | null
   toggleFavorite: (filePath: string) => void
   isFavorite: (filePath: string) => boolean
 
@@ -65,6 +66,7 @@ interface EditorState {
   updateTabCursor: (id: string, line: number, col: number) => void
   markTabSaved: (id: string) => void
   renameTab: (id: string, title: string) => void
+  updateTabFilePath: (id: string, filePath: string) => void
   setFileTree: (tree: FileTreeNode[], folderPath: string) => void
   toggleSidebar: () => void
   setTheme: (theme: Theme) => void
@@ -187,7 +189,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   wordGoal: 0,
   bookmarks: {},
   favoriteFiles: JSON.parse(localStorage.getItem('markflow-favorites') || '[]'),
-  lastSession: null as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null; cursorPositions?: Record<string, { line: number; col: number }> } | null,
+  lastSession: null,
 
   createTab: (filePath?: string, content?: string) => {
     const id = `tab-${++tabCounter}`
@@ -248,6 +250,12 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     set(state => ({ tabs: state.tabs.map(t => t.id === id ? { ...t, title } : t) }))
   },
 
+  updateTabFilePath: (id: string, filePath: string) => {
+    set(state => ({
+      tabs: state.tabs.map(t => t.id === id ? { ...t, filePath, title: filePath.split(/[/\\]/).pop() || t.title } : t)
+    }))
+  },
+
   toggleTabPin: (id: string) => {
     set(state => ({ tabs: state.tabs.map(t => t.id === id ? { ...t, pinned: !t.pinned } : t) }))
   },
@@ -283,7 +291,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       if (state.closedTabsHistory.length === 0) return state
       const [last, ...rest] = state.closedTabsHistory
       const id = `tab-${++tabCounter}`
-      const tab: Tab = { id, filePath: last.filePath, title: last.title, content: last.content, originalContent: last.content, isModified: false, cursorLine: 1, cursorCol: 1 }
+      const tab: Tab = { id, filePath: last.filePath, title: last.title, content: last.content, originalContent: last.content, isModified: false, cursorLine: 1, cursorCol: 1, pinned: false }
       return { tabs: [...state.tabs, tab], activeTabId: id, closedTabsHistory: rest }
     })
   },

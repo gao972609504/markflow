@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron'
 
 export interface FileTreeNode {
   name: string
@@ -73,7 +73,7 @@ const api = {
     return () => ipcRenderer.removeListener('menu:save-as', callback)
   },
   onMenuExport: (callback: (format: string) => void) => {
-    const handler = (_event: any, format: string) => callback(format)
+    const handler = (_event: IpcRendererEvent, format: string) => callback(format)
     ipcRenderer.on('menu:export', handler)
     return () => ipcRenderer.removeListener('menu:export', handler)
   },
@@ -98,12 +98,12 @@ const api = {
     return () => ipcRenderer.removeListener('menu:find-replace', callback)
   },
   onFileOpened: (callback: (data: { filePath: string; content: string }) => void) => {
-    const handler = (_event: any, data: { filePath: string; content: string }) => callback(data)
+    const handler = (_event: IpcRendererEvent, data: { filePath: string; content: string }) => callback(data)
     ipcRenderer.on('file:opened', handler)
     return () => ipcRenderer.removeListener('file:opened', handler)
   },
   onFolderOpened: (callback: (data: { folderPath: string; tree: FileTreeNode[] }) => void) => {
-    const handler = (_event: any, data: { folderPath: string; tree: FileTreeNode[] }) => callback(data)
+    const handler = (_event: IpcRendererEvent, data: { folderPath: string; tree: FileTreeNode[] }) => callback(data)
     ipcRenderer.on('folder:opened', handler)
     return () => ipcRenderer.removeListener('folder:opened', handler)
   }

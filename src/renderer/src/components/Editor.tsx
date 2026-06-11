@@ -3,8 +3,8 @@
  * 模块化架构：widgets / decorations / theme 拆分为独立插件
  */
 import React, { useEffect, useRef } from 'react'
-import { EditorView, keymap, lineNumbers, highlightActiveLineGutter, Decoration, ViewPlugin, ViewUpdate } from '@codemirror/view'
-import { EditorState } from '@codemirror/state'
+import { EditorView, keymap, lineNumbers, highlightActiveLineGutter, Decoration, DecorationSet, ViewPlugin, ViewUpdate } from '@codemirror/view'
+import { EditorState, EditorSelection, StateEffect } from '@codemirror/state'
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands'
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { languages } from '@codemirror/language-data'
@@ -73,8 +73,7 @@ async function navigateToWikiLink(target: string) {
       } catch { /* file not found, try next */ }
     }
   }
-  // 文件未找到，创建新标签页并提示
-  console.log(`Wiki 链接目标未找到: ${target}`)
+  // 文件未找到，不做任何操作
 }
 
 // ============ 选中文字高亮所有匹配项 ============
@@ -351,8 +350,8 @@ export function Editor({ tab }: EditorProps) {
     const state = EditorState.create({
       doc: tab.content,
       selection: { anchor: 0 },
-      tabSize,
       extensions: [
+        EditorState.tabSize.of(tabSize),
         EditorState.allowMultipleSelections.of(true),
         ...(showLineNumbers ? [lineNumbers(), highlightActiveLineGutter()] : []),
         history(),
@@ -476,35 +475,41 @@ export function Editor({ tab }: EditorProps) {
               // 添加额外光标
               event.preventDefault()
               const sel = view.state.selection
-              const newRanges = [...sel.ranges, sel.constructor.range(pos, pos)]
-              view.dispatch({ selection: sel.constructor.create(newRanges) })
+              const newRanges = [...sel.ranges, EditorSelection.range(pos, pos)]
+              view.dispatch({ selection: EditorSelection.create(newRanges) })
               return true
             }
             return false
           },
           mousemove(event, view) {
             const pos = view.posAtCoords({ x: event.clientX, y: event.clientY })
-            if (pos === null) return false
+            if (pos === null) { document.querySelector('.cm-link-tooltip')?.remove(); return false }
             const line = view.state.doc.lineAt(pos)
             const text = line.text
             const offset = pos - line.from
             // 检查链接
             const linkRe = /\[([^\]]+)\]\(([^)]+)\)/g
             let m
-            document.querySelector('.cm-link-tooltip')?.remove()
+            let found = false
             while ((m = linkRe.exec(text))) {
               if (offset >= m.index && offset <= m.index + m[0].length) {
                 const url = m[2]
-                const tip = document.createElement('div')
-                tip.className = 'cm-link-tooltip'
-                tip.textContent = url.length > 60 ? url.slice(0, 57) + '...' : url
-                tip.style.cssText = `position:fixed;z-index:9999;padding:4px 8px;border-radius:4px;font-size:12px;max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none;background:var(--bg-tertiary);color:var(--text-primary);box-shadow:var(--shadow)`
+                const display = url.length > 60 ? url.slice(0, 57) + '...' : url
+                let tip = document.querySelector('.cm-link-tooltip') as HTMLElement | null
+                if (!tip) {
+                  tip = document.createElement('div')
+                  tip.className = 'cm-link-tooltip'
+                  tip.style.cssText = 'position:fixed;z-index:9999;padding:4px 8px;border-radius:4px;font-size:12px;max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none;background:var(--bg-tertiary);color:var(--text-primary);box-shadow:var(--shadow)'
+                  document.body.appendChild(tip)
+                }
+                tip.textContent = display
                 tip.style.left = event.clientX + 10 + 'px'
                 tip.style.top = event.clientY + 20 + 'px'
-                document.body.appendChild(tip)
-                return false
+                found = true
+                break
               }
             }
+            if (!found) document.querySelector('.cm-link-tooltip')?.remove()
             return false
           },
           contextmenu(event, view) {
@@ -804,12 +809,12 @@ function addCursorAbove(view: EditorView): boolean {
     if (line.number > 1) {
       const prevLine = view.state.doc.line(line.number - 1)
       const pos = Math.min(range.head - line.from, prevLine.length) + prevLine.from
-      newRanges.push(view.state.selection.constructor.range(pos, pos))
+      newRanges.push(EditorSelection.range(pos, pos))
     }
     newRanges.push(range)
   }
   if (newRanges.length === ranges.length) return false
-  view.dispatch({ selection: view.state.selection.constructor.create(newRanges) })
+  view.dispatch({ selection: EditorSelection.create(newRanges) })
   return true
 }
 
@@ -823,11 +828,11 @@ function addCursorBelow(view: EditorView): boolean {
     if (line.number < view.state.doc.lines) {
       const nextLine = view.state.doc.line(line.number + 1)
       const pos = Math.min(range.head - line.from, nextLine.length) + nextLine.from
-      newRanges.push(view.state.selection.constructor.range(pos, pos))
+      newRanges.push(EditorSelection.range(pos, pos))
     }
   }
   if (newRanges.length === ranges.length) return false
-  view.dispatch({ selection: view.state.selection.constructor.create(newRanges) })
+  view.dispatch({ selection: EditorSelection.create(newRanges) })
   return true
 }
 
@@ -1017,7 +1022,7 @@ function prevBookmark(view: EditorView): boolean {
 // ============ 折叠到级别 ============
 
 function foldToLevel(view: EditorView, level: number): boolean {
-  const effects: any[] = []
+  const effects: StateEffect<unknown>[] = []
   const doc = view.state.doc
   for (let i = 1; i <= doc.lines; i++) {
     const line = doc.line(i)
@@ -1042,7 +1047,7 @@ function foldToLevel(view: EditorView, level: number): boolean {
 }
 
 function unfoldAll(view: EditorView): boolean {
-  const effects: any[] = []
+  const effects: StateEffect<unknown>[] = []
   const folded = foldedRanges(view.state)
   folded.between(0, view.state.doc.length, (from: number, to: number) => {
     effects.push(unfoldEffect.of({ from, to }))
@@ -1203,7 +1208,7 @@ function uniqueSelectedLines(view: EditorView): boolean {
   const text = view.state.sliceDoc(from, to)
   const lines = text.split('\n')
   if (lines.length <= 1) return false
-  const unique = [...new Set(lines)]
+  const unique = Array.from(new Set(lines))
   if (unique.length === lines.length) return false
   view.dispatch({ changes: { from, to, insert: unique.join('\n') }, selection: { anchor: from, head: from + unique.join('\n').length } })
   return true

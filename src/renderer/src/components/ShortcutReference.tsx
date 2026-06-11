@@ -16,7 +16,7 @@ const shortcuts: Shortcut[] = [
   { keys: 'Ctrl+N', action: '新建文件', category: '文件' },
   { keys: 'Ctrl+O', action: '打开文件', category: '文件' },
   { keys: 'Ctrl+S', action: '保存文件', category: '文件' },
-  { keys: 'Ctrl+Shift+S', action: '文档统计', category: '文件' },
+  { keys: 'Ctrl+Shift+S', action: '另存为', category: '文件' },
   // 编辑
   { keys: 'Ctrl+Z', action: '撤销', category: '编辑' },
   { keys: 'Ctrl+Shift+Z', action: '重做', category: '编辑' },
@@ -53,9 +53,9 @@ const shortcuts: Shortcut[] = [
   { keys: 'F9', action: '插入文档目录', category: '编辑' },
   { keys: 'Ctrl+Alt+↑', action: '在上方添加光标', category: '编辑' },
   { keys: 'Ctrl+Alt+↓', action: '在下方添加光标', category: '编辑' },
-  { keys: 'Ctrl+Shift+T', action: '快速插入表格', category: '格式' },
-  { keys: 'Ctrl+Shift+H', action: '全局搜索', category: '导航' },
   { keys: 'Ctrl+Shift+T', action: '重新打开已关闭标签', category: '文件' },
+  { keys: 'Ctrl+Shift+D', action: '文档统计', category: '文件' },
+  { keys: 'Ctrl+Shift+H', action: '全局搜索', category: '导航' },
   // 导航
   { keys: 'Ctrl+P', action: '快速打开文件', category: '导航' },
   { keys: 'Ctrl+Shift+P', action: '命令面板', category: '导航' },

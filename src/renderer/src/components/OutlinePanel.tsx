@@ -4,6 +4,7 @@
  */
 import React, { useMemo } from 'react'
 import { useEditorStore } from '../store/editorStore'
+import { getEditorView } from '../plugins/widgets'
 
 interface HeadingItem {
   level: number
@@ -54,13 +55,10 @@ export function OutlinePanel() {
     // 通过 DOM 查找 CodeMirror 编辑器并滚动到指定行
     const editorEl = document.querySelector('.cm-editor')
     if (!editorEl) return
-    const view = (editorEl as any).cmView?.view
+    const view = getEditorView(editorEl as HTMLElement)
     if (!view) return
     const lineInfo = view.state.doc.line(line + 1) // line is 0-indexed, doc.line is 1-indexed
     view.dispatch({
-      effects: view.state.field('editorScrollIntoView' as any) !== undefined
-        ? undefined
-        : undefined,
       selection: { anchor: lineInfo.from },
       scrollIntoView: true
     })
