@@ -74,6 +74,46 @@ export class EmojiWidget extends WidgetType {
   ignoreEvent() { return false }
 }
 
+// ============ Admonition/Callout Widget ============
+
+const calloutConfig: Record<string, { icon: string; label: string; className: string }> = {
+  'tip': { icon: '💡', label: '提示', className: 'cm-callout-tip' },
+  'info': { icon: 'ℹ️', label: '信息', className: 'cm-callout-info' },
+  'warning': { icon: '⚠️', label: '警告', className: 'cm-callout-warning' },
+  'danger': { icon: '🔴', label: '危险', className: 'cm-callout-danger' },
+  'note': { icon: '📝', label: '笔记', className: 'cm-callout-note' },
+  'quote': { icon: '💬', label: '引用', className: 'cm-callout-quote' },
+  'success': { icon: '✅', label: '成功', className: 'cm-callout-success' },
+  'bug': { icon: '🐛', label: 'Bug', className: 'cm-callout-bug' },
+  'example': { icon: '📋', label: '示例', className: 'cm-callout-example' },
+  'question': { icon: '❓', label: '问题', className: 'cm-callout-question' },
+}
+
+export class CalloutWidget extends WidgetType {
+  constructor(readonly type: string, readonly content: string) { super() }
+  toDOM() {
+    const config = calloutConfig[this.type] || calloutConfig['note']
+    const box = document.createElement('div')
+    box.className = `cm-callout-widget ${config.className}`
+
+    const header = document.createElement('div')
+    header.className = 'cm-callout-header'
+    header.innerHTML = `<span class="cm-callout-icon">${config.icon}</span> <span class="cm-callout-label">${config.label}</span>`
+    box.appendChild(header)
+
+    if (this.content.trim()) {
+      const body = document.createElement('div')
+      body.className = 'cm-callout-body'
+      body.textContent = this.content
+      box.appendChild(body)
+    }
+
+    return box
+  }
+  eq(other: CalloutWidget) { return this.type === other.type && this.content === other.content }
+  ignoreEvent() { return false }
+}
+
 // ============ 复选框 Widget ============
 
 export class CheckboxWidget extends WidgetType {

@@ -5,7 +5,7 @@
 import { EditorView, Decoration, DecorationSet } from '@codemirror/view'
 import { EditorState, RangeSet } from '@codemirror/state'
 import { useEditorStore } from '../store/editorStore'
-import { ImageWidget, CheckboxWidget, TocWidget, EmojiWidget } from './widgets'
+import { ImageWidget, CheckboxWidget, TocWidget, EmojiWidget, CalloutWidget } from './widgets'
 import { emojiMap, emojiPattern } from '../utils/emoji'
 
 // ============ 装饰常量 ============
@@ -34,6 +34,10 @@ export function buildDecorations(view: EditorView): DecorationSet {
   const deco: { from: number; to: number; value: Decoration }[] = []
   const doc = view.state.doc
   let inCodeBlock = false
+  let inCallout = false
+  let calloutType = ''
+  let calloutContent: string[] = []
+  let calloutStartFrom = 0
 
   const cursorLine = doc.lineAt(view.state.selection.main.head).number
   const focusMode = useEditorStore.getState().focusMode
@@ -66,6 +70,32 @@ export function buildDecorations(view: EditorView): DecorationSet {
     }
     if (inCodeBlock) {
       deco.push({ from: line.from, to: line.from, value: codeLine })
+      continue
+    }
+
+    // ── Admonition/Callout 块 ──
+    if (inCallout) {
+      if (/^:::\s*$/.test(t.trim())) {
+        // 结束 callout
+        const content = calloutContent.join('\n')
+        deco.push({ from: calloutStartFrom, to: line.to, value: hideMark })
+        deco.push({ from: line.to, to: line.to, value: Decoration.widget({ widget: new CalloutWidget(calloutType, content), side: 1 }).range(line.to) })
+        deco.push({ from: calloutStartFrom, to: calloutStartFrom, value: Decoration.line({ class: 'cm-callout-line' }) })
+        inCallout = false
+        calloutContent = []
+      } else {
+        calloutContent.push(t)
+        deco.push({ from: line.from, to: line.to, value: hideMark })
+      }
+      continue
+    }
+    const calloutMatch = t.match(/^:::(tip|info|warning|danger|note|quote|success|bug|example|question)\s*$/i)
+    if (calloutMatch) {
+      inCallout = true
+      calloutType = calloutMatch[1].toLowerCase()
+      calloutContent = []
+      calloutStartFrom = line.from
+      deco.push({ from: line.from, to: line.to, value: hideMark })
       continue
     }
 

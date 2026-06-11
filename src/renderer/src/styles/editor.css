@@ -121,6 +121,61 @@
   line-height: 1;
 }
 
+/* === Admonition/Callout 提示框 === */
+.cm-callout-line {
+  padding: 0 !important;
+}
+
+.cm-callout-widget {
+  margin: 8px 24px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 4px solid var(--border-color);
+  background: var(--bg-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.cm-callout-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.cm-callout-icon {
+  font-size: 16px;
+}
+
+.cm-callout-body {
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  white-space: pre-wrap;
+}
+
+.cm-callout-tip { border-left-color: #4caf50; background: rgba(76, 175, 80, 0.08); }
+.cm-callout-tip .cm-callout-label { color: #4caf50; }
+.cm-callout-info { border-left-color: #2196f3; background: rgba(33, 150, 243, 0.08); }
+.cm-callout-info .cm-callout-label { color: #2196f3; }
+.cm-callout-warning { border-left-color: #ff9800; background: rgba(255, 152, 0, 0.08); }
+.cm-callout-warning .cm-callout-label { color: #ff9800; }
+.cm-callout-danger { border-left-color: #f44336; background: rgba(244, 67, 54, 0.08); }
+.cm-callout-danger .cm-callout-label { color: #f44336; }
+.cm-callout-note { border-left-color: #607d8b; background: rgba(96, 125, 139, 0.08); }
+.cm-callout-note .cm-callout-label { color: #607d8b; }
+.cm-callout-quote { border-left-color: #9c27b0; background: rgba(156, 39, 176, 0.08); }
+.cm-callout-quote .cm-callout-label { color: #9c27b0; }
+.cm-callout-success { border-left-color: #8bc34a; background: rgba(139, 195, 74, 0.08); }
+.cm-callout-success .cm-callout-label { color: #8bc34a; }
+.cm-callout-bug { border-left-color: #e91e63; background: rgba(233, 30, 99, 0.08); }
+.cm-callout-bug .cm-callout-label { color: #e91e63; }
+.cm-callout-example { border-left-color: #795548; background: rgba(121, 85, 72, 0.08); }
+.cm-callout-example .cm-callout-label { color: #795548; }
+.cm-callout-question { border-left-color: #00bcd4; background: rgba(0, 188, 212, 0.08); }
+.cm-callout-question .cm-callout-label { color: #00bcd4; }
+
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
 .cm-table-widget {
