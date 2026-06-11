@@ -6,6 +6,7 @@ import { Editor } from './components/Editor'
 import { StatusBar } from './components/StatusBar'
 import { FindReplace } from './components/FindReplace'
 import { OutlinePanel } from './components/OutlinePanel'
+import { QuickOpen } from './components/QuickOpen'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -205,6 +206,11 @@ export default function App() {
         e.preventDefault()
         useEditorStore.getState().toggleOutline()
       }
+      // Ctrl+P 快速打开
+      if (e.ctrlKey && e.key === 'p' && !e.shiftKey) {
+        e.preventDefault()
+        useEditorStore.getState().setShowQuickOpen(true)
+      }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
@@ -270,6 +276,7 @@ export default function App() {
           {activeTab && <StatusBar tab={activeTab} autoSaveStatus={autoSaveStatus} />}
         </div>
       </div>
+      <QuickOpen />
     </div>
   )
 }
