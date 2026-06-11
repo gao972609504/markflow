@@ -242,3 +242,8 @@
 - 暗色遮罩层 + 淡入动画
 - 点击任意处或按 ESC 关闭预览
 - 图片悬停时轻微透明反馈
+
+### Iteration 57/100 — 缩进设置（Tab 大小）
+- 状态栏显示当前 Tab 大小，点击切换 2/4 空格
+- 编辑器实时应用新 Tab 大小
+- 使用 EditorState.tabSize 配置 CodeMirror

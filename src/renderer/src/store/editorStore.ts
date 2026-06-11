@@ -50,6 +50,7 @@ interface EditorState {
   fontSize: number
   wordGoal: number
   fontFamily: string
+  tabSize: number
 
   createTab: (filePath?: string, content?: string) => string  closeTab: (id: string) => void
   setActiveTab: (id: string) => void
@@ -83,6 +84,7 @@ interface EditorState {
   resetFontSize: () => void
   setWordGoal: (goal: number) => void
   setFontFamily: (family: string) => void
+  setTabSize: (size: number) => void
   toggleTabPin: (id: string) => void
   saveSession: () => void
   restoreSession: () => void
@@ -169,6 +171,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   zenMode: false,
   fontSize: loadPersistedFontSize(),
   fontFamily: loadPersistedFontFamily(),
+  tabSize: 2,
   wordGoal: 0,
   lastSession: null as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null } | null,
 
@@ -273,6 +276,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   resetFontSize: () => { const defaultSize = 15.5; persistFontSize(defaultSize); set({ fontSize: defaultSize }) },
   setWordGoal: (goal: number) => set({ wordGoal: Math.max(0, goal) }),
   setFontFamily: (family: string) => { persistFontFamily(family); set({ fontFamily: family }) },
+  setTabSize: (size: number) => set({ tabSize: size }),
 
   saveSession: () => {
     const state = get()

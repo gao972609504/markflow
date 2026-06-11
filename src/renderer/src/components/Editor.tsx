@@ -236,7 +236,7 @@ function createTypewriterPlugin() {
 export function Editor({ tab }: EditorProps) {
   const editorRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
-  const { updateTabContent, updateTabCursor, setScrollProgress, theme, focusMode, typewriterMode, fontSize, wordWrap, showLineNumbers, fontFamily } = useEditorStore()
+  const { updateTabContent, updateTabCursor, setScrollProgress, theme, focusMode, typewriterMode, fontSize, wordWrap, showLineNumbers, fontFamily, tabSize } = useEditorStore()
   const isDark = theme === 'dark'
 
   useEffect(() => {
@@ -317,6 +317,7 @@ export function Editor({ tab }: EditorProps) {
     const state = EditorState.create({
       doc: tab.content,
       selection: { anchor: 0 },
+      tabSize,
       extensions: [
         EditorState.allowMultipleSelections.of(true),
         ...(showLineNumbers ? [lineNumbers(), highlightActiveLineGutter()] : []),
@@ -409,7 +410,7 @@ export function Editor({ tab }: EditorProps) {
     const view = new EditorView({ state, parent: editorRef.current })
     viewRef.current = view
     return () => { view.destroy(); viewRef.current = null }
-  }, [tab.id, isDark, fontSize, fontFamily, wordWrap, showLineNumbers])
+  }, [tab.id, isDark, fontSize, fontFamily, tabSize, wordWrap, showLineNumbers])
 
   // focusMode / typewriterMode 变化时触发装饰重建
   useEffect(() => {

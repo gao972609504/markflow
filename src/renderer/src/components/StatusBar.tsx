@@ -7,7 +7,7 @@ interface StatusBarProps {
 }
 
 export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
-  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap, showLineNumbers, toggleLineNumbers, wordGoal, setWordGoal, fontFamily, setFontFamily } = useEditorStore()
+  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap, showLineNumbers, toggleLineNumbers, wordGoal, setWordGoal, fontFamily, setFontFamily, tabSize, setTabSize } = useEditorStore()
 
   // ── 番茄钟计时器 ──
   const [pomoRunning, setPomoRunning] = useState(false)
@@ -194,6 +194,13 @@ export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
           title="显示行号"
         >
           🔢 行号
+        </button>
+        <button
+          className="status-btn"
+          title="切换 Tab 大小"
+          onClick={() => setTabSize(tabSize === 2 ? 4 : 2)}
+        >
+          ⇥ Tab:{tabSize}
         </button>
         <span className="status-item">UTF-8</span>
         <span className="status-item">Markdown</span>
