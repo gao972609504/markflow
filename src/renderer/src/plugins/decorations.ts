@@ -257,6 +257,32 @@ function inlineDeco(text: string, lf: number, on: boolean, deco: { from: number;
     if (!on) { deco.push({ from: f, to: f + 2, value: hideMark }); deco.push({ from: t - 2, to: t, value: hideMark }) }
   }
 
+  // 高亮标记 ==text==
+  const hlRe = /==([^=]+)==/g
+  while ((m = hlRe.exec(text))) {
+    const f = lf + m.index, t = f + m[0].length
+    deco.push({ from: f, to: t, value: Decoration.mark({ class: 'cm-highlight-mark' }) })
+    if (!on) { deco.push({ from: f, to: f + 2, value: hideMark }); deco.push({ from: t - 2, to: t, value: hideMark }) }
+  }
+
+  // 上标 ^text^
+  const supRe = /\^([^^]+)\^/g
+  while ((m = supRe.exec(text))) {
+    const f = lf + m.index, t = f + m[0].length
+    deco.push({ from: f, to: t, value: Decoration.mark({ class: 'cm-superscript' }) })
+    if (!on) { deco.push({ from: f, to: f + 1, value: hideMark }); deco.push({ from: t - 1, to: t, value: hideMark }) }
+  }
+
+  // 下标 ~text~
+  const subRe = /~([^~]+)~/g
+  while ((m = subRe.exec(text))) {
+    const f = lf + m.index, t = f + m[0].length
+    // 排除删除线 ~~
+    if (text[m.index - 1] === '~' || text[m.index + m[0].length] === '~') continue
+    deco.push({ from: f, to: t, value: Decoration.mark({ class: 'cm-subscript' }) })
+    if (!on) { deco.push({ from: f, to: f + 1, value: hideMark }); deco.push({ from: t - 1, to: t, value: hideMark }) }
+  }
+
   // 图片 ![alt](url) — 行内预览
   const imgRe = /!\[([^\]]*)\]\(([^)]+)\)/g
   while ((m = imgRe.exec(text))) {

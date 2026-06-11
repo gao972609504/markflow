@@ -276,6 +276,32 @@
   background: rgba(88, 166, 255, 0.1);
 }
 
+/* === 高亮标记 ==text== === */
+.cm-highlight-mark {
+  background: rgba(255, 235, 59, 0.4);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+[data-theme="dark"] .cm-highlight-mark {
+  background: rgba(255, 235, 59, 0.2);
+}
+
+/* === 上标/下标 === */
+.cm-superscript {
+  font-size: 0.75em;
+  vertical-align: super;
+  line-height: 0;
+  color: var(--text-secondary);
+}
+
+.cm-subscript {
+  font-size: 0.75em;
+  vertical-align: sub;
+  line-height: 0;
+  color: var(--text-secondary);
+}
+
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
 .cm-table-widget {
