@@ -7,7 +7,7 @@ interface StatusBarProps {
 }
 
 export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
-  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel } = useEditorStore()
+  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap } = useEditorStore()
 
   const lineCount = tab.content.split('\n').length
   const charCount = tab.content.length
@@ -85,6 +85,13 @@ export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
         <span className="status-item" title="字体大小 (Ctrl++/- 调整, Ctrl+0 重置)">
           🔤 {fontSize.toFixed(1)}px
         </span>
+        <button
+          className={`status-btn ${wordWrap ? 'status-btn-active' : ''}`}
+          onClick={toggleWordWrap}
+          title="自动换行"
+        >
+          ↩️ 换行
+        </button>
         <span className="status-item">UTF-8</span>
         <span className="status-item">Markdown</span>
       </div>
