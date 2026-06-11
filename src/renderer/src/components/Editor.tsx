@@ -141,6 +141,41 @@ function createIndentGuidesPlugin() {
   )
 }
 
+// ============ 行变更指示器 ============
+
+const lineAdded = Decoration.line({ class: 'cm-line-added' })
+const lineModified = Decoration.line({ class: 'cm-line-modified' })
+
+function createLineDiffPlugin(originalContent: string) {
+  const originalLines = originalContent.split('\n')
+  return ViewPlugin.fromClass(
+    class {
+      deco: DecorationSet
+      constructor(view: EditorView) { this.deco = this.build(view) }
+      update(u: ViewUpdate) {
+        if (u.docChanged) this.deco = this.build(u.view)
+      }
+      build(view: EditorView) {
+        const deco: { from: number; to: number; value: Decoration }[] = []
+        const doc = view.state.doc
+        for (let i = 1; i <= doc.lines; i++) {
+          const line = doc.line(i)
+          const lineIdx = i - 1
+          if (lineIdx < originalLines.length) {
+            if (line.text !== originalLines[lineIdx]) {
+              deco.push({ from: line.from, to: line.from, value: lineModified })
+            }
+          } else {
+            deco.push({ from: line.from, to: line.from, value: lineAdded })
+          }
+        }
+        return deco.length ? Decoration.set(deco.map(d => d.value.range(d.from, d.to)), true) : Decoration.none
+      }
+    },
+    { decorations: v => v.deco }
+  )
+}
+
 // ============ ViewPlugin ============
 
 function createWysiwygPlugin() {
@@ -342,6 +377,7 @@ export function Editor({ tab }: EditorProps) {
         }),
         createSelectionHighlightPlugin(),
         createIndentGuidesPlugin(),
+        createLineDiffPlugin(tab.originalContent),
         createWysiwygPlugin(),
         createTypewriterPlugin(),
       ]

@@ -143,6 +143,17 @@
   outline: 1px solid rgba(255, 200, 0, 0.4);
 }
 
+/* 行变更指示器 */
+.cm-line-added {
+  background: rgba(76, 175, 80, 0.08) !important;
+  border-left: 2px solid #4caf50 !important;
+}
+
+.cm-line-modified {
+  background: rgba(255, 193, 7, 0.08) !important;
+  border-left: 2px solid #ffc107 !important;
+}
+
 /* === @markwhen/codemirror-tables 表格 Widget 样式 === */
 
 /* === TOC 目录 Widget 样式 === */
