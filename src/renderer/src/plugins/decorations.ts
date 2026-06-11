@@ -69,10 +69,15 @@ export function buildDecorations(view: EditorView): DecorationSet {
     }
   }
 
+  // 性能优化：仅对可视区域内的行生成装饰（状态跟踪仍需全部遍历）
+  const visibleFrom = view.viewport.from
+  const visibleTo = view.viewport.to
+  const isVisible = (from: number, to: number) => from <= visibleTo && to >= visibleFrom
   for (let i = 1; i <= doc.lines; i++) {
     const line = doc.line(i)
     const t = line.text
     const on = isCursorOnLine(view.state, i)
+    const vis = isVisible(line.from, line.to)
 
     // ── YAML Front Matter ──
     if (!inCodeBlock && !inCallout) {
@@ -267,7 +272,8 @@ export function buildDecorations(view: EditorView): DecorationSet {
       }
     }
 
-    // ── 行内元素 ──
+    if (vis) { // 仅对可视行进行行内装饰
+        // ── 行内元素 ──
     inlineDeco(t, line.from, on, deco)
   }
 
@@ -440,5 +446,6 @@ function inlineDeco(text: string, lf: number, on: boolean, deco: { from: number;
     } else {
       deco.push({ from: f, to: t, value: Decoration.mark({ class: 'cm-math-inline-active' }) })
     }
+  } // end if (vis)
   }
 }
