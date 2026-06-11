@@ -454,3 +454,8 @@
 - 长链接自动截断显示（超过 60 字符）
 - 深色背景白色文字，不干扰编辑
 - 移出链接区域自动消失
+
+### Iteration 96/100 — Callout 块类型增强
+- 新增 8 种 Callout 类型：abstract、important、caution、failure、seealso、todo、hint、check
+- 每种类型有独特的 emoji 图标和中文标签
+- 共计 18 种 Callout 类型，覆盖常见文档标注场景

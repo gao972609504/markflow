@@ -108,6 +108,14 @@ const calloutConfig: Record<string, { icon: string; label: string; className: st
   'bug': { icon: '🐛', label: 'Bug', className: 'cm-callout-bug' },
   'example': { icon: '📋', label: '示例', className: 'cm-callout-example' },
   'question': { icon: '❓', label: '问题', className: 'cm-callout-question' },
+  'abstract': { icon: '📰', label: '摘要', className: 'cm-callout-abstract' },
+  'important': { icon: '🔥', label: '重要', className: 'cm-callout-important' },
+  'caution': { icon: '⚡', label: '注意', className: 'cm-callout-caution' },
+  'failure': { icon: '❌', label: '失败', className: 'cm-callout-failure' },
+  'seealso': { icon: '🔗', label: '参见', className: 'cm-callout-seealso' },
+  'todo': { icon: '📌', label: '待办', className: 'cm-callout-todo' },
+  'hint': { icon: '🔮', label: '线索', className: 'cm-callout-hint' },
+  'check': { icon: '✔️', label: '检查', className: 'cm-callout-check' },
 }
 
 export class CalloutWidget extends WidgetType {
