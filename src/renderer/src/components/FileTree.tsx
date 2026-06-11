@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useEditorStore, FileTreeNode } from '../store/editorStore'
 
 export function FileTree() {
   const { fileTree, folderPath, sidebarVisible } = useEditorStore()
   const [expandedDirs, setExpandedDirs] = useState<Set<string>>(new Set())
+  const [searchQuery, setSearchQuery] = useState('')
 
   if (!sidebarVisible) return null
 
@@ -32,12 +33,50 @@ export function FileTree() {
     }
   }
 
+  // 搜索过滤：返回匹配的节点（包含匹配的子节点或自身匹配的目录）
+  const filterTree = (nodes: FileTreeNode[], query: string): FileTreeNode[] => {
+    if (!query.trim()) return nodes
+    const q = query.toLowerCase()
+    return nodes.reduce<FileTreeNode[]>((acc, node) => {
+      if (node.isDirectory) {
+        const filteredChildren = filterTree(node.children || [], query)
+        if (filteredChildren.length > 0 || node.name.toLowerCase().includes(q)) {
+          acc.push({ ...node, children: filteredChildren.length > 0 ? filteredChildren : node.children })
+        }
+      } else {
+        if (node.name.toLowerCase().includes(q)) {
+          acc.push(node)
+        }
+      }
+      return acc
+    }, [])
+  }
+
+  const filteredTree = useMemo(() => filterTree(fileTree, searchQuery), [fileTree, searchQuery])
+
+  // 搜索时自动展开所有匹配的目录
+  const effectiveExpanded = useMemo(() => {
+    if (!searchQuery.trim()) return expandedDirs
+    const allDirs = new Set<string>()
+    const collectDirs = (nodes: FileTreeNode[]) => {
+      for (const node of nodes) {
+        if (node.isDirectory) {
+          allDirs.add(node.path)
+          if (node.children) collectDirs(node.children)
+        }
+      }
+    }
+    collectDirs(filteredTree)
+    return allDirs
+  }, [searchQuery, filteredTree, expandedDirs])
+
   const renderNode = (node: FileTreeNode, depth: number = 0) => {
-    const isExpanded = expandedDirs.has(node.path)
+    const isExpanded = effectiveExpanded.has(node.path)
+    const isMatch = searchQuery.trim() && node.name.toLowerCase().includes(searchQuery.toLowerCase())
     return (
       <div key={node.path}>
         <div
-          className={`file-tree-item ${node.isDirectory ? 'directory' : 'file'}`}
+          className={`file-tree-item ${node.isDirectory ? 'directory' : 'file'} ${isMatch ? 'file-tree-match' : ''}`}
           style={{ paddingLeft: `${12 + depth * 16}px` }}
           onClick={() => openFile(node)}
         >
@@ -74,9 +113,29 @@ export function FileTree() {
           📂
         </button>
       </div>
+      {fileTree.length > 0 && (
+        <div className="file-tree-search">
+          <input
+            type="text"
+            placeholder="搜索文件..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="file-tree-search-input"
+          />
+          {searchQuery && (
+            <button className="file-tree-search-clear" onClick={() => setSearchQuery('')}>
+              ×
+            </button>
+          )}
+        </div>
+      )}
       <div className="file-tree-content">
         {fileTree.length > 0 ? (
-          fileTree.map((node) => renderNode(node))
+          filteredTree.length > 0 ? (
+            filteredTree.map((node) => renderNode(node))
+          ) : (
+            <div className="file-tree-empty">未找到匹配文件</div>
+          )
         ) : (
           <div className="file-tree-empty">
             <p>没有打开的文件夹</p>

@@ -22,6 +22,50 @@
   border-bottom: 1px solid var(--border-color);
 }
 
+.file-tree-search {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+}
+
+.file-tree-search-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 12px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.file-tree-search-input:focus {
+  border-color: var(--accent-color);
+}
+
+.file-tree-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.file-tree-search-clear {
+  position: absolute;
+  right: 12px;
+  font-size: 14px;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+
+.file-tree-search-clear:hover {
+  color: var(--text-primary);
+}
+
+.file-tree-match {
+  background: var(--active-bg);
+  font-weight: 500;
+}
+
 .file-tree-btn {
   font-size: 16px;
   padding: 2px 4px;
