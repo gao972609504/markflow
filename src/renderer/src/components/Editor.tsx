@@ -358,6 +358,10 @@ export function Editor({ tab }: EditorProps) {
           { key: '{', run: v => autoClosePair(v, '{', '}') },
           { key: '"', run: v => autoClosePair(v, '"', '"') },
           { key: "'", run: v => autoClosePair(v, "'", "'") },
+          // 书签
+          { key: 'Mod-F2', run: toggleBookmark },
+          { key: 'F2', run: nextBookmark },
+          { key: 'Shift-F2', run: prevBookmark },
         ]),
         updateHandler,
         pasteHandler,
@@ -865,4 +869,53 @@ function renumberLists(view: EditorView): boolean {
     if (v) v.dispatch({ changes })
   }, 0)
   return false // 不阻止原始操作
+}
+
+// ============ 文档书签 ============
+
+function toggleBookmark(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const line = view.state.doc.lineAt(head)
+  const store = useEditorStore.getState()
+  const tabId = store.activeTabId
+  if (!tabId) return false
+  const bm = store.getBookmarks(tabId)
+  const existing = bm.find(b => b.line === line.number)
+  if (existing) {
+    store.removeBookmark(tabId, line.number)
+  } else {
+    const label = line.text.slice(0, 40).trim() || `行 ${line.number}`
+    store.addBookmark(tabId, line.number, label)
+  }
+  return true
+}
+
+function nextBookmark(view: EditorView): boolean {
+  const store = useEditorStore.getState()
+  const tabId = store.activeTabId
+  if (!tabId) return false
+  const bm = store.getBookmarks(tabId)
+  if (bm.length === 0) return false
+  const { head } = view.state.selection.main
+  const curLine = view.state.doc.lineAt(head).number
+  const sorted = [...bm].sort((a, b) => a.line - b.line)
+  const next = sorted.find(b => b.line > curLine) || sorted[0]
+  const targetLine = view.state.doc.line(next.line)
+  view.dispatch({ selection: { anchor: targetLine.from }, effects: EditorView.scrollIntoView(targetLine.from) })
+  return true
+}
+
+function prevBookmark(view: EditorView): boolean {
+  const store = useEditorStore.getState()
+  const tabId = store.activeTabId
+  if (!tabId) return false
+  const bm = store.getBookmarks(tabId)
+  if (bm.length === 0) return false
+  const { head } = view.state.selection.main
+  const curLine = view.state.doc.lineAt(head).number
+  const sorted = [...bm].sort((a, b) => b.line - a.line)
+  const prev = sorted.find(b => b.line < curLine) || sorted[0]
+  const targetLine = view.state.doc.line(prev.line)
+  view.dispatch({ selection: { anchor: targetLine.from }, effects: EditorView.scrollIntoView(targetLine.from) })
+  return true
 }

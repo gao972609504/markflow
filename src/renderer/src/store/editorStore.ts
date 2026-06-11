@@ -51,6 +51,7 @@ interface EditorState {
   wordGoal: number
   fontFamily: string
   tabSize: number
+  bookmarks: Record<string, { line: number; label: string }[]> // tabId -> bookmarks
 
   createTab: (filePath?: string, content?: string) => string  closeTab: (id: string) => void
   setActiveTab: (id: string) => void
@@ -86,6 +87,9 @@ interface EditorState {
   setFontFamily: (family: string) => void
   setTabSize: (size: number) => void
   toggleTabPin: (id: string) => void
+  addBookmark: (tabId: string, line: number, label: string) => void
+  removeBookmark: (tabId: string, line: number) => void
+  getBookmarks: (tabId: string) => { line: number; label: string }[]
   saveSession: () => void
   restoreSession: () => void
   getActiveTab: () => Tab | undefined
@@ -173,6 +177,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   fontFamily: loadPersistedFontFamily(),
   tabSize: 2,
   wordGoal: 0,
+  bookmarks: {},
   lastSession: null as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null; cursorPositions?: Record<string, { line: number; col: number }> } | null,
 
   createTab: (filePath?: string, content?: string) => {
@@ -277,6 +282,15 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setWordGoal: (goal: number) => set({ wordGoal: Math.max(0, goal) }),
   setFontFamily: (family: string) => { persistFontFamily(family); set({ fontFamily: family }) },
   setTabSize: (size: number) => set({ tabSize: size }),
+  addBookmark: (tabId: string, line: number, label: string) => set(state => {
+    const list = [...(state.bookmarks[tabId] || [])]
+    if (!list.some(b => b.line === line)) list.push({ line, label })
+    return { bookmarks: { ...state.bookmarks, [tabId]: list } }
+  }),
+  removeBookmark: (tabId: string, line: number) => set(state => ({
+    bookmarks: { ...state.bookmarks, [tabId]: (state.bookmarks[tabId] || []).filter(b => b.line !== line) }
+  })),
+  getBookmarks: (tabId: string) => get().bookmarks[tabId] || [],
 
   saveSession: () => {
     const state = get()
