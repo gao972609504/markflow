@@ -42,7 +42,7 @@ declare global {
 }
 
 export default function App() {
-  const { theme, sidebarVisible, showFindReplace, activeTabId, tabs, scrollProgress } = useEditorStore()
+  const { theme, sidebarVisible, showFindReplace, activeTabId, tabs, scrollProgress, zenMode } = useEditorStore()
   const activeTab = tabs.find((t) => t.id === activeTabId)
   const [isDragging, setIsDragging] = useState(false)
   const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
@@ -305,6 +305,15 @@ export default function App() {
         e.preventDefault()
         useEditorStore.getState().reopenClosedTab()
       }
+      // F11 禅模式
+      if (e.key === 'F11') {
+        e.preventDefault()
+        useEditorStore.getState().toggleZenMode()
+      }
+      // ESC 退出禅模式
+      if (e.key === 'Escape' && useEditorStore.getState().zenMode) {
+        useEditorStore.getState().toggleZenMode()
+      }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
@@ -327,15 +336,15 @@ export default function App() {
         </div>
       )}
       <div className="main-layout">
-        {sidebarVisible && <FileTree />}
-        <OutlinePanel />
-        <TagPanel />
-        <div className="editor-panel">
-          {activeTab && <div className="reading-progress-bar" style={{ width: `${scrollProgress}%` }} />}
-          <TabBar />
-          <div className="editor-toolbar-row">
+        {!zenMode && sidebarVisible && <FileTree />}
+        {!zenMode && <OutlinePanel />}
+        {!zenMode && <TagPanel />}
+        <div className={`editor-panel${zenMode ? ' zen-mode' : ''}`}>
+          {activeTab && !zenMode && <div className="reading-progress-bar" style={{ width: `${scrollProgress}%` }} />}
+          {!zenMode && <TabBar />}
+          {!zenMode && <div className="editor-toolbar-row">
             <InsertToolbar />
-          </div>
+          </div>}
           {showFindReplace && <FindReplace />}
           <GoToLine />
           {activeTab ? (
@@ -372,7 +381,7 @@ export default function App() {
               </div>
             </div>
           )}
-          {activeTab && <StatusBar tab={activeTab} autoSaveStatus={autoSaveStatus} />}
+          {activeTab && !zenMode && <StatusBar tab={activeTab} autoSaveStatus={autoSaveStatus} />}
         </div>
       </div>
       <QuickOpen />

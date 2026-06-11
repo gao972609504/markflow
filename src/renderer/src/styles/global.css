@@ -108,6 +108,25 @@ body {
   position: relative;
 }
 
+/* 禅模式 */
+.editor-panel.zen-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: var(--bg-primary);
+  padding: 0 20%;
+}
+
+.editor-panel.zen-mode .cm-editor {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 10vh;
+}
+
+.editor-panel.zen-mode .cm-scroller {
+  overflow-y: auto;
+}
+
 /* 滚动条 */
 ::-webkit-scrollbar {
   width: 8px;

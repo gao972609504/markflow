@@ -44,6 +44,7 @@ interface EditorState {
   showDocStats: boolean
   showShortcuts: boolean
   closedTabsHistory: { filePath: string | null; title: string; content: string }[]
+  zenMode: boolean
   fontSize: number
 
   createTab: (filePath?: string, content?: string) => string
@@ -74,6 +75,7 @@ interface EditorState {
   setShowDocStats: (show: boolean) => void
   setShowShortcuts: (show: boolean) => void
   reopenClosedTab: () => void
+  toggleZenMode: () => void
   setFontSize: (size: number) => void
   resetFontSize: () => void
   saveSession: () => void
@@ -131,6 +133,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   showDocStats: false,
   showShortcuts: false,
   closedTabsHistory: [],
+  zenMode: false,
   fontSize: loadPersistedFontSize(),
   lastSession: null as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null } | null,
 
@@ -214,6 +217,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       return { tabs: [...state.tabs, tab], activeTabId: id, closedTabsHistory: rest }
     })
   },
+  toggleZenMode: () => set(state => ({ zenMode: !state.zenMode })),
   setFontSize: (size: number) => { persistFontSize(size); set({ fontSize: size }) },
   resetFontSize: () => { const defaultSize = 15.5; persistFontSize(defaultSize); set({ fontSize: defaultSize }) },
 

@@ -45,6 +45,7 @@ const shortcuts: Shortcut[] = [
   { keys: 'Ctrl+-', action: '缩小字体', category: '视图' },
   { keys: 'Ctrl+0', action: '重置字体大小', category: '视图' },
   { keys: 'Ctrl+Shift+/', action: '快捷键参考', category: '视图' },
+  { keys: 'F11', action: '禅模式（无干扰写作）', category: '视图' },
   { keys: 'Escape', action: '关闭弹窗/面板', category: '通用' },
 ]
 
