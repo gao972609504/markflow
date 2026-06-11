@@ -802,3 +802,73 @@
   font-size: 11px;
   color: var(--text-muted);
 }
+
+/* 文档统计面板 */
+.doc-stats-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doc-stats-modal {
+  width: 440px;
+  max-height: 80vh;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+}
+
+.doc-stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.doc-stats-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.doc-stats-close {
+  font-size: 20px;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+
+.doc-stats-close:hover {
+  color: var(--text-primary);
+}
+
+.doc-stats-grid {
+  padding: 12px 20px;
+}
+
+.doc-stats-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 13px;
+}
+
+.doc-stats-row:last-child {
+  border-bottom: none;
+}
+
+.doc-stats-label {
+  color: var(--text-secondary);
+}
+
+.doc-stats-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}

@@ -11,6 +11,7 @@ import { CommandPalette } from './components/CommandPalette'
 import { GoToLine } from './components/GoToLine'
 import { InsertToolbar } from './components/InsertToolbar'
 import { TagPanel } from './components/TagPanel'
+import { DocStats } from './components/DocStats'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -288,6 +289,11 @@ export default function App() {
         e.preventDefault()
         useEditorStore.getState().setShowGoToLine(true)
       }
+      // Ctrl+Shift+S 文档统计
+      if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+        e.preventDefault()
+        useEditorStore.getState().setShowDocStats(true)
+      }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
@@ -360,6 +366,7 @@ export default function App() {
       </div>
       <QuickOpen />
       <CommandPalette />
+      <DocStats />
     </div>
   )
 }

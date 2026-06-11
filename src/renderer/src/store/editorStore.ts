@@ -41,6 +41,7 @@ interface EditorState {
   tagPanelVisible: boolean
   wordWrap: boolean
   showLineNumbers: boolean
+  showDocStats: boolean
   fontSize: number
 
   createTab: (filePath?: string, content?: string) => string
@@ -68,6 +69,7 @@ interface EditorState {
   toggleTagPanel: () => void
   toggleWordWrap: () => void
   toggleLineNumbers: () => void
+  setShowDocStats: (show: boolean) => void
   setFontSize: (size: number) => void
   resetFontSize: () => void
   saveSession: () => void
@@ -122,6 +124,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   tagPanelVisible: false,
   wordWrap: true,
   showLineNumbers: true,
+  showDocStats: false,
   fontSize: loadPersistedFontSize(),
   lastSession: null as { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null } | null,
 
@@ -191,6 +194,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   toggleTagPanel: () => set(state => ({ tagPanelVisible: !state.tagPanelVisible })),
   toggleWordWrap: () => set(state => ({ wordWrap: !state.wordWrap })),
   toggleLineNumbers: () => set(state => ({ showLineNumbers: !state.showLineNumbers })),
+  setShowDocStats: (show: boolean) => set({ showDocStats: show }),
   setFontSize: (size: number) => { persistFontSize(size); set({ fontSize: size }) },
   resetFontSize: () => { const defaultSize = 15.5; persistFontSize(defaultSize); set({ fontSize: defaultSize }) },
 
