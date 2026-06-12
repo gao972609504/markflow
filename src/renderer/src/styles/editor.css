@@ -686,3 +686,282 @@
   padding: 8px;
   text-align: left;
 }
+
+/* ═══════════════════════════════════════════════════════
+   Markdown 演示模式 (Slide Presentation)
+   ═══════════════════════════════════════════════════════ */
+
+.presentation-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: #1a1a2e;
+  display: flex;
+  flex-direction: column;
+  color: #e0e0e0;
+  font-family: 'Inter', 'LXGW WenKai', sans-serif;
+}
+
+.presentation-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 60px;
+  overflow: hidden;
+}
+
+.presentation-slide {
+  max-width: 960px;
+  width: 100%;
+  background: #16213e;
+  border-radius: 12px;
+  padding: 48px 56px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  font-size: 20px;
+  line-height: 1.7;
+  overflow-y: auto;
+  max-height: calc(100vh - 140px);
+  animation: pres-slide-in 0.3s ease-out;
+}
+
+.presentation-slide-right { animation-name: pres-slide-in-right; }
+.presentation-slide-left { animation-name: pres-slide-in-left; }
+
+@keyframes pres-slide-in-right {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pres-slide-in-left {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.presentation-slide h1 {
+  font-size: 2.2em;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.6em;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 0.3em;
+}
+
+.presentation-slide h2 {
+  font-size: 1.6em;
+  font-weight: 600;
+  color: #e8e8e8;
+  margin-bottom: 0.5em;
+}
+
+.presentation-slide h3 {
+  font-size: 1.3em;
+  font-weight: 600;
+  color: #d0d0d0;
+  margin-bottom: 0.4em;
+}
+
+.presentation-slide ul, .presentation-slide ol {
+  padding-left: 1.5em;
+  margin: 0.6em 0;
+}
+
+.presentation-slide li { margin: 0.3em 0; }
+
+.presentation-slide code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+}
+
+.presentation-slide pre {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 1em 0;
+  overflow-x: auto;
+}
+
+.presentation-slide blockquote {
+  border-left: 4px solid #e94560;
+  padding-left: 16px;
+  color: #b0b0b0;
+  margin: 1em 0;
+}
+
+.presentation-slide img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.presentation-slide a {
+  color: #e94560;
+  text-decoration: underline;
+}
+
+.presentation-slide table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.presentation-slide th, .presentation-slide td {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.presentation-slide th {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+}
+
+/* ── 控制栏 ── */
+
+.presentation-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  flex-shrink: 0;
+}
+
+.presentation-controls-left,
+.presentation-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pres-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e0e0e0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.pres-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.pres-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pres-btn-close:hover {
+  background: rgba(233, 69, 96, 0.3);
+  border-color: #e94560;
+  color: #e94560;
+}
+
+.pres-counter {
+  color: #a0a0a0;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  min-width: 50px;
+  text-align: center;
+}
+
+/* ── 进度条 ── */
+
+.presentation-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.presentation-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #e94560, #0f3460);
+  transition: width 0.3s ease;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ── 演讲者备注 ── */
+
+.presentation-notes {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  padding: 12px 20px;
+  max-height: 150px;
+  overflow-y: auto;
+  font-size: 14px;
+  color: #b0b0b0;
+  line-height: 1.5;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.presentation-notes-label {
+  font-weight: 600;
+  color: #e0e0e0;
+  margin-bottom: 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── 缩略图导航 ── */
+
+.presentation-thumbnails {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.5);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.pres-thumb {
+  flex-shrink: 0;
+  width: 80px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.pres-thumb:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pres-thumb-active {
+  border-color: #e94560;
+  background: rgba(233, 69, 96, 0.15);
+}
+
+.pres-thumb-inner {
+  transform: scale(0.15);
+  transform-origin: top left;
+  width: 533px; /* 80 / 0.15 */
+  height: 333px;
+  pointer-events: none;
+  color: #e0e0e0;
+  font-size: 12px;
+  overflow: hidden;
+}
+
+.pres-thumb-num {
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+}

@@ -14,6 +14,7 @@ import { TagPanel } from './components/TagPanel'
 import { DocStats } from './components/DocStats'
 import { ShortcutReference } from './components/ShortcutReference'
 import { GlobalSearch } from './components/GlobalSearch'
+import { PresentationView } from './components/PresentationView'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -434,6 +435,11 @@ export default function App() {
         e.preventDefault()
         useEditorStore.getState().setShowGlobalSearch(true)
       }
+      // Ctrl+F5 演示模式
+      if (e.ctrlKey && e.key === 'F5') {
+        e.preventDefault()
+        useEditorStore.getState().setShowPresentation(true)
+      }
       // F11 禅模式
       if (e.key === 'F11') {
         e.preventDefault()
@@ -624,6 +630,7 @@ export default function App() {
       <DocStats />
       <ShortcutReference />
       <GlobalSearch />
+      <PresentationView />
     </div>
   )
 }

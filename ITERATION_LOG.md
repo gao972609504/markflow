@@ -5,6 +5,7 @@
 | 迭代 | 特性名称 | 核心改动 | 状态 |
 |------|---------|---------|------|
 | 1 | Slash Commands 斜杠命令快速插入 | 新增 `slashCommand.ts` 插件，接入 Editor.tsx，添加面板样式 | ✅ |
+| 2 | Mermaid 图表实时渲染 | MermaidWidget + decorations 集成，mermaid 异步加载 | ✅ |
 
 ---
 
@@ -31,3 +32,27 @@
 - CodeMirror StateEffect 驱动面板状态
 - DOM 浮动面板定位（coordsAtPos + 视口边界检测）
 - 语法树检测避免在代码块内触发
+
+## 迭代 2 — Mermaid 图表实时渲染
+
+**日期**: 2026-06-12
+
+### 特性描述
+在编辑器中输入 mermaid 代码块（\`\`\`mermaid）时，自动将流程图、序列图、甘特图等渲染为 SVG 内联显示在代码块下方。支持亮/暗色主题自适应。
+
+### 核心改动
+- **新增** `MermaidWidget` (widgets.ts)
+  - 异步动态 import mermaid 库
+  - 自动适配亮/暗色主题
+  - 渲染失败显示友好错误提示
+  - SVG 自适应容器宽度
+- **修改** `decorations.ts`
+  - 导入 MermaidWidget
+  - 代码块结束时检测 mermaid 语言并插入渲染 Widget
+- **修改** `editor.css`
+  - 新增 `.cm-mermaid-widget` 和 `.cm-mermaid-error` 样式
+
+### 技术点
+- mermaid 动态 import 按需加载，不影响首屏性能
+- MermaidWidget.eq() 比较代码内容和主题确保正确更新
+- 渲染 ID 使用随机字符串避免冲突
