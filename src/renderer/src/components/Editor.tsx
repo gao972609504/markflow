@@ -18,6 +18,7 @@ import { createSlashCommandExtension } from '../plugins/slashCommand'
 import { linkHoverTooltip } from '../plugins/linkPreview'
 import { loadCustomSnippets } from './SnippetManager'
 import { markdownLinter } from '../plugins/markdownLint'
+import { createEmojiPickerExtension } from '../plugins/emojiPicker'
 
 interface EditorProps { tab: Tab }
 
@@ -563,6 +564,7 @@ export function Editor({ tab }: EditorProps) {
         createSlashCommandExtension(),
         linkHoverTooltip,
         markdownLinter,
+        ...createEmojiPickerExtension(),
       ]
     })
 
