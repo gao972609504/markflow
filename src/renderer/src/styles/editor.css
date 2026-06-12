@@ -965,3 +965,73 @@
   font-size: 10px;
   color: rgba(255, 255, 255, 0.5);
 }
+
+/* ============ 链接悬浮预览 ============ */
+
+.cm-tooltip.cm-link-tooltip-tooltip {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  overflow: hidden;
+  max-width: 360px;
+}
+
+.cm-link-tooltip {
+  padding: 10px 12px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.cm-link-tooltip-url {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cm-link-tooltip-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.cm-link-tooltip-text {
+  color: var(--accent);
+  word-break: break-all;
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+.cm-link-tooltip-label {
+  color: var(--text-secondary);
+  font-size: 11px;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.cm-link-tooltip-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cm-link-tooltip-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.cm-link-tooltip-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.cm-link-tooltip-open:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}

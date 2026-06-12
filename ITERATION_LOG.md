@@ -7,6 +7,7 @@
 | 1 | Slash Commands 斜杠命令快速插入 | 新增 `slashCommand.ts` 插件，接入 Editor.tsx，添加面板样式 | ✅ |
 | 2 | Mermaid 图表实时渲染 | MermaidWidget + decorations 集成，mermaid 异步加载 | ✅ |
 | 3 | 写作会话统计 (Writing Stats) | WritingStats.tsx 组件，实时 WPM/字数/会话时长/连续天数 | ✅ |
+| 4 | 链接悬浮预览 (Link Hover Preview) | linkPreview.ts 扩展，悬停链接弹出 URL 预览+操作按钮 | ✅ |
 
 ---
 
@@ -90,3 +91,28 @@
 - 滑动窗口 WPM 计算（保留最近 60 秒的词数变化时间戳）
 - localStorage 持久化：会话数据（markflow-writing-session）+ 连续天数记录（markflow-writing-streak）
 - React useEffect 管理定时器和状态生命周期，组件卸载时自动清理
+
+## 迭代 4 — 链接悬浮预览 (Link Hover Preview)
+
+**日期**: 2026-06-12
+
+### 特性描述
+在编辑器中鼠标悬停到 Markdown 链接 `[text](url)`、自动链接 `<url>` 或裸 URL 时，弹出浮窗显示目标 URL，并提供"在浏览器打开"和"复制链接"按钮。
+
+### 核心改动
+- **新增** `src/renderer/src/plugins/linkPreview.ts`
+  - CodeMirror 6 `hoverTooltip` 扩展
+  - 解析三种链接格式：行内链接 `[text](url)`、自动链接 `<url>`、裸 URL
+  - URL 自动截断显示（超过 80 字符）
+  - 仅预览 http/https 协议链接
+  - "打开链接"按钮（新窗口 noopener）+ "复制链接"按钮
+  - 400ms 悬浮延迟避免误触
+- **修改** `src/renderer/src/components/Editor.tsx`
+  - 导入 `linkHoverTooltip` 并加入扩展数组
+- **修改** `src/renderer/src/styles/editor.css`
+  - 新增 `.cm-link-tooltip` 全套样式（圆角卡片、按钮交互、主题变量适配）
+
+### 技术点
+- CodeMirror 6 `hoverTooltip` API，返回 `Tooltip` 对象
+- 正则匹配三种 Markdown 链接语法，计算精确的 from/to 位置
+- DOM 事件处理：按钮 click 使用 preventDefault/stopPropagation 阻止编辑器干扰
