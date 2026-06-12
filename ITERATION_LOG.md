@@ -10,6 +10,7 @@
 | 4 | 链接悬浮预览 (Link Hover Preview) | linkPreview.ts 扩展，悬停链接弹出 URL 预览+操作按钮 | ✅ |
 | 5 | 自定义代码片段管理器 (Snippet Manager) | SnippetManager.tsx + expandSnippet 合并自定义片段 | ✅ |
 | 6 | Markdown Lint 风格检查 | markdownLint.ts 扩展，11 条规则实时检测 | ✅ |
+| 7 | Emoji 选择器 | emojiPicker.ts 扩展，输入 `:` 触发浮动面板，70+ emoji 搜索 | ✅ |
 
 ---
 
@@ -180,3 +181,27 @@
 - CodeMirror 6 `linter()` API，返回 `Diagnostic[]`
 - 按 severity 分级：error（红）、warning（橙）、info（蓝）
 - 纯文本分析 + 正则匹配，无 AST 依赖，性能优良
+
+## 迭代 7 — Emoji 选择器
+
+**日期**: 2026-06-12
+
+### 特性描述
+在编辑器中输入 `:` 后弹出浮动 emoji 选择面板，支持中英文关键词搜索、键盘导航（↑↓ 选择，Tab/Enter 确认，Esc 关闭）。内置 70+ 常用 emoji。
+
+### 核心改动
+- **新增** `src/renderer/src/plugins/emojiPicker.ts`
+  - CodeMirror 6 StateField + ViewPlugin + keymap 扩展
+  - 70+ emoji 数据，支持中英文关键词搜索
+  - `:` 触发，代码块/Callout 内自动屏蔽
+  - 浮动面板定位在光标下方
+  - 鼠标点击和键盘双模式选择
+- **修改** `src/renderer/src/components/Editor.tsx`
+  - 导入并集成 `createEmojiPickerExtension()`
+- **修改** `src/renderer/src/styles/editor.css`
+  - 新增 `.cm-emoji-*` 全套样式
+
+### 技术点
+- StateEffect 驱动面板状态，ViewPlugin 渲染 DOM
+- 触发检测排除代码块（syntaxTree 检查）和 Callout（`:::`前缀）
+- coordsAtPos 定位面板，父元素相对定位
