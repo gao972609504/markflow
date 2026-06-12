@@ -321,6 +321,21 @@ export function Editor({ tab }: EditorProps) {
             return true
           }
         }
+        // 智能表格粘贴：检测制表符分隔的多行文本
+        const text = event.clipboardData?.getData('text/plain')
+        if (text) {
+          const tableRows = parseClipboardTable(text)
+          if (tableRows) {
+            event.preventDefault()
+            const mdTable = convertToMarkdownTable(tableRows)
+            const pos = view.state.selection.main.head
+            view.dispatch({
+              changes: { from: pos, insert: mdTable },
+              selection: { anchor: pos + mdTable.length }
+            })
+            return true
+          }
+        }
         return false
       },
       drop(event, view) {
@@ -1311,4 +1326,55 @@ function createSpellCheckPlugin() {
     },
     { decorations: v => v.deco }
   )
+}
+
+// ============ 智能表格粘贴 ============
+
+/**
+ * 解析剪贴板中的制表符分隔表格文本
+ * 支持 Excel / Sheets / 纯文本的 \t 分隔数据
+ */
+function parseClipboardTable(text: string): string[][] | null {
+  const lines = text.split(/\r?\n/).filter(l => l.trim())
+  if (lines.length < 2) return null
+
+  // 检测是否包含制表符（Excel 复制的标准格式）
+  const hasTabs = lines.some(l => l.includes('\t'))
+  if (!hasTabs) {
+    // 也支持逗号分隔（CSV 粘贴）
+    const hasCommas = lines.some(l => l.split(',').length > 2)
+    if (!hasCommas) return null
+    return lines.map(l => l.split(',').map(c => c.trim()))
+  }
+
+  return lines.map(l => l.split('\t').map(c => c.trim()))
+}
+
+/**
+ * 将解析后的二维数组转换为 Markdown 表格
+ */
+function convertToMarkdownTable(rows: string[][]): string {
+  if (rows.length === 0) return ''
+  const colCount = Math.max(...rows.map(r => r.length))
+  // 填充缺失的单元格
+  const padded = rows.map(r => {
+    const paddedRow = [...r]
+    while (paddedRow.length < colCount) paddedRow.push('')
+    return paddedRow
+  })
+
+  // 计算每列最大宽度，用于对齐
+  const maxWidths: number[] = []
+  for (let c = 0; c < colCount; c++) {
+    maxWidths[c] = Math.max(3, ...padded.map(r => r[c].length))
+  }
+
+  const formatRow = (cells: string[]) =>
+    '| ' + cells.map((c, i) => c.padEnd(maxWidths[i])).join(' | ') + ' |'
+
+  const header = formatRow(padded[0])
+  const separator = '| ' + maxWidths.map(w => '-'.repeat(w)).join(' | ') + ' |'
+  const body = padded.slice(1).map(formatRow)
+
+  return '\n' + [header, separator, ...body].join('\n') + '\n'
 }

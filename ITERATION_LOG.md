@@ -12,6 +12,7 @@
 | 6 | Markdown Lint 风格检查 | markdownLint.ts 扩展，11 条规则实时检测 | ✅ |
 | 7 | Emoji 选择器 | emojiPicker.ts 扩展，输入 `:` 触发浮动面板，70+ emoji 搜索 | ✅ |
 | 8 | WikiLink 双向链接系统 | wikiLinkCompletion.ts + BacklinksPanel.tsx，支持 [[触发补全和反向链接面板 | ✅ |
+| 9 | 智能表格粘贴 | Editor.tsx pasteHandler 增加表格数据自动转 Markdown 表格 | ✅ |
 
 ---
 
@@ -255,3 +256,34 @@
 - 迭代 1-7 均未涉及 WikiLink 或双向链接功能
 - 本迭代首次实现 `[[` 触发文档补全 + 反向链接面板，属于全新的笔记关联能力
 - 与迭代 4 的「链接悬浮预览」不同：后者处理标准 Markdown 链接 `[text](url)` 的悬停预览；本迭代处理 WikiLink `[[...]]` 的补全和反向索引
+
+---
+
+## 迭代 9 — 智能表格粘贴 (Smart Table Paste)
+
+**日期**: 2026-06-12
+
+### 特性描述
+从 Excel / Google Sheets / Numbers 等工具复制制表符分隔的数据后，在 MarkFlow 中粘贴时自动识别并转换为标准 Markdown 表格格式。支持 CSV（逗号分隔）数据作为降级方案。
+
+### 核心改动
+- **修改** `src/renderer/src/components/Editor.tsx`
+  - 在 `pasteHandler` 的 `paste` 事件中增加文本内容检测逻辑
+  - 新增 `parseClipboardTable(text)` 函数：检测剪贴板文本是否包含制表符（`\t`）分隔的多行数据；若无制表符则尝试逗号分隔（CSV）
+  - 新增 `convertToMarkdownTable(rows)` 函数：将二维数组转为标准 Markdown 表格，自动计算每列最大宽度进行对齐，缺失单元格自动填充空字符串
+  - 触发条件：文本粘贴且图片粘贴未命中时检测
+
+### 技术点
+- Excel / Sheets 复制数据的格式：行以 `\r\n` 或 `\n` 分隔，单元格以 `\t` 分隔
+- CSV 降级检测：要求至少有一行有 2+ 个逗号分隔项
+- Markdown 表格列对齐：计算每列最大宽度，所有单元格统一右补空格
+
+### 验证结果
+- `npm run build` 通过，无 TypeScript 错误
+- 构建耗时约 62 秒
+
+### 非重复性说明
+- 迭代 1-8 均未涉及表格粘贴功能
+- 项目已有 `formatMarkdownTable`（Mod+Shift+F 格式化现有表格）和 `insertTable`（Mod+Shift+T 插入新表格），但均不处理从外部工具粘贴的数据转换
+- 本迭代首次实现「外部制表符/CSV 数据 → Markdown 表格」的自动转换，是全新的数据导入能力
+
