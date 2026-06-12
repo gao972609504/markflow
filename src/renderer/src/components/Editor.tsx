@@ -15,6 +15,7 @@ import { Tab, useEditorStore } from '../store/editorStore'
 import { buildDecorations } from '../plugins/decorations'
 import { createEditorTheme } from '../plugins/theme'
 import { createSlashCommandExtension } from '../plugins/slashCommand'
+import { linkHoverTooltip } from '../plugins/linkPreview'
 
 interface EditorProps { tab: Tab }
 
@@ -558,6 +559,7 @@ export function Editor({ tab }: EditorProps) {
         createDecorationPlugin(),
         createTypewriterPlugin(),
         createSlashCommandExtension(),
+        linkHoverTooltip,
       ]
     })
 
