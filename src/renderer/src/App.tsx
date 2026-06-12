@@ -15,6 +15,7 @@ import { DocStats } from './components/DocStats'
 import { ShortcutReference } from './components/ShortcutReference'
 import { GlobalSearch } from './components/GlobalSearch'
 import { PresentationView } from './components/PresentationView'
+import { WritingStats } from './components/WritingStats'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -194,7 +195,6 @@ export default function App() {
     if (!autoSave) return
     if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
     const tabId = activeTab.id
-    const filePath = activeTab.filePath
     autoSaveTimerRef.current = setTimeout(() => {
       if (!window.api) return
       // 从 store 获取最新内容，避免闭包捕获过期引用
@@ -440,6 +440,12 @@ export default function App() {
         e.preventDefault()
         useEditorStore.getState().setShowPresentation(true)
       }
+      // Ctrl+Shift+W 写作统计
+      if (e.ctrlKey && e.shiftKey && e.key === 'W') {
+        e.preventDefault()
+        const s = useEditorStore.getState()
+        s.setShowWritingStats(!s.showWritingStats)
+      }
       // F11 禅模式
       if (e.key === 'F11') {
         e.preventDefault()
@@ -631,6 +637,7 @@ export default function App() {
       <ShortcutReference />
       <GlobalSearch />
       <PresentationView />
+      <WritingStats />
     </div>
   )
 }

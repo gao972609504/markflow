@@ -6,6 +6,7 @@
 |------|---------|---------|------|
 | 1 | Slash Commands 斜杠命令快速插入 | 新增 `slashCommand.ts` 插件，接入 Editor.tsx，添加面板样式 | ✅ |
 | 2 | Mermaid 图表实时渲染 | MermaidWidget + decorations 集成，mermaid 异步加载 | ✅ |
+| 3 | 写作会话统计 (Writing Stats) | WritingStats.tsx 组件，实时 WPM/字数/会话时长/连续天数 | ✅ |
 
 ---
 
@@ -56,3 +57,36 @@
 - mermaid 动态 import 按需加载，不影响首屏性能
 - MermaidWidget.eq() 比较代码内容和主题确保正确更新
 - 渲染 ID 使用随机字符串避免冲突
+
+## 迭代 3 — 写作会话统计 (Writing Session Statistics)
+
+**日期**: 2026-06-12
+
+### 特性描述
+实时写作统计面板，追踪当前写作会话数据：会话时长、新增词数/字符数、实时打字速度（WPM）、每日连续写作天数、字数目标进度。通过 `Ctrl+Shift+W` 或命令面板打开。
+
+### 核心改动
+- **新增** `src/renderer/src/components/WritingStats.tsx`
+  - 实时会话计时器（秒级精度）
+  - 中英文混合词数统计（中文字符逐个计数 + 英文按空格分词）
+  - 实时 WPM 计算（滑动窗口：最近 60 秒内的词数变化）
+  - 每日连续写作天数追踪（localStorage 持久化，最多 365 天）
+  - 字数目标进度条（复用 store 中已有的 wordGoal）
+  - 会话数据持久化（localStorage，支持页面刷新恢复）
+  - 重置会话功能
+- **修改** `src/renderer/src/store/editorStore.ts`
+  - 新增 `showWritingStats` 状态和 `setShowWritingStats` action
+- **修改** `src/renderer/src/App.tsx`
+  - 导入 WritingStats 组件并加入渲染树
+  - 添加 `Ctrl+Shift+W` 快捷键绑定
+  - 修复未使用变量 `filePath` 的 TS 警告
+- **修改** `src/renderer/src/components/CommandPalette.tsx`
+  - 注册 `view.writing-stats` 命令
+- **修改** `src/renderer/src/styles/global.css`
+  - 新增 `.writing-stats-*` 全套样式（6 卡片网格、目标进度条、响应式布局）
+
+### 技术点
+- 中英文混合词数统计算法（正则匹配 CJK 统一汉字 + 英文空格分词）
+- 滑动窗口 WPM 计算（保留最近 60 秒的词数变化时间戳）
+- localStorage 持久化：会话数据（markflow-writing-session）+ 连续天数记录（markflow-writing-streak）
+- React useEffect 管理定时器和状态生命周期，组件卸载时自动清理
