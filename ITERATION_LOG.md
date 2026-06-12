@@ -9,6 +9,7 @@
 | 3 | 写作会话统计 (Writing Stats) | WritingStats.tsx 组件，实时 WPM/字数/会话时长/连续天数 | ✅ |
 | 4 | 链接悬浮预览 (Link Hover Preview) | linkPreview.ts 扩展，悬停链接弹出 URL 预览+操作按钮 | ✅ |
 | 5 | 自定义代码片段管理器 (Snippet Manager) | SnippetManager.tsx + expandSnippet 合并自定义片段 | ✅ |
+| 6 | Markdown Lint 风格检查 | markdownLint.ts 扩展，11 条规则实时检测 | ✅ |
 
 ---
 
@@ -147,3 +148,35 @@
 - 自定义片段与内置片段合并策略：自定义优先（可覆盖内置触发词）
 - 触发词去空格处理，编辑模式下禁用触发词修改
 - 每次展开时实时从 localStorage 读取，无需重启编辑器
+
+## 迭代 6 — Markdown Lint 风格检查
+
+**日期**: 2026-06-12
+
+### 特性描述
+实时检测常见 Markdown 格式问题，在编辑器中以波浪线/下划线标注，悬停显示具体规则说明和错误代码。共 11 条规则。
+
+### 核心改动
+- **新增** `src/renderer/src/plugins/markdownLint.ts`
+  - MD001: 标题层级跳跃检测
+  - MD009: 行尾空格
+  - MD010: 硬制表符
+  - MD012: 连续多个空行
+  - MD013: 行过长（>120 字符）
+  - MD022: 标题前后缺少空行
+  - MD034: 裸 URL
+  - MD040: 代码块缺少语言标识
+  - MD045: 图片缺少 alt 文本
+  - MD047: 文件末尾缺少换行
+  - 800ms 防抖延迟，避免编辑时频繁触发
+- **修改** `src/renderer/src/components/Editor.tsx`
+  - 导入 `markdownLinter` 并加入扩展数组
+- **修改** `package.json`
+  - 新增 `@codemirror/lint` 显式依赖
+- **修改** `src/renderer/src/styles/editor.css`
+  - 新增 `.cm-diagnostic` / `.cm-lintRange` 主题适配样式
+
+### 技术点
+- CodeMirror 6 `linter()` API，返回 `Diagnostic[]`
+- 按 severity 分级：error（红）、warning（橙）、info（蓝）
+- 纯文本分析 + 正则匹配，无 AST 依赖，性能优良

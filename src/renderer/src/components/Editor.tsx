@@ -17,6 +17,7 @@ import { createEditorTheme } from '../plugins/theme'
 import { createSlashCommandExtension } from '../plugins/slashCommand'
 import { linkHoverTooltip } from '../plugins/linkPreview'
 import { loadCustomSnippets } from './SnippetManager'
+import { markdownLinter } from '../plugins/markdownLint'
 
 interface EditorProps { tab: Tab }
 
@@ -561,6 +562,7 @@ export function Editor({ tab }: EditorProps) {
         createTypewriterPlugin(),
         createSlashCommandExtension(),
         linkHoverTooltip,
+        markdownLinter,
       ]
     })
 

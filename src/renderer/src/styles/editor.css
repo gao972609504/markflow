@@ -1035,3 +1035,19 @@
   color: var(--accent);
   border-color: var(--accent);
 }
+
+/* ============ Markdown Lint 诊断样式 ============ */
+
+.cm-editor .cm-diagnostic {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.cm-editor .cm-diagnostic-error { border-left: 3px solid #e53935; }
+.cm-editor .cm-diagnostic-warning { border-left: 3px solid #ff9800; }
+.cm-editor .cm-diagnostic-info { border-left: 3px solid #2196f3; }
+
+.cm-editor .cm-lintRange-error { background-image: none; border-bottom: 2px wavy #e53935; }
+.cm-editor .cm-lintRange-warning { background-image: none; border-bottom: 2px wavy #ff9800; }
+.cm-editor .cm-lintRange-info { background-image: none; border-bottom: 1px dotted #2196f3; }
