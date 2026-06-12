@@ -253,12 +253,13 @@ function createDecorationPlugin() {
   )
 }
 
-// ============ Typewriter 滚动插件 ============
+// ============ Typewriter 滚动 + 音效插件 ============
 
 function createTypewriterPlugin() {
   return EditorView.updateListener.of(update => {
-    if (!useEditorStore.getState().typewriterMode) return
-    if (update.selectionSet || update.docChanged) {
+    const state = useEditorStore.getState()
+    // Typewriter 滚动：光标行始终居中
+    if (state.typewriterMode && (update.selectionSet || update.docChanged)) {
       const head = update.state.selection.main.head
       const line = update.state.doc.lineAt(head)
       requestAnimationFrame(() => {
@@ -267,7 +268,50 @@ function createTypewriterPlugin() {
         })
       })
     }
+    // 打字机音效：仅在有内容变化时触发
+    if (state.typewriterSound && update.docChanged) {
+      playTypewriterSound()
+    }
   })
+}
+
+// ============ 打字机音效 ============
+
+let audioCtx: AudioContext | null = null
+
+function playTypewriterSound() {
+  try {
+    if (!audioCtx) audioCtx = new AudioContext()
+    const ctx = audioCtx
+    const now = ctx.currentTime
+
+    // 按键音：短促的正弦波
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.type = 'triangle'
+    // 随机微小频率变化，模拟机械键盘差异
+    osc.frequency.value = 800 + Math.random() * 200
+    gain.gain.setValueAtTime(0.08, now)
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06)
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+    osc.start(now)
+    osc.stop(now + 0.06)
+
+    // 附加轻微的机械弹簧声（高频噪声）
+    const noise = ctx.createOscillator()
+    const noiseGain = ctx.createGain()
+    noise.type = 'sine'
+    noise.frequency.value = 1200 + Math.random() * 300
+    noiseGain.gain.setValueAtTime(0.02, now)
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.03)
+    noise.connect(noiseGain)
+    noiseGain.connect(ctx.destination)
+    noise.start(now)
+    noise.stop(now + 0.03)
+  } catch {
+    // 浏览器不支持 AudioContext 时静默失败
+  }
 }
 
 // ============ Editor 组件 ============
@@ -275,7 +319,7 @@ function createTypewriterPlugin() {
 export function Editor({ tab }: EditorProps) {
   const editorRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
-  const { updateTabContent, updateTabCursor, setScrollProgress, theme, focusMode, typewriterMode, fontSize, wordWrap, showLineNumbers, fontFamily, tabSize } = useEditorStore()
+  const { updateTabContent, updateTabCursor, setScrollProgress, theme, focusMode, typewriterMode, fontSize, wordWrap, showLineNumbers, fontFamily, tabSize, typewriterSound } = useEditorStore()
   const isDark = theme === 'dark'
 
   useEffect(() => {
@@ -588,7 +632,7 @@ export function Editor({ tab }: EditorProps) {
     const view = new EditorView({ state, parent: editorRef.current })
     viewRef.current = view
     return () => { view.destroy(); viewRef.current = null }
-  }, [tab.id, isDark, fontSize, fontFamily, tabSize, wordWrap, showLineNumbers])
+  }, [tab.id, isDark, fontSize, fontFamily, tabSize, wordWrap, showLineNumbers, typewriterSound])
 
   // focusMode / typewriterMode 变化时触发装饰重建
   useEffect(() => {

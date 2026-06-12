@@ -99,6 +99,12 @@ const Icon = {
       <path d="M2 6h12v2H2zM4 4h8M4 12h8M8 8v4" />
     </svg>
   ),
+  Sound: () => (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M3 6h2.5L8 3v10L4.5 10H2V6z" />
+      <path d="M11 5.5c.8.7 1.2 1.5 1.2 2.5s-.4 1.8-1.2 2.5" />
+    </svg>
+  ),
   Sun: () => (
     <svg viewBox="0 0 16 16" aria-hidden="true">
       <circle cx="8" cy="8" r="3" />
@@ -170,7 +176,7 @@ function Divider() {
 }
 
 export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
-  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, outlineVisible, toggleOutline, autoSave, toggleAutoSave, autoSaveDelay, setAutoSaveDelay, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap, showLineNumbers, toggleLineNumbers, wordGoal, setWordGoal, fontFamily, setFontFamily, tabSize, setTabSize } = useEditorStore()
+  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, typewriterSound, toggleTypewriterSound, outlineVisible, toggleOutline, autoSave, toggleAutoSave, autoSaveDelay, setAutoSaveDelay, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap, showLineNumbers, toggleLineNumbers, wordGoal, setWordGoal, fontFamily, setFontFamily, tabSize, setTabSize } = useEditorStore()
 
   // ── 番茄钟计时器 ──
   const [pomoRunning, setPomoRunning] = useState(false)
@@ -423,6 +429,14 @@ export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
         >
           <Icon.Typewriter />
           <span>打字机</span>
+        </button>
+        <button
+          className={`status-btn ${typewriterSound ? 'status-btn-active' : ''}`}
+          onClick={toggleTypewriterSound}
+          title={`打字机音效：${typewriterSound ? '已开启' : '已关闭'}`}
+        >
+          <Icon.Sound />
+          <span>音效</span>
         </button>
         <button className="status-btn" onClick={toggleTheme} title="切换主题">
           {theme === 'light' ? <Icon.Moon /> : <Icon.Sun />}

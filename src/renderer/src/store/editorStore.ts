@@ -57,6 +57,7 @@ interface EditorState {
   wordGoal: number
   fontFamily: string
   tabSize: number
+  typewriterSound: boolean
   bookmarks: Record<string, { line: number; label: string }[]> // tabId -> bookmarks
   favoriteFiles: string[]
   lastSession: { tabPaths: string[]; activeTabPath: string | null; folderPath: string | null; cursorPositions?: Record<string, { line: number; col: number }> } | null
@@ -103,6 +104,7 @@ interface EditorState {
   setWordGoal: (goal: number) => void
   setFontFamily: (family: string) => void
   setTabSize: (size: number) => void
+  toggleTypewriterSound: () => void
   toggleTabPin: (id: string) => void
   addBookmark: (tabId: string, line: number, label: string) => void
   removeBookmark: (tabId: string, line: number) => void
@@ -198,6 +200,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   fontSize: loadPersistedFontSize(),
   fontFamily: loadPersistedFontFamily(),
   tabSize: 2,
+  typewriterSound: false,
   wordGoal: 0,
   bookmarks: {},
   favoriteFiles: JSON.parse(localStorage.getItem('markflow-favorites') || '[]'),
@@ -317,6 +320,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setWordGoal: (goal: number) => set({ wordGoal: Math.max(0, goal) }),
   setFontFamily: (family: string) => { persistFontFamily(family); set({ fontFamily: family }) },
   setTabSize: (size: number) => set({ tabSize: size }),
+  toggleTypewriterSound: () => set(state => ({ typewriterSound: !state.typewriterSound })),
   addBookmark: (tabId: string, line: number, label: string) => set(state => {
     const list = [...(state.bookmarks[tabId] || [])]
     if (!list.some(b => b.line === line)) list.push({ line, label })

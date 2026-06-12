@@ -13,6 +13,7 @@
 | 7 | Emoji 选择器 | emojiPicker.ts 扩展，输入 `:` 触发浮动面板，70+ emoji 搜索 | ✅ |
 | 8 | WikiLink 双向链接系统 | wikiLinkCompletion.ts + BacklinksPanel.tsx，支持 [[触发补全和反向链接面板 | ✅ |
 | 9 | 智能表格粘贴 | Editor.tsx pasteHandler 增加表格数据自动转 Markdown 表格 | ✅ |
+| 10 | 打字机音效 | Web Audio API 实时生成机械键盘音效，独立开关控制 | ✅ |
 
 ---
 
@@ -286,4 +287,46 @@
 - 迭代 1-8 均未涉及表格粘贴功能
 - 项目已有 `formatMarkdownTable`（Mod+Shift+F 格式化现有表格）和 `insertTable`（Mod+Shift+T 插入新表格），但均不处理从外部工具粘贴的数据转换
 - 本迭代首次实现「外部制表符/CSV 数据 → Markdown 表格」的自动转换，是全新的数据导入能力
+
+---
+
+## 迭代 10 — 打字机音效 (Typewriter Sound)
+
+**日期**: 2026-06-12
+
+### 特性描述
+在打字机模式下（或独立开启时），每次输入字符时通过 Web Audio API 实时生成机械键盘音效，增强写作沉浸感。音效开关独立控制，不与打字机滚动模式绑定。
+
+### 核心改动
+- **修改** `src/renderer/src/store/editorStore.ts`
+  - 新增 `typewriterSound: boolean` 状态（默认 `false`）
+  - 新增 `toggleTypewriterSound` action 切换音效开关
+- **修改** `src/renderer/src/components/StatusBar.tsx`
+  - 导入 `typewriterSound` 和 `toggleTypewriterSound`
+  - 新增「音效」按钮，带喇叭图标，位于「打字机」按钮旁
+  - 激活状态使用 `status-btn-active` 样式
+- **修改** `src/renderer/src/components/Editor.tsx`
+  - 导入 `typewriterSound`
+  - 重构 `createTypewriterPlugin()`：同时处理打字机滚动和音效触发
+  - 新增 `playTypewriterSound()` 函数：使用 Web Audio API `AudioContext` 实时生成音效
+    - 主音：三角波振荡器 800-1000Hz，6ms 衰减
+    - 弹簧声：正弦波 1200-1500Hz，3ms 衰减
+    - 音量较低（gain 0.08 / 0.02），不干扰写作
+  - `useEffect` 依赖数组加入 `typewriterSound`，开关变化时重建编辑器插件
+
+### 技术点
+- Web Audio API：`AudioContext` + `OscillatorNode` + `GainNode`
+- 随机频率变化（`Math.random() * 200`）模拟真实机械键盘每次按键的微小差异
+- 延迟加载 `AudioContext`：首次按键时才创建，避免页面加载时的音频权限问题
+- 插件合并策略：将音效触发和打字机滚动统一在一个 `updateListener` 中，减少监听器数量
+
+### 验证结果
+- `npm run build` 通过，无 TypeScript 错误
+- 构建耗时约 72 秒
+
+### 非重复性说明
+- 迭代 1-9 均未涉及音频/音效功能
+- 项目已有「打字机模式」（迭代前就存在的打字机滚动功能），但仅控制光标居中滚动，无声音反馈
+- 本迭代首次实现「实时按键音效」，是全新的感官反馈能力，与现有打字机滚动模式互补而非重复
+
 
