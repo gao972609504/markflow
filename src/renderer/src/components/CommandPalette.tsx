@@ -36,6 +36,7 @@ function getCommands(): Command[] {
       const cmContent = document.querySelector('.cm-content')
       if (cmContent) cmContent.dispatchEvent(new KeyboardEvent('keydown', { key: 'F', ctrlKey: true, shiftKey: true, bubbles: true }))
     }},
+    { id: 'view.writing-stats', label: '写作统计', category: '视图', shortcut: 'Ctrl+Shift+W', action: () => { const s = useEditorStore.getState(); s.setShowWritingStats(!s.showWritingStats) } },
   ]
 }
 
