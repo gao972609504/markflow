@@ -8,6 +8,7 @@
 | 2 | Mermaid 图表实时渲染 | MermaidWidget + decorations 集成，mermaid 异步加载 | ✅ |
 | 3 | 写作会话统计 (Writing Stats) | WritingStats.tsx 组件，实时 WPM/字数/会话时长/连续天数 | ✅ |
 | 4 | 链接悬浮预览 (Link Hover Preview) | linkPreview.ts 扩展，悬停链接弹出 URL 预览+操作按钮 | ✅ |
+| 5 | 自定义代码片段管理器 (Snippet Manager) | SnippetManager.tsx + expandSnippet 合并自定义片段 | ✅ |
 
 ---
 
@@ -116,3 +117,33 @@
 - CodeMirror 6 `hoverTooltip` API，返回 `Tooltip` 对象
 - 正则匹配三种 Markdown 链接语法，计算精确的 from/to 位置
 - DOM 事件处理：按钮 click 使用 preventDefault/stopPropagation 阻止编辑器干扰
+
+## 迭代 5 — 自定义代码片段管理器 (Custom Snippet Manager)
+
+**日期**: 2026-06-12
+
+### 特性描述
+用户可创建、编辑、删除自定义代码片段（snippet）。在编辑器中输入触发词按 Tab 即可展开为预设内容。支持搜索、编辑、多行片段。
+
+### 核心改动
+- **新增** `src/renderer/src/components/SnippetManager.tsx`
+  - 左右分栏 UI：左侧列表 + 搜索，右侧编辑表单
+  - CRUD 操作：创建/编辑/删除片段，触发词唯一性校验
+  - localStorage 持久化（markflow-custom-snippets）
+  - 导出 `loadCustomSnippets()` 供 Editor.tsx 调用
+- **修改** `src/renderer/src/components/Editor.tsx`
+  - `expandSnippet()` 合并自定义片段（优先于内置片段）
+  - 导入 `loadCustomSnippets` 函数
+- **修改** `src/renderer/src/store/editorStore.ts`
+  - 新增 `showSnippetManager` 状态和 `setShowSnippetManager` action
+- **修改** `src/renderer/src/App.tsx`
+  - 导入 SnippetManager 组件并加入渲染树
+- **修改** `src/renderer/src/components/CommandPalette.tsx`
+  - 注册 `view.snippet-manager` 命令
+- **修改** `src/renderer/src/styles/global.css`
+  - 新增 `.snippet-*` 全套样式（分栏布局、列表项、表单、提示区）
+
+### 技术点
+- 自定义片段与内置片段合并策略：自定义优先（可覆盖内置触发词）
+- 触发词去空格处理，编辑模式下禁用触发词修改
+- 每次展开时实时从 localStorage 读取，无需重启编辑器

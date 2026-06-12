@@ -16,6 +16,7 @@ import { ShortcutReference } from './components/ShortcutReference'
 import { GlobalSearch } from './components/GlobalSearch'
 import { PresentationView } from './components/PresentationView'
 import { WritingStats } from './components/WritingStats'
+import { SnippetManager } from './components/SnippetManager'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -638,6 +639,7 @@ export default function App() {
       <GlobalSearch />
       <PresentationView />
       <WritingStats />
+      <SnippetManager />
     </div>
   )
 }
