@@ -16,6 +16,7 @@ import { buildDecorations } from '../plugins/decorations'
 import { createEditorTheme } from '../plugins/theme'
 import { createSlashCommandExtension } from '../plugins/slashCommand'
 import { linkHoverTooltip } from '../plugins/linkPreview'
+import { loadCustomSnippets } from './SnippetManager'
 
 interface EditorProps { tab: Tab }
 
@@ -873,7 +874,13 @@ function expandSnippet(view: EditorView): boolean {
   const wordMatch = textBefore.match(/(\w+)$/)
   if (!wordMatch) return false
   const trigger = wordMatch[1]
-  const expansion = snippets[trigger]
+  // 合并自定义片段（优先于内置片段）
+  const custom = loadCustomSnippets()
+  const allSnippets: Record<string, string> = { ...snippets }
+  for (const s of custom) {
+    allSnippets[s.trigger] = s.expansion
+  }
+  const expansion = allSnippets[trigger]
   if (!expansion) return false
   const triggerStart = sel.from - trigger.length
   view.dispatch({
