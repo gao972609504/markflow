@@ -11,6 +11,7 @@
 | 5 | 自定义代码片段管理器 (Snippet Manager) | SnippetManager.tsx + expandSnippet 合并自定义片段 | ✅ |
 | 6 | Markdown Lint 风格检查 | markdownLint.ts 扩展，11 条规则实时检测 | ✅ |
 | 7 | Emoji 选择器 | emojiPicker.ts 扩展，输入 `:` 触发浮动面板，70+ emoji 搜索 | ✅ |
+| 8 | WikiLink 双向链接系统 | wikiLinkCompletion.ts + BacklinksPanel.tsx，支持 [[触发补全和反向链接面板 | ✅ |
 
 ---
 
@@ -205,3 +206,52 @@
 - StateEffect 驱动面板状态，ViewPlugin 渲染 DOM
 - 触发检测排除代码块（syntaxTree 检查）和 Callout（`:::`前缀）
 - coordsAtPos 定位面板，父元素相对定位
+
+---
+
+## 迭代 8 — WikiLink 双向链接系统
+
+**日期**: 2026-06-12
+
+### 特性描述
+类似 Obsidian / Logseq 的 WikiLink 双向链接系统。输入 `[[` 触发文档补全，自动列出工作区中所有 Markdown 文件；反向链接面板显示哪些文档链接到了当前文档，支持点击跳转。
+
+### 核心改动
+- **新增** `src/renderer/src/plugins/wikiLinkCompletion.ts`
+  - CodeMirror 6 扩展：StateField + ViewPlugin + keymap
+  - 输入 `[[` 触发补全面板，列出当前工作区所有 Markdown 文件
+  - 支持中英文模糊搜索过滤
+  - 键盘导航（↑↓ 选择，Tab/Enter 确认，Esc 关闭）
+  - 自动补全为 `[[文件名]]` 格式
+  - 构建文件列表来源：已打开标签 + 文件树扫描
+- **新增** `src/renderer/src/components/BacklinksPanel.tsx`
+  - 扫描所有已打开标签中的 WikiLinks
+  - 匹配逻辑：链接目标等于当前文档文件名（不含扩展名）或完整文件名
+  - 显示来源文档、行号、上下文片段
+  - 点击跳转到引用文档
+  - 空状态提示 + 当前文档 outgoing links 计数
+- **修改** `src/renderer/src/components/Editor.tsx`
+  - 导入并集成 `createWikiLinkCompletion()`
+- **修改** `src/renderer/src/store/editorStore.ts`
+  - 新增 `backlinksVisible` 状态和 `setShowBacklinks` action
+- **修改** `src/renderer/src/App.tsx`
+  - 导入 BacklinksPanel 组件并加入渲染树
+- **修改** `src/renderer/src/components/CommandPalette.tsx`
+  - 注册 `view.backlinks` 命令，快捷键 `Ctrl+Shift+B`
+- **修改** `src/renderer/src/styles/global.css`
+  - 新增 `.backlinks-*` 全套样式（面板、列表项、空状态、高亮）
+
+### 技术点
+- CodeMirror StateEffect 驱动补全面板状态
+- 文件列表去重：已打开标签 + 文件树扫描合并后排序
+- 反向链接匹配：正则 `\[\[[^\]|]+(?:\|[^\]]+)?\]\]` 提取链接目标
+- 点击反向链接项直接激活对应标签页
+
+### 验证结果
+- `npm run build` 通过，无 TypeScript 错误
+- 构建耗时约 68 秒
+
+### 非重复性说明
+- 迭代 1-7 均未涉及 WikiLink 或双向链接功能
+- 本迭代首次实现 `[[` 触发文档补全 + 反向链接面板，属于全新的笔记关联能力
+- 与迭代 4 的「链接悬浮预览」不同：后者处理标准 Markdown 链接 `[text](url)` 的悬停预览；本迭代处理 WikiLink `[[...]]` 的补全和反向索引

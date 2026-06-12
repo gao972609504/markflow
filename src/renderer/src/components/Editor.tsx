@@ -19,6 +19,7 @@ import { linkHoverTooltip } from '../plugins/linkPreview'
 import { loadCustomSnippets } from './SnippetManager'
 import { markdownLinter } from '../plugins/markdownLint'
 import { createEmojiPickerExtension } from '../plugins/emojiPicker'
+import { createWikiLinkCompletion } from '../plugins/wikiLinkCompletion'
 
 interface EditorProps { tab: Tab }
 
@@ -565,6 +566,7 @@ export function Editor({ tab }: EditorProps) {
         linkHoverTooltip,
         markdownLinter,
         ...createEmojiPickerExtension(),
+        ...createWikiLinkCompletion(),
       ]
     })
 

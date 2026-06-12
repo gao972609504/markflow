@@ -17,6 +17,7 @@ import { GlobalSearch } from './components/GlobalSearch'
 import { PresentationView } from './components/PresentationView'
 import { WritingStats } from './components/WritingStats'
 import { SnippetManager } from './components/SnippetManager'
+import { BacklinksPanel } from './components/BacklinksPanel'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -631,6 +632,7 @@ export default function App() {
         </div>
         {!zenMode && <OutlinePanel />}
         {!zenMode && <TagPanel />}
+        {!zenMode && <BacklinksPanel />}
       </div>
       <QuickOpen />
       <CommandPalette />

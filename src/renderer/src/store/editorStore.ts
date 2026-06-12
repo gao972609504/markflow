@@ -49,6 +49,7 @@ interface EditorState {
   showPresentation: boolean
   showWritingStats: boolean
   showSnippetManager: boolean
+  backlinksVisible: boolean
   closedTabsHistory: { filePath: string | null; title: string; content: string }[]
   recentFiles: { filePath: string; title: string; lastOpened: number }[]
   zenMode: boolean
@@ -94,6 +95,7 @@ interface EditorState {
   setShowPresentation: (show: boolean) => void
   setShowWritingStats: (show: boolean) => void
   setShowSnippetManager: (show: boolean) => void
+  setShowBacklinks: (show: boolean) => void
   reopenClosedTab: () => void
   toggleZenMode: () => void
   setFontSize: (size: number) => void
@@ -189,6 +191,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   showPresentation: false,
   showWritingStats: false,
   showSnippetManager: false,
+  backlinksVisible: false,
   closedTabsHistory: [],
   recentFiles: loadRecentFiles(),
   zenMode: false,
@@ -298,6 +301,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setShowPresentation: (show: boolean) => set({ showPresentation: show }),
   setShowWritingStats: (show: boolean) => set({ showWritingStats: show }),
   setShowSnippetManager: (show: boolean) => set({ showSnippetManager: show }),
+  setShowBacklinks: (show: boolean) => set({ backlinksVisible: show }),
   reopenClosedTab: () => {
     set(state => {
       if (state.closedTabsHistory.length === 0) return state

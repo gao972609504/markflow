@@ -38,6 +38,7 @@ function getCommands(): Command[] {
     }},
     { id: 'view.writing-stats', label: '写作统计', category: '视图', shortcut: 'Ctrl+Shift+W', action: () => { const s = useEditorStore.getState(); s.setShowWritingStats(!s.showWritingStats) } },
     { id: 'view.snippet-manager', label: '代码片段管理', category: '视图', action: () => { const s = useEditorStore.getState(); s.setShowSnippetManager(!s.showSnippetManager) } },
+    { id: 'view.backlinks', label: '反向链接面板', category: '视图', shortcut: 'Ctrl+Shift+B', action: () => { const s = useEditorStore.getState(); s.setShowBacklinks(!s.backlinksVisible) } },
   ]
 }
 
