@@ -20,6 +20,7 @@ import { SnippetManager } from './components/SnippetManager'
 import { BacklinksPanel } from './components/BacklinksPanel'
 import { WordFrequency } from './components/WordFrequency'
 import { GraphView } from './components/GraphView'
+import { DailyNotes } from './components/DailyNotes'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -462,6 +463,12 @@ export default function App() {
         const s = useEditorStore.getState()
         s.setShowGraphView(!s.showGraphView)
       }
+      // Ctrl+Shift+D 每日笔记
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        e.preventDefault()
+        const s = useEditorStore.getState()
+        s.setShowDailyNotes(!s.showDailyNotes)
+      }
       // F11 禅模式
       if (e.key === 'F11') {
         e.preventDefault()
@@ -658,6 +665,7 @@ export default function App() {
       <SnippetManager />
       <WordFrequency />
       <GraphView />
+      <DailyNotes />
     </div>
   )
 }

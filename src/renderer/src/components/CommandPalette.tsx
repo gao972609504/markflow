@@ -41,6 +41,7 @@ function getCommands(): Command[] {
     { id: 'view.backlinks', label: '反向链接面板', category: '视图', shortcut: 'Ctrl+Shift+B', action: () => { const s = useEditorStore.getState(); s.setShowBacklinks(!s.backlinksVisible) } },
     { id: 'view.word-freq', label: '词频分析面板', category: '视图', shortcut: 'Ctrl+Shift+K', action: () => { const s = useEditorStore.getState(); s.setShowWordFreq(!s.wordFreqVisible) } },
     { id: 'view.graph', label: '关系图谱', category: '视图', shortcut: 'Ctrl+Shift+G', action: () => { const s = useEditorStore.getState(); s.setShowGraphView(!s.showGraphView) } },
+    { id: 'view.daily-notes', label: '每日笔记日历', category: '视图', shortcut: 'Ctrl+Shift+D', action: () => { const s = useEditorStore.getState(); s.setShowDailyNotes(!s.showDailyNotes) } },
   ]
 }
 

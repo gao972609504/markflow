@@ -16,6 +16,7 @@
 | 10 | 打字机音效 | Web Audio API 实时生成机械键盘音效，独立开关控制 | ✅ |
 | 11 | 词频分析面板 | WordFrequency.tsx，中英文分词+停用词过滤+高频词检测，点击触发查找 | ✅ |
 | 12 | 关系图谱 | GraphView.tsx，Canvas 力导向网络图可视化 WikiLink 连接，拖拽/缩放/点击跳转 | ✅ |
+| 13 | 每日笔记日历 | DailyNotes.tsx，月历视图，点击日期创建/打开 YYYY-MM-DD.md，标记已有笔记 | ✅ |
 
 ---
 
@@ -433,5 +434,55 @@ Obsidian 标志性功能。将文档间的 WikiLink `[[双链]]` 关系可视化
 - 项目已有 WikiLink 补全（迭代 8）和反向链接面板，但均无**可视化网络图**
 - 项目已有 Mermaid 图表渲染（迭代 2），但那是渲染用户编写的图表代码；本迭代是**自动分析文档链接结构**生成图谱
 - 本迭代首次实现"文档关系力导向可视化"，是知识管理维度的全新能力
+
+---
+
+## 迭代 13 — 每日笔记 + 日历 (Daily Notes + Calendar)
+
+**日期**: 2026-06-15
+
+### 特性描述
+Obsidian/Notion/Logseq 核心笔记管理功能。月历模态视图，点击任意日期即可创建或打开当天的每日笔记（文件名 `YYYY-MM-DD.md`）。自动在工作区文件树中标记已有笔记的日期，支持月份导航、跳转今天。
+
+### 核心改动
+- **新增** `src/renderer/src/components/DailyNotes.tsx`
+  - 月历模态：周一起始的 6×7 网格，含星期标题行
+  - 月份导航（‹ / ›）+ 「今天」快捷跳转
+  - 已有笔记日期：底部圆点标记（递归扫描 fileTree + 已打开标签）
+  - 今天高亮（accent 底色 + 白字加粗）
+  - 周末日期弱化色
+  - 点击日期逻辑：
+    - 若该日期笔记已打开 → 直接激活对应标签
+    - 工作区已打开 → `readFile` 尝试读取，成功则打开；失败则 `writeFile` 创建模板后打开
+    - 未打开工作区 → 创建未命名标签（带警告提示）
+  - 每日笔记模板：YAML front matter（date 字段）+ 一级标题（日期 + 星期）
+  - Esc / 背景点击关闭
+  - 底部统计：本月已写篇数 + 图例
+  - 路径拼接兼容 Windows 反斜杠
+- **修改** `src/renderer/src/store/editorStore.ts`
+  - 新增 `showDailyNotes` 状态和 `setShowDailyNotes` action
+- **修改** `src/renderer/src/App.tsx`
+  - 导入 DailyNotes 组件并加入渲染树
+  - 新增 `Ctrl+Shift+D` 快捷键
+- **修改** `src/renderer/src/components/CommandPalette.tsx`
+  - 注册 `view.daily-notes` 命令
+- **修改** `src/renderer/src/styles/global.css`
+  - 新增 `.dailynotes-*` 全套样式（模态弹窗、日历网格、单元格状态、图例）
+
+### 技术点
+- 日期正则 `^(\d{4})-(\d{2})-(\d{2})\.(md|markdown|mdx|txt)$` 识别每日笔记文件
+- 周一起始日历：`startOffset = firstDay.getDay() - 1`（周日=0 映射到偏移 6）
+- 文件存在性检测：`readFile` 成功=已存在，catch=需新建（避免额外的 stat 调用）
+- FileTreeNode 递归扫描收集所有匹配日期
+- 复用迭代 11/12 的 store 扩展模式（state + action + setShow 三件套）
+
+### 验证结果
+- `npm run build` 通过，零 TypeScript 错误，零警告
+- 构建耗时 1 分 28 秒
+
+### 非重复性说明
+- 项目已有文件树、最近文件、标签管理，但均无**日历驱动的每日笔记**功能
+- 项目已有标签页创建/文件读写能力，本迭代是首次将这些能力组合为「日期 → 笔记」的笔记管理工作流
+- 是知识管理（配合迭代 8 双链、迭代 12 图谱）的日记维度补充
 
 
