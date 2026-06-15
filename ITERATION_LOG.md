@@ -18,6 +18,7 @@
 | 12 | 关系图谱 | GraphView.tsx，Canvas 力导向网络图可视化 WikiLink 连接，拖拽/缩放/点击跳转 | ✅ |
 | 13 | 每日笔记日历 | DailyNotes.tsx，月历视图，点击日期创建/打开 YYYY-MM-DD.md，标记已有笔记 | ✅ |
 | 14 | 书签面板 | BookmarksPanel.tsx，跨文档列出书签，点击跳转+居中滚动，分组管理+删除 | ✅ |
+| 15 | 选中匹配高亮 | highlightSelectionMatches 扩展，选中词高亮所有出现位置，状态栏开关+命令 | ✅ |
 
 ---
 
@@ -529,5 +530,46 @@ Obsidian/Notion/Logseq 核心笔记管理功能。月历模态视图，点击任
 - 项目已有书签的增删和上/下一个导航逻辑（Editor.tsx），但**无面板列表查看/跨文档跳转 UI**
 - 与迭代 4 链接悬浮预览、迭代 8 反向链接面板不同：本迭代专门管理用户手动标记的"收藏行"
 - 是文档内导航（配合大纲、书签跳转、行号跳转）的补全
+
+---
+
+## 迭代 15 — 选中匹配高亮 (Selection Match Highlight)
+
+**日期**: 2026-06-15
+
+### 特性描述
+VS Code / Sublime 标配的编辑器特性。选中一个词（或光标停留在一个词上）时，自动高亮文档中所有其他相同词的出现位置，便于快速定位和审阅重复内容。可通过状态栏按钮和命令面板开关。
+
+### 核心改动
+- **修改** `src/renderer/src/components/Editor.tsx`
+  - 从 `@codemirror/search` 新增导入 `highlightSelectionMatches`
+  - 扩展数组新增条件项：`selectionHighlight ? [highlightSelectionMatches({ minSelectionLength: 2, wholeWords: false, highlightWordAroundCursor: true })] : []`
+  - 解构新增 `selectionHighlight`
+  - 编辑器创建依赖数组新增 `selectionHighlight`（切换时重建编辑器以应用/移除扩展）
+- **修改** `src/renderer/src/store/editorStore.ts`
+  - 新增 `selectionHighlight: boolean`（默认 `true`）和 `toggleSelectionHighlight` action
+- **修改** `src/renderer/src/components/StatusBar.tsx`
+  - 解构新增 `selectionHighlight` / `toggleSelectionHighlight`
+  - 行号按钮旁新增「匹配」开关按钮（自定义 SVG 图标 + 激活态）
+- **修改** `src/renderer/src/components/CommandPalette.tsx`
+  - 注册 `edit.toggle-selection-highlight` 命令（显示当前开关状态）
+- **修改** `src/renderer/src/styles/global.css`
+  - 新增 `.cm-selectionMatch` 样式（accent-softer 底色 + 圆角）
+  - 主匹配项 `.cm-selectionMatch-main` 更深底色
+
+### 技术点
+- `@codemirror/search` 的 `highlightSelectionMatches`：基于选区自动构建 RegExp 匹配并添加装饰
+- `highlightWordAroundCursor: true`：无选区时也高亮光标所在词
+- `minSelectionLength: 2`：避免单字符误触发大量高亮
+- 复用编辑器重建机制（与 wordWrap/showLineNumbers 同一 useEffect 依赖）
+
+### 验证结果
+- `npm run build` 通过，零 TypeScript 错误，零警告
+- 构建耗时 1 分 57 秒
+
+### 非重复性说明
+- 项目已有查找替换面板（Ctrl+H）和搜索，但无**选区驱动的实时高亮**
+- 已确认扩展数组此前不含 `highlightSelectionMatches`
+- 是编辑器交互体验（配合迭代 6 lint、已有括号匹配）的补全
 
 

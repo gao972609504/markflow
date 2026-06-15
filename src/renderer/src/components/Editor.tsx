@@ -9,7 +9,7 @@ import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirro
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { languages } from '@codemirror/language-data'
 import { syntaxHighlighting, defaultHighlightStyle, bracketMatching, indentOnInput, foldService, foldGutter, foldEffect, unfoldEffect, foldedRanges } from '@codemirror/language'
-import { searchKeymap } from '@codemirror/search'
+import { searchKeymap, highlightSelectionMatches } from '@codemirror/search'
 import { createTableExtension, tableLightTheme, tableDarkTheme } from '@markwhen/codemirror-tables'
 import { Tab, useEditorStore } from '../store/editorStore'
 import { buildDecorations } from '../plugins/decorations'
@@ -319,7 +319,7 @@ function playTypewriterSound() {
 export function Editor({ tab }: EditorProps) {
   const editorRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
-  const { updateTabContent, updateTabCursor, setScrollProgress, theme, focusMode, typewriterMode, fontSize, wordWrap, showLineNumbers, fontFamily, tabSize, typewriterSound } = useEditorStore()
+  const { updateTabContent, updateTabCursor, setScrollProgress, theme, focusMode, typewriterMode, fontSize, wordWrap, showLineNumbers, fontFamily, tabSize, typewriterSound, selectionHighlight } = useEditorStore()
   const isDark = theme === 'dark'
 
   useEffect(() => {
@@ -425,6 +425,7 @@ export function Editor({ tab }: EditorProps) {
         foldGutter(),
         markdownHeadingFold,
         ...(wordWrap ? [EditorView.lineWrapping] : []),
+        ...(selectionHighlight ? [highlightSelectionMatches({ minSelectionLength: 2, wholeWords: false, highlightWordAroundCursor: true })] : []),
         createEditorTheme(isDark, fontSize, fontFamily),
         syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
         markdown({ base: markdownLanguage, codeLanguages: languages }),
@@ -632,7 +633,7 @@ export function Editor({ tab }: EditorProps) {
     const view = new EditorView({ state, parent: editorRef.current })
     viewRef.current = view
     return () => { view.destroy(); viewRef.current = null }
-  }, [tab.id, isDark, fontSize, fontFamily, tabSize, wordWrap, showLineNumbers, typewriterSound])
+  }, [tab.id, isDark, fontSize, fontFamily, tabSize, wordWrap, showLineNumbers, typewriterSound, selectionHighlight])
 
   // focusMode / typewriterMode 变化时触发装饰重建
   useEffect(() => {

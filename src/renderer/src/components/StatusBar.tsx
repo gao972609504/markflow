@@ -176,7 +176,7 @@ function Divider() {
 }
 
 export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
-  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, typewriterSound, toggleTypewriterSound, outlineVisible, toggleOutline, autoSave, toggleAutoSave, autoSaveDelay, setAutoSaveDelay, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap, showLineNumbers, toggleLineNumbers, wordGoal, setWordGoal, fontFamily, setFontFamily, tabSize, setTabSize } = useEditorStore()
+  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, typewriterSound, toggleTypewriterSound, outlineVisible, toggleOutline, autoSave, toggleAutoSave, autoSaveDelay, setAutoSaveDelay, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap, showLineNumbers, toggleLineNumbers, selectionHighlight, toggleSelectionHighlight, wordGoal, setWordGoal, fontFamily, setFontFamily, tabSize, setTabSize } = useEditorStore()
 
   // ── 番茄钟计时器 ──
   const [pomoRunning, setPomoRunning] = useState(false)
@@ -507,6 +507,14 @@ export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
         >
           <Icon.LineNumbers />
           <span>行号</span>
+        </button>
+        <button
+          className={`status-btn ${selectionHighlight ? 'status-btn-active' : ''}`}
+          onClick={toggleSelectionHighlight}
+          title={`选中匹配高亮：${selectionHighlight ? '已开启' : '已关闭'}（选中一个词，高亮所有出现位置）`}
+        >
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h12M2 7h8M2 11h12M2 13.5h5" /><circle cx="13" cy="13.5" r="2" fill="currentColor" stroke="none" /></svg>
+          <span>匹配</span>
         </button>
         <button
           className="status-btn"

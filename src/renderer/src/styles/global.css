@@ -2248,3 +2248,15 @@ kbd {
   color: #e0564f;
   background: rgba(224, 86, 79, 0.12);
 }
+
+/* ═══════════ 选中匹配高亮 Selection Match Highlight ═══════════ */
+
+.cm-selectionMatch {
+  background: var(--accent-softer);
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px var(--accent-softer);
+}
+
+.cm-selectionMatch.cm-selectionMatch-main {
+  background: var(--accent-soft);
+}
