@@ -124,6 +124,43 @@
   --img-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
 
+/* ══════════════ 强调色主题预设 Accent Presets ══════════════ */
+
+[data-accent="forest"] {
+  --accent-color: #2e7d32;
+  --accent-hover: #1b5e20;
+  --accent-soft: rgba(46, 125, 50, 0.10);
+  --accent-softer: rgba(46, 125, 50, 0.05);
+}
+
+[data-accent="berry"] {
+  --accent-color: #8e44ad;
+  --accent-hover: #6c3483;
+  --accent-soft: rgba(142, 68, 173, 0.10);
+  --accent-softer: rgba(142, 68, 173, 0.05);
+}
+
+[data-accent="amber"] {
+  --accent-color: #d97706;
+  --accent-hover: #b45309;
+  --accent-soft: rgba(217, 119, 6, 0.10);
+  --accent-softer: rgba(217, 119, 6, 0.05);
+}
+
+[data-accent="ocean"] {
+  --accent-color: #0d9488;
+  --accent-hover: #0f766e;
+  --accent-soft: rgba(13, 148, 136, 0.10);
+  --accent-softer: rgba(13, 148, 136, 0.05);
+}
+
+[data-accent="rose"] {
+  --accent-color: #be185d;
+  --accent-hover: #9f1239;
+  --accent-soft: rgba(190, 24, 93, 0.10);
+  --accent-softer: rgba(190, 24, 93, 0.05);
+}
+
 /* ══════════════ Reset & Base ══════════════ */
 
 * {
@@ -2460,4 +2497,15 @@ kbd {
   padding: 8px 10px;
   border-radius: 8px;
   line-height: 1.5;
+}
+
+/* 强调色 swatch 按钮 */
+.status-accent-swatch {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  flex-shrink: 0;
 }

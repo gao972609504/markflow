@@ -176,7 +176,7 @@ function Divider() {
 }
 
 export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
-  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, typewriterSound, toggleTypewriterSound, outlineVisible, toggleOutline, autoSave, toggleAutoSave, autoSaveDelay, setAutoSaveDelay, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap, showLineNumbers, toggleLineNumbers, selectionHighlight, toggleSelectionHighlight, wordGoal, setWordGoal, fontFamily, setFontFamily, tabSize, setTabSize } = useEditorStore()
+  const { theme, toggleTheme, focusMode, toggleFocusMode, typewriterMode, toggleTypewriterMode, typewriterSound, toggleTypewriterSound, outlineVisible, toggleOutline, autoSave, toggleAutoSave, autoSaveDelay, setAutoSaveDelay, fontSize, headingNumbering, toggleHeadingNumbering, tagPanelVisible, toggleTagPanel, wordWrap, toggleWordWrap, showLineNumbers, toggleLineNumbers, selectionHighlight, toggleSelectionHighlight, wordGoal, setWordGoal, fontFamily, setFontFamily, tabSize, setTabSize, accentPreset, setAccentPreset } = useEditorStore()
 
   // ── 番茄钟计时器 ──
   const [pomoRunning, setPomoRunning] = useState(false)
@@ -441,6 +441,18 @@ export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
         <button className="status-btn" onClick={toggleTheme} title="切换主题">
           {theme === 'light' ? <Icon.Moon /> : <Icon.Sun />}
           <span>{theme === 'light' ? '暗色' : '亮色'}</span>
+        </button>
+        <button
+          className="status-btn status-accent-btn"
+          title="切换强调色主题"
+          onClick={() => {
+            const presets = ['blue', 'forest', 'berry', 'amber', 'ocean', 'rose']
+            const idx = presets.indexOf(accentPreset)
+            setAccentPreset(presets[(idx + 1) % presets.length])
+          }}
+        >
+          <span className="status-accent-swatch" style={{ background: 'var(--accent-color)' }} />
+          <span>{accentPreset === 'forest' ? '绿' : accentPreset === 'berry' ? '紫' : accentPreset === 'amber' ? '橙' : accentPreset === 'ocean' ? '青' : accentPreset === 'rose' ? '玫' : '蓝'}</span>
         </button>
 
         <Divider />
