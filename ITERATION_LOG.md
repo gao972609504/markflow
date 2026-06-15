@@ -15,6 +15,7 @@
 | 9 | 智能表格粘贴 | Editor.tsx pasteHandler 增加表格数据自动转 Markdown 表格 | ✅ |
 | 10 | 打字机音效 | Web Audio API 实时生成机械键盘音效，独立开关控制 | ✅ |
 | 11 | 词频分析面板 | WordFrequency.tsx，中英文分词+停用词过滤+高频词检测，点击触发查找 | ✅ |
+| 12 | 关系图谱 | GraphView.tsx，Canvas 力导向网络图可视化 WikiLink 连接，拖拽/缩放/点击跳转 | ✅ |
 
 ---
 
@@ -377,5 +378,60 @@
 - 项目已有 WritingStats（迭代 3，追踪 WPM/字数/会话时长）和 DocStats，但均不涉及**词汇重复频率分析**
 - 项目已有 TagPanel（#tag 标签管理），但处理的是显式标签而非自然语言词频
 - 本迭代首次实现"自然语言词频统计 + 停用词过滤 + 点击查找跳转"组合能力，是全新的写作辅助维度
+
+---
+
+## 迭代 12 — 关系图谱 (Graph View)
+
+**日期**: 2026-06-15
+
+### 特性描述
+Obsidian 标志性功能。将文档间的 WikiLink `[[双链]]` 关系可视化为力导向网络图：每个文档是一个节点，每条双链是一条边，节点按物理引擎自然排布。支持拖拽节点、点击跳转、滚轮缩放、空白处拖拽平移。
+
+### 核心改动
+- **新增** `src/renderer/src/components/GraphView.tsx`
+  - Canvas 全屏渲染，devicePixelRatio 高清适配
+  - 自研轻量力导向物理引擎（无 D3 等外部依赖）：
+    - 节点间库仑斥力（REPULSION / dist²）
+    - 连线胡克弹簧力（(dist - SPRING_LEN) × SPRING_K）
+    - 中心引力（GRAVITY 拉向屏幕中心）
+    - 速度阻尼（DAMP × 0.82）
+  - 图数据构建：解析所有已打开标签的 `[[wikilink]]`，匹配文档名（含/不含扩展名、路径基名），建立节点与边
+  - 虚拟节点：被链接但未打开的文档显示为虚线圈
+  - 节点度数驱动半径大小（degree 越高节点越大）
+  - 活跃文档高亮：accent 色 + 光晕
+  - 交互：
+    - 拖拽节点 → pin 固定并实时跟随鼠标
+    - 点击节点（未拖动）→ 激活对应标签页
+    - 滚轮 → 以鼠标为中心缩放（0.2x–3x）
+    - 空白拖拽 → 平移视图
+  - 工具栏：节点/边计数、重新布局、重置视图、关闭
+  - 图例：已打开/未打开/当前文档 三色说明
+- **修改** `src/renderer/src/store/editorStore.ts`
+  - 新增 `showGraphView` 状态和 `setShowGraphView` action
+- **修改** `src/renderer/src/App.tsx`
+  - 导入 GraphView 组件并加入渲染树
+  - 新增 `Ctrl+Shift+G` 快捷键
+- **修改** `src/renderer/src/components/CommandPalette.tsx`
+  - 注册 `view.graph` 命令
+- **修改** `src/renderer/src/styles/global.css`
+  - 新增 `.graph-view-*` 全套样式（全屏覆盖层、浮动工具栏、图例栏）
+
+### 技术点
+- 力导向布局经典三力模型：斥力 + 弹簧 + 引力，requestAnimationFrame 驱动稳定收敛
+- 坐标变换：屏幕坐标 ↔ 世界坐标（scale + offset 逆变换），命中检测在 世界坐标系
+- devicePixelRatio setTransform 保证 Retina 屏锐利
+- 节点 pin 机制：拖拽时 pinned=true 零速度，松开恢复
+- 滚轮缩放以鼠标为锚点：`offset = mouse - (mouse - offset) × (newScale/oldScale)`
+- 名称匹配复用迭代 8 BacklinksPanel 的逻辑（baseName / fullName / 路径基名）
+
+### 验证结果
+- `npm run build` 通过，零 TypeScript 错误，零警告
+- 构建耗时 2 分 1 秒
+
+### 非重复性说明
+- 项目已有 WikiLink 补全（迭代 8）和反向链接面板，但均无**可视化网络图**
+- 项目已有 Mermaid 图表渲染（迭代 2），但那是渲染用户编写的图表代码；本迭代是**自动分析文档链接结构**生成图谱
+- 本迭代首次实现"文档关系力导向可视化"，是知识管理维度的全新能力
 
 

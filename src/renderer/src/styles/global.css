@@ -1692,3 +1692,127 @@ kbd {
 .wordfreq-more-btn:hover {
   background: var(--accent-soft);
 }
+
+/* ═══════════ 关系图谱 Graph View ═══════════ */
+
+.graph-view-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg-primary);
+}
+
+.graph-view-canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  cursor: grab;
+}
+
+.graph-view-canvas:active {
+  cursor: grabbing;
+}
+
+.graph-view-toolbar {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 202;
+}
+
+.graph-view-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.graph-view-icon {
+  font-size: 16px;
+}
+
+.graph-view-stats {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+}
+
+.graph-view-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.graph-view-btn {
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.graph-view-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: var(--accent-softer);
+}
+
+.graph-view-close:hover {
+  background: #e0564f;
+  border-color: #e0564f;
+  color: #fff;
+}
+
+.graph-view-legend {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 202;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.graph-view-legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.graph-view-legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.graph-view-hint {
+  color: var(--text-muted);
+  border-left: 1px solid var(--border-color);
+  padding-left: 16px;
+  margin-left: 4px;
+}
