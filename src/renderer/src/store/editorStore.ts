@@ -57,8 +57,10 @@ interface EditorState {
   selectionHighlight: boolean
   readabilityVisible: boolean
   accentPreset: string
+  showPrompts: boolean
   setShowReadability: (show: boolean) => void
   setAccentPreset: (preset: string) => void
+  setShowPrompts: (show: boolean) => void
   closedTabsHistory: { filePath: string | null; title: string; content: string }[]
   recentFiles: { filePath: string; title: string; lastOpened: number }[]
   zenMode: boolean
@@ -215,6 +217,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   selectionHighlight: true,
   readabilityVisible: false,
   accentPreset: (() => { try { return localStorage.getItem('markflow-accent') || 'blue' } catch { return 'blue' } })(),
+  showPrompts: false,
   closedTabsHistory: [],
   recentFiles: loadRecentFiles(),
   zenMode: false,
@@ -333,6 +336,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   toggleSelectionHighlight: () => set(state => ({ selectionHighlight: !state.selectionHighlight })),
   setShowReadability: (show: boolean) => set({ readabilityVisible: show }),
   setAccentPreset: (preset: string) => { try { localStorage.setItem('markflow-accent', preset) } catch { /* noop */ }; set({ accentPreset: preset }) },
+  setShowPrompts: (show: boolean) => set({ showPrompts: show }),
   reopenClosedTab: () => {
     set(state => {
       if (state.closedTabsHistory.length === 0) return state

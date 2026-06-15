@@ -23,6 +23,7 @@ import { GraphView } from './components/GraphView'
 import { DailyNotes } from './components/DailyNotes'
 import { BookmarksPanel } from './components/BookmarksPanel'
 import { Readability } from './components/Readability'
+import { WritingPrompts } from './components/WritingPrompts'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -487,6 +488,12 @@ export default function App() {
         const s = useEditorStore.getState()
         s.setShowReadability(!s.readabilityVisible)
       }
+      // Ctrl+Shift+J 写作灵感
+      if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+        e.preventDefault()
+        const s = useEditorStore.getState()
+        s.setShowPrompts(!s.showPrompts)
+      }
       // F11 禅模式
       if (e.key === 'F11') {
         e.preventDefault()
@@ -686,6 +693,7 @@ export default function App() {
       <DailyNotes />
       <BookmarksPanel />
       <Readability />
+      <WritingPrompts />
     </div>
   )
 }

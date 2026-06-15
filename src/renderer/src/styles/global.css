@@ -2509,3 +2509,163 @@ kbd {
   border: 1px solid rgba(128, 128, 128, 0.35);
   flex-shrink: 0;
 }
+
+/* ═══════════ 写作灵感弹窗 Writing Prompts ═══════════ */
+
+.prompts-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 210;
+  animation: prompts-fade 0.15s ease-out;
+}
+
+@keyframes prompts-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.prompts-modal {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.28);
+  width: 540px;
+  max-width: 92vw;
+  padding: 22px;
+  animation: prompts-pop 0.2s cubic-bezier(0.2, 0.8, 0.3, 1.15);
+}
+
+@keyframes prompts-pop {
+  from { opacity: 0; transform: scale(0.94) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.prompts-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.prompts-icon { font-size: 22px; }
+
+.prompts-title {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.prompts-close {
+  border: none;
+  background: transparent;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.prompts-close:hover { background: var(--bg-secondary); color: var(--text-primary); }
+
+.prompts-categories {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.prompts-cat {
+  border: 1px solid var(--border-color);
+  background: transparent;
+  padding: 5px 14px;
+  font-size: 12px;
+  border-radius: 16px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+
+.prompts-cat:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+.prompts-cat.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
+}
+
+.prompts-card {
+  position: relative;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 28px 26px 24px;
+  margin-bottom: 18px;
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  animation: prompts-card-in 0.25s ease-out;
+}
+
+@keyframes prompts-card-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.prompts-quote-mark {
+  position: absolute;
+  top: 4px;
+  left: 14px;
+  font-size: 52px;
+  line-height: 1;
+  color: var(--accent-color);
+  opacity: 0.25;
+  font-family: Georgia, serif;
+}
+
+.prompts-text {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--text-primary);
+  margin: 0;
+  font-family: var(--font-serif, serif);
+}
+
+.prompts-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.prompts-btn {
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  font-size: 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.prompts-btn:hover { border-color: var(--accent-color); color: var(--accent-color); background: var(--accent-softer); }
+
+.prompts-btn-primary {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
+  margin-right: auto;
+}
+
+.prompts-btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
+
+.prompts-foot {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
