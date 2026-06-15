@@ -445,6 +445,9 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Mod-Shift-f', run: formatMarkdownTable },
           { key: 'Mod-Alt-s', run: v => sortTable(v, false), shift: v => sortTable(v, true) },
           { key: 'Mod-Alt-r', run: transposeTable },
+          { key: 'Alt-d', run: insertDate, shift: insertDateTime },
+          { key: 'Alt-t', run: insertTime, shift: insertTimestamp },
+          { key: 'Alt-w', run: insertWeekday },
           { key: 'Mod-Alt-ArrowUp', run: addCursorAbove },
           { key: 'Mod-Alt-ArrowDown', run: addCursorBelow },
           { key: 'Mod-Shift-BracketLeft', run: promoteHeading },
@@ -1009,6 +1012,35 @@ export function transposeTable(view: EditorView): boolean {
   if (changes.length === 0) return false
   view.dispatch({ changes })
   return true
+}
+
+// ============ 日期时间插入 ============
+
+function pad2(n: number) { return String(n).padStart(2, '0') }
+function insertAtCursor(view: EditorView, text: string): boolean {
+  const sel = view.state.selection.main
+  view.dispatch({ changes: { from: sel.from, to: sel.to, insert: text }, selection: { anchor: sel.from + text.length } })
+  return true
+}
+
+export function insertDate(view: EditorView): boolean {
+  const d = new Date()
+  return insertAtCursor(view, `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`)
+}
+export function insertTime(view: EditorView): boolean {
+  const d = new Date()
+  return insertAtCursor(view, `${pad2(d.getHours())}:${pad2(d.getMinutes())}`)
+}
+export function insertDateTime(view: EditorView): boolean {
+  const d = new Date()
+  return insertAtCursor(view, `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`)
+}
+export function insertTimestamp(view: EditorView): boolean {
+  return insertAtCursor(view, new Date().toISOString())
+}
+export function insertWeekday(view: EditorView): boolean {
+  const names = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+  return insertAtCursor(view, names[new Date().getDay()])
 }
 
 function addCursorAbove(view: EditorView): boolean {

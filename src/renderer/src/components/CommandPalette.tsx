@@ -48,6 +48,21 @@ function getCommands(): Command[] {
       const cmContent = document.querySelector('.cm-content')
       if (cmContent) cmContent.dispatchEvent(new KeyboardEvent('keydown', { key: 'r', ctrlKey: true, altKey: true, bubbles: true }))
     }},
+    { id: 'insert.date', label: '插入当前日期 (YYYY-MM-DD)', category: '插入', shortcut: 'Alt+D', action: () => {
+      const cm = document.querySelector('.cm-content'); if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'd', altKey: true, bubbles: true }))
+    }},
+    { id: 'insert.datetime', label: '插入日期时间', category: '插入', shortcut: 'Alt+Shift+D', action: () => {
+      const cm = document.querySelector('.cm-content'); if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'D', altKey: true, shiftKey: true, bubbles: true }))
+    }},
+    { id: 'insert.time', label: '插入当前时间 (HH:MM)', category: '插入', shortcut: 'Alt+T', action: () => {
+      const cm = document.querySelector('.cm-content'); if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 't', altKey: true, bubbles: true }))
+    }},
+    { id: 'insert.timestamp', label: '插入 ISO 时间戳', category: '插入', shortcut: 'Alt+Shift+T', action: () => {
+      const cm = document.querySelector('.cm-content'); if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'T', altKey: true, shiftKey: true, bubbles: true }))
+    }},
+    { id: 'insert.weekday', label: '插入星期', category: '插入', shortcut: 'Alt+W', action: () => {
+      const cm = document.querySelector('.cm-content'); if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'w', altKey: true, bubbles: true }))
+    }},
     { id: 'view.writing-stats', label: '写作统计', category: '视图', shortcut: 'Ctrl+Shift+W', action: () => { const s = useEditorStore.getState(); s.setShowWritingStats(!s.showWritingStats) } },
     { id: 'view.snippet-manager', label: '代码片段管理', category: '视图', action: () => { const s = useEditorStore.getState(); s.setShowSnippetManager(!s.showSnippetManager) } },
     { id: 'view.backlinks', label: '反向链接面板', category: '视图', shortcut: 'Ctrl+Shift+B', action: () => { const s = useEditorStore.getState(); s.setShowBacklinks(!s.backlinksVisible) } },
