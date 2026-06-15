@@ -55,6 +55,7 @@ function getCommands(): Command[] {
     { id: 'view.graph', label: '关系图谱', category: '视图', shortcut: 'Ctrl+Shift+G', action: () => { const s = useEditorStore.getState(); s.setShowGraphView(!s.showGraphView) } },
     { id: 'view.daily-notes', label: '每日笔记日历', category: '视图', shortcut: 'Ctrl+Shift+D', action: () => { const s = useEditorStore.getState(); s.setShowDailyNotes(!s.showDailyNotes) } },
     { id: 'view.bookmarks', label: '书签面板', category: '视图', shortcut: 'Ctrl+Shift+M', action: () => { const s = useEditorStore.getState(); s.setShowBookmarks(!s.bookmarksVisible) } },
+    { id: 'view.readability', label: '可读性分析面板', category: '视图', shortcut: 'Ctrl+Shift+E', action: () => { const s = useEditorStore.getState(); s.setShowReadability(!s.readabilityVisible) } },
     { id: 'edit.toggle-selection-highlight', label: `切换选中匹配高亮 (${store.selectionHighlight ? '开' : '关'})`, category: '编辑', action: () => store.toggleSelectionHighlight() },
   ]
 }

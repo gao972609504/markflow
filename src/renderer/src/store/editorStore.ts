@@ -55,6 +55,8 @@ interface EditorState {
   showDailyNotes: boolean
   bookmarksVisible: boolean
   selectionHighlight: boolean
+  readabilityVisible: boolean
+  setShowReadability: (show: boolean) => void
   closedTabsHistory: { filePath: string | null; title: string; content: string }[]
   recentFiles: { filePath: string; title: string; lastOpened: number }[]
   zenMode: boolean
@@ -209,6 +211,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   showDailyNotes: false,
   bookmarksVisible: false,
   selectionHighlight: true,
+  readabilityVisible: false,
   closedTabsHistory: [],
   recentFiles: loadRecentFiles(),
   zenMode: false,
@@ -325,6 +328,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setShowDailyNotes: (show: boolean) => set({ showDailyNotes: show }),
   setShowBookmarks: (show: boolean) => set({ bookmarksVisible: show }),
   toggleSelectionHighlight: () => set(state => ({ selectionHighlight: !state.selectionHighlight })),
+  setShowReadability: (show: boolean) => set({ readabilityVisible: show }),
   reopenClosedTab: () => {
     set(state => {
       if (state.closedTabsHistory.length === 0) return state

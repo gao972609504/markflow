@@ -2260,3 +2260,204 @@ kbd {
 .cm-selectionMatch.cm-selectionMatch-main {
   background: var(--accent-soft);
 }
+
+/* ═══════════ 可读性分析面板 Readability ═══════════ */
+
+.readability-panel {
+  position: fixed;
+  top: 88px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 360px;
+  max-width: 92vw;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  z-index: 120;
+  overflow: hidden;
+  animation: readability-in 0.18s ease-out;
+}
+
+@keyframes readability-in {
+  from { opacity: 0; transform: translate(-50%, -8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.readability-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--accent-softer);
+}
+
+.readability-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.readability-icon { font-size: 16px; }
+
+.readability-empty {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.readability-body {
+  padding: 20px 16px 16px;
+}
+
+.readability-score-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.readability-score-ring {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient(var(--ease-color, var(--accent-color)) calc(var(--ease-pct, 0%)), var(--bg-secondary) 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.readability-score-inner {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.readability-score-num {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.readability-score-unit {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.readability-score-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.readability-grade {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+
+.readability-grade-num {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--accent-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.readability-grade-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.readability-grade-text small {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.readability-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.readability-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 4px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.readability-stat-num {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.readability-stat-label {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.readability-scale {
+  margin-bottom: 12px;
+}
+
+.readability-scale-bar {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #c0392b, #e8a64a, #3fa34d);
+  margin-bottom: 4px;
+}
+
+.readability-scale-marker {
+  position: absolute;
+  top: -3px;
+  width: 3px;
+  height: 12px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 2px var(--bg-elevated);
+}
+
+.readability-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.readability-tip {
+  font-size: 12px;
+  color: #c47b00;
+  background: rgba(232, 166, 74, 0.1);
+  border: 1px solid rgba(232, 166, 74, 0.25);
+  padding: 8px 10px;
+  border-radius: 8px;
+  line-height: 1.5;
+}

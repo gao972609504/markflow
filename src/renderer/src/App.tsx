@@ -22,6 +22,7 @@ import { WordFrequency } from './components/WordFrequency'
 import { GraphView } from './components/GraphView'
 import { DailyNotes } from './components/DailyNotes'
 import { BookmarksPanel } from './components/BookmarksPanel'
+import { Readability } from './components/Readability'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -476,6 +477,12 @@ export default function App() {
         const s = useEditorStore.getState()
         s.setShowBookmarks(!s.bookmarksVisible)
       }
+      // Ctrl+Shift+E 可读性分析
+      if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+        e.preventDefault()
+        const s = useEditorStore.getState()
+        s.setShowReadability(!s.readabilityVisible)
+      }
       // F11 禅模式
       if (e.key === 'F11') {
         e.preventDefault()
@@ -674,6 +681,7 @@ export default function App() {
       <GraphView />
       <DailyNotes />
       <BookmarksPanel />
+      <Readability />
     </div>
   )
 }
