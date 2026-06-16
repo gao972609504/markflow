@@ -13,6 +13,7 @@ import { searchKeymap, highlightSelectionMatches, selectSelectionMatches } from 
 import { colorSwatches } from '../plugins/colorSwatch'
 import { createFocusModePlugin } from '../plugins/focusMode'
 import { relativeLineNumbers } from '../plugins/relativeLineNumbers'
+import { dueDateHighlight } from '../plugins/dueDate'
 import { htmlToMarkdown } from '../utils/htmlToMarkdown'
 import { normalizeDocument } from '../utils/normalize'
 import { createTableExtension, tableLightTheme, tableDarkTheme } from '@markwhen/codemirror-tables'
@@ -645,6 +646,7 @@ export function Editor({ tab }: EditorProps) {
         createIndentGuidesPlugin(),
         createParagraphGapPlugin(),
         createFocusModePlugin(),
+        dueDateHighlight(),
         createSpellCheckPlugin(),
         createLineDiffPlugin(tab.originalContent),
         createDecorationPlugin(),

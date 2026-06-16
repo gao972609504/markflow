@@ -1408,3 +1408,28 @@ Ctrl+Shift+Q 对选区内所有行(或当前行)切换块引用：全部已 `>` 
 
 ### 非重复性说明
 - 迭代内 autoContinueList 仅续行引用，本迭代是「整块切换」，补齐块级格式快捷操作
+
+---
+
+## 迭代 44 — 任务截止日期高亮 (Due Date Highlight)
+
+**日期**: 2026-06-16
+
+### 特性描述
+自动识别文档中的日期标记 `@YYYY-MM-DD` 或 `📅 YYYY-MM-DD`，按相对今天三色高亮：过期(红底)、今日(强调色)、未来(绿)。任务/计划类文档一眼看清紧迫度。
+
+### 核心改动
+- **新增** `src/renderer/src/plugins/dueDate.ts` — ViewPlugin 装饰，仅扫描可视区，DATE_RE 匹配，算 diff 天数分级
+- **修改** `Editor.tsx` — 挂载 dueDateHighlight()
+- **修改** `editor.css` — `.cm-date-overdue/today/future` 胶囊样式
+
+### 技术点
+- DATE_RE 兼容 @ 和 📅 两种前缀，`\d{1,2}` 容错月日
+- NaN 日期校验跳过，diff 用 86400000 取整天数
+- always-on 装饰，被动高亮不影响编辑
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，43.19s
+
+### 非重复性说明
+- 项目此前无日期语义识别；与颜色色块(迭代21)、拼写检查同属装饰类，但本迭代是「日期语义着色」全新维度

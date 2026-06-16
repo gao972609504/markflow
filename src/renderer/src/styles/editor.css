@@ -1113,3 +1113,8 @@
   filter: saturate(0.6);
   transition: opacity 0.25s ease, filter 0.25s ease;
 }
+
+/* 任务截止日期高亮 */
+.cm-date-overdue { color: #fff; background: var(--danger); padding: 1px 5px; border-radius: 8px; font-weight: 600; }
+.cm-date-today { color: #fff; background: var(--accent-color); padding: 1px 5px; border-radius: 8px; font-weight: 600; }
+.cm-date-future { color: var(--success); background: var(--accent-soft); padding: 1px 5px; border-radius: 8px; font-weight: 500; }
