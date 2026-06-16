@@ -1,6 +1,6 @@
 {
   "name": "bomo",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "泊墨 (Bomo) — 轻量精致的所见即所得 Markdown 写作器，基于 Electron + React + CodeMirror 6",
   "author": "Bomo Contributors <bomo@example.com>",
   "license": "MIT",
