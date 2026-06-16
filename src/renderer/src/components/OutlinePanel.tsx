@@ -185,7 +185,11 @@ export function OutlinePanel() {
               ref={idx === activeHeadingIdx ? (el) => el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }) : undefined}
               className={`outline-item outline-level-${h.level}${idx === activeHeadingIdx ? ' outline-active' : ''}`}
               onClick={() => scrollToLine(h.line)}
-              title={h.text}
+              onDoubleClick={() => {
+                const anchor = h.text.toLowerCase().replace(/[^\w一-鿿]+/g, '-').replace(/^-|-$/g, '')
+                navigator.clipboard?.writeText(`[${h.text}](#${anchor})`).catch(() => {})
+              }}
+              title={`${h.text}（双击复制锚点链接）`}
             >
               {headingHasChildren(idx) && (
                 <span

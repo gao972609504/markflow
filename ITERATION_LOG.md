@@ -2493,3 +2493,22 @@ Alt+X 勾选任务（`[ ]` → `[x]`）时自动在行尾追加 `✅ YYYY-MM-DD`
 
 ### 验证结果
 - `npm run build` 通过，零错误零警告，1m27s
+
+---
+
+## 迭代 91 — 大纲双击复制锚点链接 (Copy Anchor on Double-Click)
+
+**日期**: 2026-06-16
+
+### 特性描述
+在大纲面板双击任意标题项，自动生成 `[标题](#锚点)` Markdown 锚点链接并复制到剪贴板。便于跨文档/同文档引用。title 提示「双击复制锚点链接」。
+
+### 核心改动
+- **修改** `OutlinePanel.tsx` outline-item 添加 `onDoubleClick` — 锚点由标题小写化+非字母数字汉字转 `-` 生成，clipboard 写入
+
+### 技术点
+- 锚点算法与 insertToc(F9) 一致：`text.toLowerCase().replace(/[^\w一-鿿]+/g, '-')`
+- 双击不影响单击跳转（浏览器原生区分单击/双击事件）
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，1m14s
