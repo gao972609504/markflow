@@ -2410,3 +2410,22 @@ Alt+← / Alt+→ 在历史光标位置间跳转（IDE 经典 jump-to-previous-c
 
 ### 验证结果
 - `npm run build` 通过，零错误零警告，1m34s
+
+---
+
+## 迭代 87 — PDF 导出命令入口 (Export PDF Command)
+
+**日期**: 2026-06-16
+
+### 特性描述
+在命令面板新增「导出为 PDF」入口，调用已有 main process exportPDF IPC。原先 exportPDF 仅菜单调用，命令面板用户（Ctrl+Shift+P）之前无法触发。补齐导出功能可发现性。
+
+### 核心改动
+- **修改** `CommandPalette.tsx` — 注册 `file.export-pdf`，action `window.api?.exportPDF()`
+
+### 技术点
+- 完整链路已通：preload 暴露 exportPDF、renderer window.api 类型、main process export:pdf handler
+- 纯入口补齐，无新 IPC 或渲染逻辑
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，1m40s

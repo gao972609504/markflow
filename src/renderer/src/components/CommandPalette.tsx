@@ -33,6 +33,7 @@ function getCommands(): Command[] {
     { id: 'file.save', label: '保存文件', category: '文件', shortcut: 'Ctrl+S', action: () => window.api && handleSave() },
     { id: 'file.open-folder', label: '打开文件夹', category: '文件', shortcut: 'Ctrl+Shift+O', action: () => handleOpenFolder() },
     { id: 'file.export-html', label: '导出为 HTML', category: '文件', action: () => window.api?.exportHTML('') },
+    { id: 'file.export-pdf', label: '导出为 PDF', category: '文件', action: () => window.api?.exportPDF() },
     { id: 'file.copy-html', label: '复制为富文本 HTML', category: '文件', action: () => copyAsHtml() },
     { id: 'file.copy-plain', label: '复制为纯文本（去除 Markdown）', category: '文件', action: () => copyAsPlainText() },
     { id: 'view.toggle-sidebar', label: '切换侧边栏', category: '视图', shortcut: 'Ctrl+B', action: () => store.toggleSidebar() },
