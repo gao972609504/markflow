@@ -490,6 +490,7 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Mod-Alt-d', run: deleteTableRow },
           { key: 'Mod-Alt-n', run: insertTableRow },
           { key: 'Mod-Alt-c', run: deleteTableColumn },
+          { key: 'Mod-Alt-v', run: insertTableColumn },
           { key: 'Alt-d', run: insertDate, shift: insertDateTime },
           { key: 'Alt-t', run: insertTime, shift: insertTimestamp },
           { key: 'Alt-w', run: insertWeekday },
@@ -1603,7 +1604,35 @@ function insertTableRow(view: EditorView): boolean {
   return true
 }
 
-function deleteTableColumn(view: EditorView): boolean {
+export function deleteTableColumn(view: EditorView): boolean {
+  return deleteTableColumnImpl(view)
+}
+
+function insertTableColumn(view: EditorView): boolean {
+  const t = parseTableAt(view)
+  if (!t || t.sepIndex < 0) return false
+  const curLine = view.state.doc.lineAt(view.state.selection.main.head)
+  if (!/^\|/.test(curLine.text.trim())) return false
+  const before = curLine.text.slice(0, view.state.selection.main.head - curLine.from)
+  const col = Math.min(Math.max(0, (before.match(/\|/g) || []).length - 1), t.rows[0].length)
+  const newRows = t.rows.map((r, i) => {
+    const c = [...r]
+    c.splice(col + 1, 0, i === t.sepIndex ? '---' : '')
+    return c
+  })
+  const lines = rebuildTableLines(newRows, t.isSep)
+  const doc = view.state.doc
+  const changes: { from: number; to: number; insert: string }[] = []
+  for (let i = 0; i < lines.length; i++) {
+    const line = doc.line(t.startLine + i)
+    if (line.text !== lines[i]) changes.push({ from: line.from, to: line.to, insert: lines[i] })
+  }
+  if (!changes.length) return false
+  view.dispatch({ changes })
+  return true
+}
+
+function deleteTableColumnImpl(view: EditorView): boolean {
   const t = parseTableAt(view)
   if (!t || t.sepIndex < 0) return false
   const curLine = view.state.doc.lineAt(view.state.selection.main.head)
