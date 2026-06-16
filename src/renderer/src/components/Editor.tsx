@@ -506,6 +506,7 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Mod-Shift-U', run: v => transformCase(v, 'upper') },
           { key: 'Mod-Shift-L', run: v => transformCase(v, 'lower') },
           { key: 'Mod-Alt-T', run: v => transformCase(v, 'title') },
+          { key: 'Mod-Alt-j', run: v => transformCase(v, 'sentence') },
           { key: 'Mod-Shift-L', run: selectSelectionMatches },
           { key: 'F5', run: sortSelectedLines },
           { key: 'F6', run: reverseSelectedLines },
@@ -1475,6 +1476,7 @@ function transformCase(view: EditorView, mode: 'upper' | 'lower' | 'title'): boo
   let transformed: string
   if (mode === 'upper') transformed = text.toUpperCase()
   else if (mode === 'lower') transformed = text.toLowerCase()
+  else if (mode === 'sentence') transformed = text.charAt(0).toUpperCase() + text.slice(1).replace(/([.!?。！？]\s+)([a-z一-龥])/g, (_m, p, c) => p + c.toUpperCase())
   else transformed = text.replace(/\b\w/g, c => c.toUpperCase())
   if (transformed === text) return false
   view.dispatch({ changes: { from, to, insert: transformed }, selection: { anchor: from, head: from + transformed.length } })
