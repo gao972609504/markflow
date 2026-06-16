@@ -39,6 +39,7 @@ import { WordBadge } from './components/WordBadge'
 import { DuplicatePanel } from './components/DuplicatePanel'
 import { GoalToast } from './components/GoalToast'
 import { BackupBrowser } from './components/BackupBrowser'
+import { SettingsDialog } from './components/SettingsDialog'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -728,6 +729,7 @@ export default function App() {
       <DuplicatePanel />
       <GoalToast />
       <BackupBrowser />
+      <SettingsDialog />
       <CustomCSSDialog />
       <TextToSpeech />
     </div>

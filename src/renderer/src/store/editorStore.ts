@@ -74,6 +74,7 @@ interface EditorState {
   showWordBadge: boolean
   showDuplicatePanel: boolean
   showBackupBrowser: boolean
+  showSettings: boolean
   toggleEyeCare: () => void
   toggleRelativeLineNumbers: () => void
   setShowDashboard: (show: boolean) => void
@@ -83,6 +84,7 @@ interface EditorState {
   setShowWordBadge: (show: boolean) => void
   setShowDuplicatePanel: (show: boolean) => void
   setShowBackupBrowser: (show: boolean) => void
+  setShowSettings: (show: boolean) => void
   setShowReadability: (show: boolean) => void
   setAccentPreset: (preset: string) => void
   setShowPrompts: (show: boolean) => void
@@ -266,6 +268,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   showWordBadge: false,
   showDuplicatePanel: false,
   showBackupBrowser: false,
+  showSettings: false,
   closedTabsHistory: [],
   recentFiles: loadRecentFiles(),
   zenMode: false,
@@ -409,6 +412,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setShowWordBadge: (show: boolean) => set({ showWordBadge: show }),
   setShowDuplicatePanel: (show: boolean) => set({ showDuplicatePanel: show }),
   setShowBackupBrowser: (show: boolean) => set({ showBackupBrowser: show }),
+  setShowSettings: (show: boolean) => set({ showSettings: show }),
   reopenClosedTab: () => {
     set(state => {
       if (state.closedTabsHistory.length === 0) return state

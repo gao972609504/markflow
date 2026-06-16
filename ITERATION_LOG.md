@@ -1658,3 +1658,27 @@ Ctrl+Shift+Q 对选区内所有行(或当前行)切换块引用：全部已 `>` 
 
 ### 非重复性说明
 - 迭代50是自动留档，本迭代是「浏览+预览+恢复」UI，补齐备份的可用闭环
+
+---
+
+## 迭代 54 — 设置中心 (Settings Hub)
+
+**日期**: 2026-06-16
+
+### 特性描述
+集中管理编辑器偏好的设置对话框：字号滑块(+重置)、正文字体选择、Tab 宽度、行号/相对行号/自动换行/护眼开关、自动保存开关及延迟。统一入口，避免散落各处。
+
+### 核心改动
+- **新增** `src/renderer/src/components/SettingsDialog.tsx` — Row/Toggle 组件、分节、复用既有 setFontSize/setFontFamily/setTabSize/toggle*/setAutoSaveDelay
+- store showSettings、App 挂载、CommandPalette `view.settings`(设置类)、CSS `.settings-*`（含 iOS 风格 toggle 开关）
+
+### 技术点
+- 全部复用 store 已有 action，零重复逻辑
+- Toggle 自定义开关组件，knob transform 动画
+- 字号实时滑块，字体含霞鹜文楷/等宽/Georgia 选项
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，42.80s
+
+### 非重复性说明
+- 此前偏好散见于菜单/命令，本迭代是统一的设置中心，提升可发现性
