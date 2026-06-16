@@ -134,6 +134,10 @@ function getCommands(): Command[] {
       const cm = document.querySelector('.cm-content')
       if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'h', ctrlKey: true, altKey: true, bubbles: true }))
     }},
+    { id: 'editor.wrap-code', label: '选区包裹代码围栏 (```)', category: '格式', shortcut: 'Ctrl+Alt+F', action: () => {
+      const cm = document.querySelector('.cm-content')
+      if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'f', ctrlKey: true, altKey: true, bubbles: true }))
+    }},
     { id: 'editor.toggle-list', label: '切换无序列表 (- )', category: '格式', action: () => {
       const el = document.querySelector('.cm-editor')
       const view = el ? getEditorView(el as HTMLElement) : null

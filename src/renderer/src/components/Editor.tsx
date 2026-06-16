@@ -495,6 +495,7 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Mod-Alt-/', run: wrapHtmlComment },
           { key: 'Mod-Alt-0', run: appendTodayDue },
           { key: 'Mod-Alt-h', run: insertHr },
+          { key: 'Mod-Alt-f', run: wrapCodeFence },
           { key: 'Alt-d', run: insertDate, shift: insertDateTime },
           { key: 'Alt-t', run: insertTime, shift: insertTimestamp },
           { key: 'Alt-w', run: insertWeekday },
@@ -1714,6 +1715,17 @@ function insertHr(view: EditorView): boolean {
   const before = view.state.doc.sliceString(Math.max(0, pos - 1), pos)
   const insert = (before === '\n' || pos === 0 ? '' : '\n') + '\n---\n\n'
   view.dispatch({ changes: { from: pos, insert }, selection: { anchor: pos + insert.length } })
+  return true
+}
+
+function wrapCodeFence(view: EditorView): boolean {
+  const { from, to } = view.state.selection.main
+  const sel = view.state.sliceDoc(from, to)
+  const insert = '```\n' + sel + (sel.endsWith('\n') ? '' : sel ? '\n' : '') + '```\n'
+  view.dispatch({
+    changes: { from, to, insert },
+    selection: sel ? { anchor: from, head: from + insert.length } : { anchor: from + 4 },
+  })
   return true
 }
 
