@@ -2532,3 +2532,23 @@ Alt+X 勾选任务（`[ ]` → `[x]`）时自动在行尾追加 `✅ YYYY-MM-DD`
 
 ### 验证结果
 - `npm run build` 通过，零错误零警告，1m60s
+
+---
+
+## 迭代 93 — 命令面板最近使用记忆 (Recent Commands)
+
+**日期**: 2026-06-16
+
+### 特性描述
+命令面板记忆最近 5 条执行命令（localStorage 持久化），打开时无输入状态下置顶「最近」分类显示，快速重复调用常用命令。搜索模式正常过滤。
+
+### 核心改动
+- **修改** `CommandPalette.tsx` — RECENT_KEY 常量、getRecent/trackRecent 工具、executeCommand 调 trackRecent、results 无查询时前置最近命令(category 改「最近」)
+
+### 技术点
+- 去重 + slice(0,5) 环形缓冲
+- 仅无查询时前置，有查询时不干扰过滤
+- 持久化跨会话保留
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，1m22s

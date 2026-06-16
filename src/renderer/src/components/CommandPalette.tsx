@@ -26,6 +26,15 @@ interface Command {
   action: () => void
 }
 
+const RECENT_KEY = 'markflow-recent-commands'
+function getRecent(): string[] {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]') } catch { return [] }
+}
+function trackRecent(id: string) {
+  const r = [id, ...getRecent().filter(x => x !== id)].slice(0, 5)
+  try { localStorage.setItem(RECENT_KEY, JSON.stringify(r)) } catch { /* noop */ }
+}
+
 function getCommands(): Command[] {
   const store = useEditorStore.getState()
   return [
@@ -328,19 +337,28 @@ export function CommandPalette() {
   const commands = useMemo(() => getCommands(), [showCommandPalette])
 
   const results = useMemo(() => {
-    if (!query.trim()) return commands
-    const q = query.toLowerCase()
-    return commands.filter(c =>
-      c.label.toLowerCase().includes(q) ||
-      c.category.toLowerCase().includes(q) ||
-      c.id.toLowerCase().includes(q)
-    )
+    let cmds = commands
+    if (!query.trim()) {
+      const recentIds = getRecent()
+      const recentCmds = recentIds.map(id => commands.find(c => c.id === id)).filter(Boolean).map(c => ({ ...c!, category: '最近' }))
+      const others = commands.filter(c => !recentIds.includes(c.id))
+      cmds = [...recentCmds, ...others]
+    } else {
+      const q = query.toLowerCase()
+      cmds = commands.filter(c =>
+        c.label.toLowerCase().includes(q) ||
+        c.category.toLowerCase().includes(q) ||
+        c.id.toLowerCase().includes(q)
+      )
+    }
+    return cmds
   }, [commands, query])
 
   useEffect(() => { inputRef.current?.focus() }, [])
   useEffect(() => { setSelectedIdx(0) }, [query])
 
   const executeCommand = (cmd: Command) => {
+    trackRecent(cmd.id)
     cmd.action()
     setShowCommandPalette(false)
   }
