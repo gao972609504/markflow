@@ -6,6 +6,8 @@ import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { useEditorStore } from '../store/editorStore'
 import { renderMarkdown } from '../utils/markdown'
 import { stripMarkdown } from '../utils/stripMarkdown'
+import { inlineToRefLinks } from './Editor'
+import { getEditorView } from '../plugins/widgets'
 
 interface Command {
   id: string
@@ -67,6 +69,11 @@ function getCommands(): Command[] {
     { id: 'editor.toggle-blockquote', label: '切换块引用 (>)', category: '格式', shortcut: 'Ctrl+Shift+Q', action: () => {
       const cm = document.querySelector('.cm-content')
       if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'q', ctrlKey: true, shiftKey: true, bubbles: true }))
+    }},
+    { id: 'editor.inline-to-ref', label: '行内链接转引用式 ([text](url) → [text][n])', category: '格式', action: () => {
+      const el = document.querySelector('.cm-editor')
+      const view = el ? getEditorView(el as HTMLElement) : null
+      if (view) inlineToRefLinks(view)
     }},
     { id: 'insert.date', label: '插入当前日期 (YYYY-MM-DD)', category: '插入', shortcut: 'Alt+D', action: () => {
       const cm = document.querySelector('.cm-content'); if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'd', altKey: true, bubbles: true }))

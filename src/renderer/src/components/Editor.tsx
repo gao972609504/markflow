@@ -1520,6 +1520,35 @@ function insertToc(view: EditorView): boolean {
   return true
 }
 
+// ============ 行内链接转引用式 ============
+
+export function inlineToRefLinks(view: EditorView): boolean {
+  const doc = view.state.doc
+  const text = doc.toString()
+  const linkRe = /(?<!!)\[([^\]]+)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
+  const matches: { start: number; end: number; label: string; url: string }[] = []
+  let m: RegExpExecArray | null
+  while ((m = linkRe.exec(text))) {
+    matches.push({ start: m.index, end: m.index + m[0].length, label: m[1], url: m[2] })
+  }
+  if (matches.length === 0) return false
+  const urlToRef = new Map<string, number>()
+  let counter = 0
+  for (const mt of matches) {
+    if (!urlToRef.has(mt.url)) urlToRef.set(mt.url, ++counter)
+  }
+  const changes: { from: number; to: number; insert: string }[] = []
+  for (let i = matches.length - 1; i >= 0; i--) {
+    const mt = matches[i]
+    const n = urlToRef.get(mt.url)!
+    changes.push({ from: mt.start, to: mt.end, insert: `[${mt.label}][${n}]` })
+  }
+  const defs = [...urlToRef.entries()].sort((a, b) => a[1] - b[1]).map(([url, n]) => `[${n}]: ${url}`).join('\n')
+  changes.push({ from: doc.length, to: doc.length, insert: `\n\n${defs}\n` })
+  view.dispatch({ changes })
+  return true
+}
+
 // ============ 任务复选框切换 ============
 
 function toggleBlockquote(view: EditorView): boolean {
@@ -1545,8 +1574,7 @@ function toggleBlockquote(view: EditorView): boolean {
   return true
 }
 
-function toggleTaskCheckbox(view: EditorView): boolean {
-  const { from, to } = view.state.selection.main
+function toggleTaskCheckbox(view: EditorView): boolean {  const { from, to } = view.state.selection.main
   const doc = view.state.doc
   const startLine = doc.lineAt(from).number
   const endLine = doc.lineAt(to).number

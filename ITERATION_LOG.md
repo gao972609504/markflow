@@ -1459,3 +1459,28 @@ Ctrl+Shift+Q 对选区内所有行(或当前行)切换块引用：全部已 `>` 
 
 ### 非重复性说明
 - 迭代25是纯语音播放，本迭代补齐「视读同步」交互，朗读可用性闭环
+
+---
+
+## 迭代 46 — 行内链接转引用式 (Inline → Reference Links)
+
+**日期**: 2026-06-16
+
+### 特性描述
+一键将全文行内链接 `[text](url)` 转为引用式 `[text][n]` 并在文末追加 `[n]: url` 定义块。相同 URL 复用同一编号。Markdown 学术/技术写作的引用式链接规范，Pandoc/markdownlint 常见要求。
+
+### 核心改动
+- **新增** `Editor.tsx` 导出函数 `inlineToRefLinks(view)` — 扫描行内链接、按 URL 首现分配编号、倒序替换保持偏移、末尾追加定义
+- **修改** `CommandPalette.tsx` — 导入函数与 getEditorView，`editor.inline-to-ref` 命令(仅命令面板触发，避免误触)
+
+### 技术点
+- 倒序遍历 matches 替换，避免前序替换影响后续偏移
+- urlToRef Map 去重，相同 URL 复用编号
+- 排除图片：lookbehind `(?<!!)`
+- 可撤销(单次 dispatch)，安全
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，42.51s
+
+### 非重复性说明
+- 项目此前无链接风格转换；与复制为 HTML(迭代26)正交，本迭代是源码层面的链接规范化
