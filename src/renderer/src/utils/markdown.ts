@@ -187,6 +187,24 @@ md.inline.ruler.before('emphasis', 'mark', (state, silent) => {
   return true
 })
 
+// ── ~~删除线~~ 语法 → <s>（导出/复制 HTML 渲染，与编辑器一致）──
+md.inline.ruler.before('emphasis', 'strikethrough', (state, silent) => {
+  const start = state.pos
+  if (state.src.charCodeAt(start) !== 0x7e /* ~ */ || state.src.charCodeAt(start + 1) !== 0x7e) return false
+  if (state.src.charCodeAt(start + 2) === 0x7e) return false
+  const end = state.src.indexOf('~~', start + 2)
+  if (end < 0) return false
+  const content = state.src.slice(start + 2, end)
+  if (!content || content.length > 200 || content.includes('\n')) return false
+  if (!silent) {
+    const open = state.push('s_open', 's', 1); open.markup = '~~'
+    const text = state.push('text', '', 0); text.content = content
+    state.push('s_close', 's', -1)
+  }
+  state.pos = end + 2
+  return true
+})
+
 // ── 简易渲染缓存 ──
 
 const renderCache = new Map<string, string>()
