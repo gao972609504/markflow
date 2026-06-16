@@ -93,6 +93,14 @@ function getCommands(): Command[] {
       const view = el ? getEditorView(el as HTMLElement) : null
       if (view) fullWidthToHalf(view)
     }},
+    { id: 'editor.table-del-row', label: '删除表格当前行', category: '格式', shortcut: 'Ctrl+Alt+D', action: () => {
+      const cm = document.querySelector('.cm-content')
+      if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'd', ctrlKey: true, altKey: true, bubbles: true }))
+    }},
+    { id: 'editor.table-ins-row', label: '表格下方插入空行', category: '格式', shortcut: 'Ctrl+Alt+N', action: () => {
+      const cm = document.querySelector('.cm-content')
+      if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'n', ctrlKey: true, altKey: true, bubbles: true }))
+    }},
     { id: 'editor.inline-to-ref', label: '行内链接转引用式 ([text](url) → [text][n])', category: '格式', action: () => {
       const el = document.querySelector('.cm-editor')
       const view = el ? getEditorView(el as HTMLElement) : null

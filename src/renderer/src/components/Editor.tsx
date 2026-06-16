@@ -486,6 +486,8 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Alt-x', run: toggleTaskCheckbox },
           { key: 'Mod-Shift-q', run: toggleBlockquote },
           { key: 'Mod-Alt-p', run: panguSpacing },
+          { key: 'Mod-Alt-d', run: deleteTableRow },
+          { key: 'Mod-Alt-n', run: insertTableRow },
           { key: 'Alt-d', run: insertDate, shift: insertDateTime },
           { key: 'Alt-t', run: insertTime, shift: insertTimestamp },
           { key: 'Alt-w', run: insertWeekday },
@@ -1571,6 +1573,33 @@ export function inlineToRefLinks(view: EditorView): boolean {
 }
 
 // ============ 中英文加空格 (盘古之白) ============
+
+function isTableRow(text: string) { return /^\|.*\|\s*$/.test(text.trim()) }
+function isTableSeparator(text: string) { return /^\|[\s:\-|]+\|\s*$/.test(text.trim()) }
+
+function deleteTableRow(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const doc = view.state.doc
+  const line = doc.lineAt(head)
+  if (!isTableRow(line.text)) return false
+  if (isTableSeparator(line.text)) return false
+  const from = line.from
+  const to = line.to < doc.length ? line.to + 1 : line.to
+  view.dispatch({ changes: { from, to: Math.min(to, doc.length), insert: '' } })
+  return true
+}
+
+function insertTableRow(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const doc = view.state.doc
+  const line = doc.lineAt(head)
+  if (!isTableRow(line.text)) return false
+  const cols = (line.text.match(/\|/g) || []).length - 1
+  if (cols < 1) return false
+  const newRow = '| ' + Array.from({ length: cols }, () => '  ').join(' | ') + ' |'
+  view.dispatch({ changes: { from: line.to, to: line.to, insert: '\n' + newRow }, selection: { anchor: line.to + 1 } })
+  return true
+}
 
 export function fullWidthToHalf(view: EditorView): boolean {
   const { from, to } = view.state.selection.main
