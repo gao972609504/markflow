@@ -2571,3 +2571,22 @@ Alt+X 勾选任务（`[ ]` → `[x]`）时自动在行尾追加 `✅ YYYY-MM-DD`
 
 ### 验证结果
 - `npm run build` 通过，零错误零警告，1m12s
+
+---
+
+## 迭代 95 — 标签栏空白双击新建文件 (Double-Click Tab Bar to Create)
+
+**日期**: 2026-06-16
+
+### 特性描述
+双击标签栏的空白区域（非标签项）自动新建未命名标签页，快捷创建文件无需命令或菜单。类似浏览器双击标签栏新建标签。
+
+### 核心改动
+- **修改** `TabBar.tsx` tab-bar div — 添加 `onDoubleClick`，e.target 检查仅在非标签区域触发 `createTab()`
+
+### 技术点
+- e.target===tabBarRef.current 或 `.tab-list` 类检查避免标签项冒泡误触发
+- 复用已有 createTab()，无新依赖
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，1m36s

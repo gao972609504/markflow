@@ -36,7 +36,8 @@ export function TabBar() {
 
   return (
     <>
-      <div className="tab-bar" ref={tabBarRef} onWheel={handleWheel}>
+      <div className="tab-bar" ref={tabBarRef} onWheel={handleWheel}
+        onDoubleClick={(e) => { if (e.target === tabBarRef.current || (e.target as HTMLElement).classList.contains('tab-list')) useEditorStore.getState().createTab() }}>
         <div className="tab-list">
           {tabs.map((tab, index) => (
             <div
