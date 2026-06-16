@@ -26,6 +26,7 @@ import { Readability } from './components/Readability'
 import { WritingPrompts } from './components/WritingPrompts'
 import { Pomodoro } from './components/Pomodoro'
 import { TextToSpeech } from './components/TextToSpeech'
+import { TaskPanel } from './components/TaskPanel'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -680,6 +681,7 @@ export default function App() {
         </div>
         {!zenMode && <OutlinePanel />}
         {!zenMode && <TagPanel />}
+        {!zenMode && <TaskPanel />}
         {!zenMode && <BacklinksPanel />}
       </div>
       <QuickOpen />
