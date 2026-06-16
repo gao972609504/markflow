@@ -40,6 +40,7 @@ import { DuplicatePanel } from './components/DuplicatePanel'
 import { GoalToast } from './components/GoalToast'
 import { BackupBrowser } from './components/BackupBrowser'
 import { SettingsDialog } from './components/SettingsDialog'
+import { HeadingBreadcrumb } from './components/HeadingBreadcrumb'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -563,6 +564,7 @@ export default function App() {
           {!zenMode && <div className="editor-toolbar-row">
             <InsertToolbar />
           </div>}
+          <HeadingBreadcrumb />
           {showFindReplace && <FindReplace />}
           <GoToLine />
           {activeTab ? (

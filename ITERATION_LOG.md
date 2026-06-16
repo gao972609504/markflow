@@ -1728,3 +1728,27 @@ Ctrl+Shift+Q 对选区内所有行(或当前行)切换块引用：全部已 `>` 
 
 ### 非重复性说明
 - 项目有单标签关闭/拖拽重排(迭代内)，本迭代是批量管理维度
+
+---
+
+## 迭代 57 — 当前章节面包屑 (Heading Breadcrumb)
+
+**日期**: 2026-06-16
+
+### 特性描述
+编辑器顶部显示光标所在位置的标题层级链 H1 › H2 › H3，点击任一级跳转到对应标题行。长文档定位当前所在章节一目了然。参考 VS Code/Obsidian 面包屑。
+
+### 核心改动
+- **新增** `src/renderer/src/components/HeadingBreadcrumb.tsx` — 解析全文标题，祖先栈算法算出光标层级链，jumpTo 跳转
+- **修改** App.tsx 挂载于 InsertToolbar 行下方、global.css `.breadcrumb-*`
+
+### 技术点
+- 祖先栈：遇更深级 push、同/浅级 pop 再 push，得到严格嵌套的当前路径
+- cursorLine 来自 store(updateTabCursor 同步)，实时随光标移动更新
+- 无标题/无活动 tab 时 return null 不占位
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，40.99s
+
+### 非重复性说明
+- 迭代22(大纲折叠)是侧栏导航，本迭代是「编辑器内当前位置」面包屑，互补定位维度
