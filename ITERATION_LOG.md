@@ -1706,3 +1706,25 @@ Ctrl+Shift+Q 对选区内所有行(或当前行)切换块引用：全部已 `>` 
 
 ### 非重复性说明
 - 项目有链接预览(迭代4)/WikiLink导航(迭代8)，本迭代是「写作时研究」外部检索维度，全新
+
+---
+
+## 迭代 56 — 标签批量管理命令 (Tab Batch Operations)
+
+**日期**: 2026-06-16
+
+### 特性描述
+三条标签批量管理命令：关闭其他标签、关闭右侧标签、关闭所有已保存标签。均自动跳过「固定」标签(保护)，关闭已保存命令跳过未保存(防丢失)。多标签工作流效率提升。
+
+### 核心改动
+- **修改** `CommandPalette.tsx` 新增 `tabs.close-others` / `tabs.close-right` / `tabs.close-saved` 三命令，复用 store.closeTab
+
+### 技术点
+- getState 快照后遍历过滤 closeTab，pinned 保护
+- close-saved 过滤 isModified 防误关未保存内容
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，43.45s
+
+### 非重复性说明
+- 项目有单标签关闭/拖拽重排(迭代内)，本迭代是批量管理维度

@@ -34,6 +34,19 @@ function getCommands(): Command[] {
     { id: 'view.toggle-autosave', label: `切换自动保存 (${store.autoSave ? '开' : '关'})`, category: '视图', action: () => store.toggleAutoSave() },
     { id: 'edit.find-replace', label: '查找替换', category: '编辑', shortcut: 'Ctrl+H', action: () => store.toggleFindReplace() },
     { id: 'quick.open', label: '快速打开文件', category: '导航', shortcut: 'Ctrl+P', action: () => store.setShowQuickOpen(true) },
+    { id: 'tabs.close-others', label: '关闭其他标签', category: '标签', action: () => {
+      const st = useEditorStore.getState()
+      st.tabs.filter(t => t.id !== st.activeTabId && !t.pinned).forEach(t => st.closeTab(t.id))
+    }},
+    { id: 'tabs.close-right', label: '关闭右侧标签', category: '标签', action: () => {
+      const st = useEditorStore.getState()
+      const idx = st.tabs.findIndex(t => t.id === st.activeTabId)
+      st.tabs.slice(idx + 1).filter(t => !t.pinned).forEach(t => st.closeTab(t.id))
+    }},
+    { id: 'tabs.close-saved', label: '关闭所有已保存标签', category: '标签', action: () => {
+      const st = useEditorStore.getState()
+      st.tabs.filter(t => !t.isModified && !t.pinned).forEach(t => st.closeTab(t.id))
+    }},
     { id: 'editor.bold', label: '加粗选区', category: '格式', shortcut: 'Ctrl+B', action: () => {} },
     { id: 'editor.italic', label: '斜体选区', category: '格式', shortcut: 'Ctrl+I', action: () => {} },
     { id: 'editor.code', label: '行内代码选区', category: '格式', shortcut: 'Ctrl+`', action: () => {} },
