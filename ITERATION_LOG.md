@@ -2060,3 +2060,26 @@ Ctrl+Alt+/ 将选区包裹为 HTML 注释 `<!-- 选区 -->`，无选区时插入
 
 ### 非重复性说明
 - 项目此前无注释包裹；与 quote(渲染)正交的隐藏内容维度
+
+---
+
+## 迭代 71 — 表格列对齐循环 (Cycle Column Alignment)
+
+**日期**: 2026-06-16
+
+### 特性描述
+命令面板「循环表格列对齐」在 `---`(默认) / `:---`(左) / `:---:`(居中) / `---:`(右) 四种对齐间循环切换光标所在列。复用 parseTableAt/rebuildTableLines，对齐变化即时重建表格。
+
+### 核心改动
+- **新增** `Editor.tsx` 导出 `cycleColumnAlign(view)` — 解析分隔行 cell 首/尾 `:` 判定当前态，%4 循环
+- **修改** CommandPalette 导入并注册 `editor.cycle-align`(getEditorView)
+
+### 技术点
+- 当前态识别：startsWith+endsWith `:` 三态判定
+- 仅改分隔行该列，rebuildTableLines 自动重对齐
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，47.98s
+
+### 非重复性说明
+- 迭代16/63/65/66 是排序/转置/行/列增删，本迭代是「列对齐」全新表格格式维度
