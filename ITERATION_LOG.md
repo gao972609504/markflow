@@ -1608,3 +1608,27 @@ Ctrl+Shift+Q 对选区内所有行(或当前行)切换块引用：全部已 `>` 
 
 ### 非重复性说明
 - 项目支持粗体/斜体/删除线/代码，但无高亮标记；本迭代补齐 ==mark== 语法维度
+
+---
+
+## 迭代 52 — 写作目标达成庆祝 toast (Goal Celebration)
+
+**日期**: 2026-06-16
+
+### 特性描述
+当当前文档字数达到设定的 wordGoal 时，顶部弹出渐变庆祝 toast「🎉 达成写作目标 N 字！」，4.5s 自动消失。每轮仅触发一次（字数回落到目标下后重新可触发）。为写作目标注入正向反馈。
+
+### 核心改动
+- **新增** `src/renderer/src/components/GoalToast.tsx` — useMemo 字数、reachedRef 去重、useEffect 触发/超时、切文档/目标重置
+- **修改** App.tsx 常驻挂载、global.css `.goal-toast` 渐变胶囊 + 入场动画
+
+### 技术点
+- reachedRef 防止反复弹窗；低于目标重置可再次触发
+- activeTabId/wordGoal 变化时重置 reachedRef
+- pointer-events:none 不挡交互，cubic-bezier 弹性入场
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，42.52s
+
+### 非重复性说明
+- 迭代39(GoalSetter)+48(WordBadge)是目标展示，本迭代是「达成反馈」情感化维度

@@ -37,6 +37,7 @@ import { SentenceStats } from './components/SentenceStats'
 import { FrontMatterEditor } from './components/FrontMatterEditor'
 import { WordBadge } from './components/WordBadge'
 import { DuplicatePanel } from './components/DuplicatePanel'
+import { GoalToast } from './components/GoalToast'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -722,6 +723,7 @@ export default function App() {
       <GoalSetter />
       <FrontMatterEditor />
       <DuplicatePanel />
+      <GoalToast />
       <CustomCSSDialog />
       <TextToSpeech />
     </div>
