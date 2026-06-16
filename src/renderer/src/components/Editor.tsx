@@ -491,6 +491,7 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Mod-Alt-n', run: insertTableRow },
           { key: 'Mod-Alt-c', run: deleteTableColumn },
           { key: 'Mod-Alt-v', run: insertTableColumn },
+          { key: 'Mod-Alt-k', run: deleteParagraph },
           { key: 'Alt-d', run: insertDate, shift: insertDateTime },
           { key: 'Alt-t', run: insertTime, shift: insertTimestamp },
           { key: 'Alt-w', run: insertWeekday },
@@ -1650,6 +1651,22 @@ function deleteTableColumnImpl(view: EditorView): boolean {
   }
   if (!changes.length) return false
   view.dispatch({ changes })
+  return true
+}
+
+function deleteParagraph(view: EditorView): boolean {
+  const { head } = view.state.selection.main
+  const doc = view.state.doc
+  const cur = doc.lineAt(head).number
+  if (doc.line(cur).text.trim() === '') return false
+  let start = cur
+  while (start > 1 && doc.line(start - 1).text.trim() !== '') start--
+  let end = cur
+  while (end < doc.lines && doc.line(end + 1).text.trim() !== '') end++
+  const from = doc.line(start).from
+  const toLine = doc.line(end)
+  const to = toLine.to < doc.length ? toLine.to + 1 : toLine.to
+  view.dispatch({ changes: { from, to: Math.min(to, doc.length), insert: '' } })
   return true
 }
 
