@@ -1488,3 +1488,8 @@
 .outline-actions { display: flex; align-items: center; gap: 2px; }
 .outline-action-btn { font-size: 13px; color: var(--text-muted); padding: 0 5px; border-radius: var(--radius-sm); line-height: 1.4; transition: all var(--transition-fast); }
 .outline-action-btn:hover { background: var(--hover-bg); color: var(--accent-color); }
+
+/* 大纲行号徽标 */
+.outline-line { font-size: 9px; color: var(--text-muted); font-family: var(--font-mono); margin-left: auto; padding: 1px 5px; border-radius: 3px; opacity: 0; transition: all var(--transition-fast); flex-shrink: 0; }
+.outline-item:hover .outline-line { opacity: 1; }
+.outline-line:hover { background: var(--accent-soft); color: var(--accent-color); }

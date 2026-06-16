@@ -197,6 +197,7 @@ export function OutlinePanel() {
               )}
               <span className="outline-marker">{'#'.repeat(h.level)}</span>
               <span className="outline-text">{h.text}</span>
+              <span className="outline-line" title="点击跳转到该行" onClick={(e) => { e.stopPropagation(); scrollToLine(h.line) }}>L{h.line + 1}</span>
             </div>
           ))
         )}

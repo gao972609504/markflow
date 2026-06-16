@@ -2370,3 +2370,23 @@ Alt+← / Alt+→ 在历史光标位置间跳转（IDE 经典 jump-to-previous-c
 
 ### 验证结果
 - `npm run build` 通过，零错误零警告，1m18s
+
+---
+
+## 迭代 85 — 大纲行号徽标 (Outline Line Badges)
+
+**日期**: 2026-06-16
+
+### 特性描述
+在大纲面板每条标题项右侧添加行号徽标 `L{N}`（悬停可见），点击直接跳转该行。配合既有标题文本点击跳转，提供行级精确定位。
+
+### 核心改动
+- **修改** `src/renderer/src/components/OutlinePanel.tsx` — 新增 `<span class="outline-line">L{h.line+1}</span>` + 独立 click 跳转(stopPropagation 防与标题项冲突)
+- **修改** `src/renderer/src/styles/layout.css` `.outline-line` 悬停可见 + 点击高亮
+
+### 技术点
+- margin-left:auto 右对齐；悬停前 opacity 0 避免视觉噪声
+- stopPropagation 防止冒泡触发整行 click 跳转
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，1m25s
