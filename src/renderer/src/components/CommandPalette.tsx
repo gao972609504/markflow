@@ -93,6 +93,7 @@ function getCommands(): Command[] {
     { id: 'view.footnote', label: '脚注管理', category: '视图', action: () => { const s = useEditorStore.getState(); s.setShowFootnotePanel(!s.showFootnotePanel) } },
     { id: 'view.eye-care', label: `护眼模式 (${store.eyeCare ? '开' : '关'})`, category: '视图', action: () => store.toggleEyeCare() },
     { id: 'view.relative-numbers', label: `相对行号 (${store.relativeLineNumbers ? '开' : '关'})`, category: '视图', action: () => store.toggleRelativeLineNumbers() },
+    { id: 'view.dashboard', label: '写作仪表盘', category: '视图', action: () => { const s = useEditorStore.getState(); s.setShowDashboard(!s.showDashboard) } },
     { id: 'edit.toggle-selection-highlight', label: `切换选中匹配高亮 (${store.selectionHighlight ? '开' : '关'})`, category: '编辑', action: () => store.toggleSelectionHighlight() },
   ]
 }

@@ -31,6 +31,7 @@ import { CustomCSSDialog, loadCustomCSS, applyCustomCSS } from './components/Cus
 import { AssetPanel } from './components/AssetPanel'
 import { WritingHeatmap } from './components/WritingHeatmap'
 import { FootnotePanel } from './components/FootnotePanel'
+import { Dashboard } from './components/Dashboard'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -710,6 +711,7 @@ export default function App() {
       <WritingPrompts />
       <Pomodoro />
       <WritingHeatmap />
+      <Dashboard />
       <CustomCSSDialog />
       <TextToSpeech />
     </div>
