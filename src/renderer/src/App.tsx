@@ -34,6 +34,7 @@ import { FootnotePanel } from './components/FootnotePanel'
 import { Dashboard } from './components/Dashboard'
 import { GoalSetter } from './components/GoalSetter'
 import { SentenceStats } from './components/SentenceStats'
+import { FrontMatterEditor } from './components/FrontMatterEditor'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -716,6 +717,7 @@ export default function App() {
       <WritingHeatmap />
       <Dashboard />
       <GoalSetter />
+      <FrontMatterEditor />
       <CustomCSSDialog />
       <TextToSpeech />
     </div>

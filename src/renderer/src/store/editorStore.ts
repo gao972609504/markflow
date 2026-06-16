@@ -70,11 +70,13 @@ interface EditorState {
   showDashboard: boolean
   showGoalSetter: boolean
   showSentenceStats: boolean
+  showFrontMatter: boolean
   toggleEyeCare: () => void
   toggleRelativeLineNumbers: () => void
   setShowDashboard: (show: boolean) => void
   setShowGoalSetter: (show: boolean) => void
   setShowSentenceStats: (show: boolean) => void
+  setShowFrontMatter: (show: boolean) => void
   setShowReadability: (show: boolean) => void
   setAccentPreset: (preset: string) => void
   setShowPrompts: (show: boolean) => void
@@ -254,6 +256,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   showDashboard: false,
   showGoalSetter: false,
   showSentenceStats: false,
+  showFrontMatter: false,
   closedTabsHistory: [],
   recentFiles: loadRecentFiles(),
   zenMode: false,
@@ -393,6 +396,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setShowDashboard: (show: boolean) => set({ showDashboard: show }),
   setShowGoalSetter: (show: boolean) => set({ showGoalSetter: show }),
   setShowSentenceStats: (show: boolean) => set({ showSentenceStats: show }),
+  setShowFrontMatter: (show: boolean) => set({ showFrontMatter: show }),
   reopenClosedTab: () => {
     set(state => {
       if (state.closedTabsHistory.length === 0) return state
