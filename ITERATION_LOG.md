@@ -2351,3 +2351,22 @@ Alt+← / Alt+→ 在历史光标位置间跳转（IDE 经典 jump-to-previous-c
 
 ### 验证结果
 - `npm run build` 通过，零错误零警告，1m6s
+
+---
+
+## 迭代 84 — 选区词数中英混合 (CJK Word Count for Selection)
+
+**日期**: 2026-06-16
+
+### 特性描述
+修正选区词数统计：原 `text.trim().split(/\s+/).length` 对纯中文选区算作 1 词。改为中英混合：中文按字符、英文按词，对中文/混排文档准确。
+
+### 核心改动
+- **修改** `StatusBar.tsx` selInfo 词数计算 — cn 字符 + en 词
+
+### 技术点
+- 复用项目统一的 countWords 算法思路
+- 状态栏选区词数与仪表盘/热力图/任务面板一致
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，1m18s

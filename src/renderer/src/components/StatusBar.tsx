@@ -220,7 +220,9 @@ export function StatusBar({ tab, autoSaveStatus = 'idle' }: StatusBarProps) {
       const sel = window.getSelection()
       if (sel && sel.toString().trim()) {
         const text = sel.toString()
-        setSelInfo({ chars: text.length, words: text.trim().split(/\s+/).length, lines: text.split('\n').length })
+        const cn = (text.match(/[一-龥]/g) || []).length
+        const en = text.replace(/[一-龥]/g, ' ').trim().split(/\s+/).filter(Boolean).length
+        setSelInfo({ chars: text.length, words: cn + en, lines: text.split('\n').length })
       } else {
         setSelInfo(null)
       }
