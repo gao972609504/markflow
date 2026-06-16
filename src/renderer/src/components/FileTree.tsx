@@ -12,7 +12,7 @@ export function FileTree() {
   const { fileTree, folderPath, sidebarVisible } = useEditorStore()
   const [expandedDirs, setExpandedDirs] = useState<Set<string>>(new Set())
   const [searchQuery, setSearchQuery] = useState('')
-  const [sortMode, setSortMode] = useState<'name' | 'type'>('name')
+  const [sortMode, setSortMode] = useState<'name' | 'type' | 'mtime'>('name')
   const [mdOnly, setMdOnly] = useState(false)
   const [ctxMenu, setCtxMenu] = useState<ContextMenuState | null>(null)
   const [renaming, setRenaming] = useState<{ path: string; name: string } | null>(null)
@@ -199,6 +199,9 @@ export function FileTree() {
         .sort((a, b) => {
           // 目录始终在前
           if (a.isDirectory !== b.isDirectory) return a.isDirectory ? -1 : 1
+          if (sortMode === 'mtime') {
+            return (b.mtime || 0) - (a.mtime || 0)
+          }
           if (sortMode === 'type') {
             const extA = a.name.split('.').pop() || ''
             const extB = b.name.split('.').pop() || ''
@@ -305,10 +308,10 @@ export function FileTree() {
         </button>
         <button
           className="file-tree-btn"
-          title={sortMode === 'name' ? '按名称排序（点击切换按类型）' : '按类型排序（点击切换按名称）'}
-          onClick={() => setSortMode(m => m === 'name' ? 'type' : 'name')}
+          title={sortMode === 'name' ? '按名称排序（点击切换按类型）' : sortMode === 'type' ? '按类型排序（点击切换修改时间）' : '按修改时间排序（点击切换按名称）'}
+          onClick={() => setSortMode(m => m === 'name' ? 'type' : m === 'type' ? 'mtime' : 'name')}
         >
-          {sortMode === 'name' ? '🔤' : '📁'}
+          {sortMode === 'name' ? '🔤' : sortMode === 'type' ? '📁' : '🕐'}
         </button>
         <button
           className={`file-tree-btn${mdOnly ? ' file-tree-btn-active' : ''}`}

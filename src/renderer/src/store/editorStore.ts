@@ -16,6 +16,7 @@ export interface FileTreeNode {
   name: string
   path: string
   isDirectory: boolean
+  mtime?: number
   children?: FileTreeNode[]
 }
 

@@ -2609,3 +2609,27 @@ Alt+X 勾选任务（`[ ]` → `[x]`）时自动在行尾追加 `✅ YYYY-MM-DD`
 
 ### 验证结果
 - `npm run build` 通过，零错误零警告，1m12s
+
+---
+
+## 迭代 97 — 文件树按修改时间排序 (Sort by MTime)
+
+**日期**: 2026-06-16
+
+### 特性描述
+文件树排序按钮新增第三种模式「按修改时间排序」(🕐)，循环切换：名称→类型→修改时间→名称。最近修改的文件排最前。文件在读取目录时 stat mtimeMs 并传入 FileTreeNode。
+
+### 核心改动
+- **修改** `main/index.ts` — FileTreeNode 加 `mtime?: number`，buildFileTree 非目录文件 stat 后写入 mtimeMs
+- **修改** `editorStore.ts` — FileTreeNode 接口加 `mtime?`
+- **修改** `FileTree.tsx` — sortMode 扩展为 `'name'|'type'|'mtime'`，mtime 排序 `(b.mtime||0)-(a.mtime||0)`，按钮三态循环
+
+### 技术点
+- 非目录文件 stat mtimeMs，stat 失败时 mtime undefined 排末尾
+- mtime 在 buildFileTree 确定后随 IPC 传入 renderer（原结构不变）
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，57.61s
+
+### 非重复性说明
+- 文件树原有名称/类型排序，本迭代新增时间维度，完成三态排序闭环

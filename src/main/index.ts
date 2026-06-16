@@ -155,6 +155,7 @@ interface FileTreeNode {
   name: string
   path: string
   isDirectory: boolean
+  mtime?: number
   children?: FileTreeNode[]
 }
 
@@ -170,7 +171,9 @@ async function buildFileTree(dirPath: string, maxDepth: number = 10): Promise<Fi
       const children = await buildFileTree(fullPath, maxDepth - 1)
       nodes.push({ name: entry.name, path: fullPath, isDirectory: true, children })
     } else if (/\.(md|markdown|txt|mdown|mkd)$/i.test(entry.name)) {
-      nodes.push({ name: entry.name, path: fullPath, isDirectory: false })
+      let mtime: number | undefined
+      try { const s = await stat(fullPath); mtime = s.mtimeMs } catch { /* noop */ }
+      nodes.push({ name: entry.name, path: fullPath, isDirectory: false, mtime })
     }
   }
 
