@@ -6,6 +6,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { useEditorStore } from '../store/editorStore'
 import { renderMarkdown } from '../utils/markdown'
 import { stripMarkdown } from '../utils/stripMarkdown'
+import { normalizeDocument } from '../utils/normalize'
 import { inlineToRefLinks } from './Editor'
 import { fullWidthToHalf } from './Editor'
 import { selectParagraph } from './Editor'
@@ -251,7 +252,10 @@ async function handleSave() {
   const store = useEditorStore.getState()
   const tab = store.getActiveTab()
   if (tab?.filePath && window.api) {
-    const success = await window.api.writeFile(tab.filePath, tab.content)
+    const normalized = normalizeDocument(tab.content)
+    if (normalized !== tab.content) store.updateTabContent(tab.id, normalized)
+    const finalContent = normalized
+    const success = await window.api.writeFile(tab.filePath, finalContent)
     if (success) store.markTabSaved(tab.id)
   }
 }

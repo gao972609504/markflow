@@ -2390,3 +2390,23 @@ Alt+← / Alt+→ 在历史光标位置间跳转（IDE 经典 jump-to-previous-c
 
 ### 验证结果
 - `npm run build` 通过，零错误零警告，1m25s
+
+---
+
+## 迭代 86 — 保存自动规范化 (Auto-Normalize on Save)
+
+**日期**: 2026-06-16
+
+### 特性描述
+保存时自动应用 `normalizeDocument`(iter 32) 规则：trim 行尾空白、折叠多余空行、确保末尾换行。之前需手动 Ctrl+Shift+Alt+F，现保存即静默执行。
+
+### 核心改动
+- **修改** `CommandPalette.tsx` `handleSave()` — 写盘前 normalize，有变更则 updateTabContent 更新编辑器与 store
+
+### 技术点
+- 规范化在写盘前完成，写盘内容与编辑器内容同步
+- 自动保存路径(App.tsx timer)调 writeFile 但内容已是 normalized 后(reducer 在 updateTabContent 时触发)
+- 无新依赖，复用 iter 32 工具
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，1m34s
