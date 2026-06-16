@@ -50,6 +50,23 @@ const markdownHeadingFold = foldService.of((state, lineStart, lineEnd) => {
   return { from: line.to, to: endLineInfo.to }
 })
 
+// ============ 围栏代码块折叠 ============
+
+const codeFenceFold = foldService.of((state, lineStart, _lineEnd) => {
+  const line = state.doc.lineAt(lineStart)
+  const open = line.text.match(/^(\s*)```/)
+  if (!open) return null
+  // 查找闭合围栏（同行或更深缩进的 ```）
+  for (let i = line.number + 1; i <= state.doc.lines; i++) {
+    const l = state.doc.line(i)
+    if (/^\s*```/.test(l.text)) {
+      if (i === line.number + 1) return null // 空代码块
+      return { from: line.to, to: l.to }
+    }
+  }
+  return null
+})
+
 // ============ Wiki 链接导航 ============
 
 async function navigateToWikiLink(target: string) {
@@ -441,6 +458,7 @@ export function Editor({ tab }: EditorProps) {
         bracketMatching(),
         foldGutter(),
         markdownHeadingFold,
+        codeFenceFold,
         ...(wordWrap ? [EditorView.lineWrapping] : []),
         ...(selectionHighlight ? [highlightSelectionMatches({ minSelectionLength: 2, wholeWords: false, highlightWordAroundCursor: true })] : []),
         colorSwatches(),
