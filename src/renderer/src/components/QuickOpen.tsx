@@ -42,7 +42,7 @@ function fuzzyMatch(query: string, text: string): { match: boolean; score: numbe
 }
 
 export function QuickOpen() {
-  const { fileTree, showQuickOpen, setShowQuickOpen, recentFiles } = useEditorStore()
+  const { fileTree, showQuickOpen, setShowQuickOpen, setShowCommandPalette, recentFiles } = useEditorStore()
   const [query, setQuery] = useState('')
   const [selectedIdx, setSelectedIdx] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -108,7 +108,15 @@ export function QuickOpen() {
             type="text"
             placeholder="搜索文件... (Ctrl+P)"
             value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={e => {
+              const val = e.target.value
+              if (val.startsWith('/')) {
+                setShowQuickOpen(false)
+                setShowCommandPalette(true)
+                return
+              }
+              setQuery(val)
+            }}
             onKeyDown={handleKeyDown}
             className="quick-open-input"
           />
