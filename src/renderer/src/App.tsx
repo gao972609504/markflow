@@ -28,6 +28,7 @@ import { Pomodoro } from './components/Pomodoro'
 import { TextToSpeech } from './components/TextToSpeech'
 import { TaskPanel } from './components/TaskPanel'
 import { CustomCSSDialog, loadCustomCSS, applyCustomCSS } from './components/CustomCSS'
+import { AssetPanel } from './components/AssetPanel'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -686,6 +687,7 @@ export default function App() {
         {!zenMode && <OutlinePanel />}
         {!zenMode && <TagPanel />}
         {!zenMode && <TaskPanel />}
+        {!zenMode && <AssetPanel />}
         {!zenMode && <BacklinksPanel />}
       </div>
       <QuickOpen />

@@ -62,6 +62,7 @@ interface EditorState {
   showTTS: boolean
   showTaskPanel: boolean
   showCustomCSS: boolean
+  showAssetPanel: boolean
   setShowReadability: (show: boolean) => void
   setAccentPreset: (preset: string) => void
   setShowPrompts: (show: boolean) => void
@@ -69,6 +70,7 @@ interface EditorState {
   setShowTTS: (show: boolean) => void
   setShowTaskPanel: (show: boolean) => void
   setShowCustomCSS: (show: boolean) => void
+  setShowAssetPanel: (show: boolean) => void
   closedTabsHistory: { filePath: string | null; title: string; content: string }[]
   recentFiles: { filePath: string; title: string; lastOpened: number }[]
   zenMode: boolean
@@ -230,6 +232,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   showTTS: false,
   showTaskPanel: false,
   showCustomCSS: false,
+  showAssetPanel: false,
   closedTabsHistory: [],
   recentFiles: loadRecentFiles(),
   zenMode: false,
@@ -353,6 +356,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setShowTTS: (show: boolean) => set({ showTTS: show }),
   setShowTaskPanel: (show: boolean) => set({ showTaskPanel: show }),
   setShowCustomCSS: (show: boolean) => set({ showCustomCSS: show }),
+  setShowAssetPanel: (show: boolean) => set({ showAssetPanel: show }),
   reopenClosedTab: () => {
     set(state => {
       if (state.closedTabsHistory.length === 0) return state

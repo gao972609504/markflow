@@ -2812,3 +2812,32 @@ kbd {
 .customcss-btn:hover { background: var(--hover-bg); color: var(--text-primary); }
 .customcss-btn.primary { background: var(--accent-color); color: #fff; border-color: var(--accent-color); }
 .customcss-btn.primary:hover { opacity: 0.88; color: #fff; }
+
+/* ===== 资源与引用面板 ===== */
+.asset-panel {
+  width: 232px; min-width: 200px; background: var(--bg-primary);
+  border-left: 1px solid var(--border-subtle); display: flex; flex-direction: column; overflow: hidden;
+}
+.asset-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px 8px; font-size: var(--font-size-xs); font-weight: 600;
+  color: var(--text-muted); letter-spacing: 0.3px; border-bottom: 1px solid var(--border-subtle);
+}
+.asset-close { font-size: 18px; color: var(--text-muted); padding: 0 6px; border-radius: var(--radius-sm); line-height: 1; }
+.asset-close:hover { background: var(--hover-bg); color: var(--text-primary); }
+.asset-filters { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 10px; border-bottom: 1px solid var(--border-subtle); }
+.asset-filter { font-size: 11px; padding: 3px 8px; border-radius: 12px; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-subtle); }
+.asset-filter.active { background: var(--accent-color); color: #fff; border-color: var(--accent-color); }
+.asset-list { flex: 1; overflow-y: auto; padding: 4px 6px 10px; }
+.asset-empty { padding: 24px 16px; text-align: center; color: var(--text-muted); font-size: var(--font-size-base); }
+.asset-row {
+  display: flex; align-items: center; gap: 6px; padding: 5px 8px; margin: 1px 0;
+  border-radius: var(--radius-sm); font-size: var(--font-size-sm); color: var(--text-secondary); cursor: pointer;
+}
+.asset-row:hover { background: var(--hover-bg); }
+.asset-row-icon { flex-shrink: 0; }
+.asset-row-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.asset-row-copy { flex-shrink: 0; font-size: 12px; color: var(--text-muted); padding: 0 3px; opacity: 0; }
+.asset-row:hover .asset-row-copy { opacity: 1; }
+.asset-row-copy:hover { color: var(--accent-color); }
+.asset-row-line { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); flex-shrink: 0; }
