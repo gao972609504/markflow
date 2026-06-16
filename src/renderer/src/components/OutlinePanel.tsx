@@ -123,17 +123,57 @@ export function OutlinePanel() {
     }
   }, [headings, collapsed])
 
+  // 全部折叠
+  const collapseAll = useCallback(() => {
+    const editorEl = document.querySelector('.cm-editor')
+    const view = editorEl ? getEditorView(editorEl as HTMLElement) : null
+    if (!view) return
+    const effects: unknown[] = []
+    const doc = view.state.doc
+    headings.forEach((heading, idx) => {
+      const next = headings[idx + 1]
+      if (!next || next.level <= heading.level) return
+      let endLineNum = doc.lines
+      for (let i = idx + 1; i < headings.length; i++) {
+        if (headings[i].level <= heading.level) { endLineNum = headings[i].line; break }
+      }
+      const startLine = doc.line(heading.line + 1)
+      const endLine = doc.line(endLineNum)
+      effects.push(foldEffect.of({ from: startLine.to, to: endLine.to }))
+    })
+    if (effects.length) view.dispatch({ effects: effects as any })
+    setCollapsed(new Set(headings.map((_, i) => i)))
+  }, [headings])
+
+  // 全部展开
+  const expandAll = useCallback(() => {
+    const editorEl = document.querySelector('.cm-editor')
+    const view = editorEl ? getEditorView(editorEl as HTMLElement) : null
+    if (!view) return
+    const effects: unknown[] = []
+    const folded = foldedRanges(view.state)
+    folded.between(0, view.state.doc.length, (from: number, to: number) => {
+      effects.push(unfoldEffect.of({ from, to }))
+    })
+    if (effects.length) view.dispatch({ effects: effects as any })
+    setCollapsed(new Set())
+  }, [])
+
   return (
     <div className="outline-panel">
       <div className="outline-header">
         <span>大纲</span>
-        <button
-          className="outline-close-btn"
-          onClick={() => useEditorStore.getState().toggleOutline()}
-          title="关闭大纲"
-        >
-          ×
-        </button>
+        <div className="outline-actions">
+          <button className="outline-action-btn" title="全部折叠" onClick={collapseAll}>⇈</button>
+          <button className="outline-action-btn" title="全部展开" onClick={expandAll}>⇊</button>
+          <button
+            className="outline-close-btn"
+            onClick={() => useEditorStore.getState().toggleOutline()}
+            title="关闭大纲"
+          >
+            ×
+          </button>
+        </div>
       </div>
       <div className="outline-content">
         {headings.length === 0 ? (

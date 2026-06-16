@@ -1776,3 +1776,27 @@ Ctrl+Shift+Q 对选区内所有行(或当前行)切换块引用：全部已 `>` 
 
 ### 非重复性说明
 - 项目有大小写转换(迭代内)等文本变换，本迭代是「中英排版」全新文本处理维度
+
+---
+
+## 迭代 59 — 大纲全部折叠/展开 (Outline Collapse/Expand All)
+
+**日期**: 2026-06-16
+
+### 特性描述
+增强迭代22大纲面板：标题栏新增「全部折叠 ⇈」「全部展开 ⇊」按钮，一键收起/展开所有章节，快速纵览或聚焦文档结构。
+
+### 核心改动
+- **修改** `src/renderer/src/components/OutlinePanel.tsx` — collapseAll(对所有有子标题的项 dispatch foldEffect)、expandAll(遍历 foldedRanges 全部 unfoldEffect)、setCollapsed 同步图标态
+- **修改** header 加两个按钮、layout.css `.outline-action-btn`
+
+### 技术点
+- collapseAll 复用 toggleFold 的范围计算逻辑，批量 dispatch effects 数组
+- expandAll 用 foldedRanges.between 收集所有折叠区一次性展开
+- 与既有按级别折叠(Mod-1/2/3)互补：本迭代是大纲面板内的全局操作
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，44.00s
+
+### 非重复性说明
+- 迭代22是单标题折叠，本迭代是「全量」操作，补齐大纲面板的批量控制

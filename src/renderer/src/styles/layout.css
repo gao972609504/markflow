@@ -1483,3 +1483,8 @@
   opacity: 0.4;
   color: var(--accent-color);
 }
+
+/* 大纲全部折叠/展开按钮 */
+.outline-actions { display: flex; align-items: center; gap: 2px; }
+.outline-action-btn { font-size: 13px; color: var(--text-muted); padding: 0 5px; border-radius: var(--radius-sm); line-height: 1.4; transition: all var(--transition-fast); }
+.outline-action-btn:hover { background: var(--hover-bg); color: var(--accent-color); }
