@@ -38,6 +38,7 @@ import { FrontMatterEditor } from './components/FrontMatterEditor'
 import { WordBadge } from './components/WordBadge'
 import { DuplicatePanel } from './components/DuplicatePanel'
 import { GoalToast } from './components/GoalToast'
+import { BackupBrowser } from './components/BackupBrowser'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -51,6 +52,8 @@ declare global {
       openFolder: () => Promise<string | null>
       readdir: (dirPath: string) => Promise<FileTreeNode[]>
       getDefaultPath: () => Promise<string>
+      listBackups: (filePath: string) => Promise<{ name: string; path: string; mtime: number; size: number }[]>
+      readBackup: (backupPath: string) => Promise<string>
       createFile: (filePath: string) => Promise<boolean>
       createFolder: (dirPath: string) => Promise<boolean>
       renamePath: (oldPath: string, newPath: string) => Promise<boolean>
@@ -724,6 +727,7 @@ export default function App() {
       <FrontMatterEditor />
       <DuplicatePanel />
       <GoalToast />
+      <BackupBrowser />
       <CustomCSSDialog />
       <TextToSpeech />
     </div>

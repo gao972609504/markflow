@@ -306,6 +306,28 @@ ipcMain.handle('app:getDefaultPath', () => {
   return homedir()
 })
 
+ipcMain.handle('backup:list', async (_event, filePath: string) => {
+  try {
+    if (!filePath) return []
+    const dir = dirname(filePath)
+    const base = filePath.split(/[/\\]/).pop() || ''
+    const backupDir = join(dir, '.bomo-backup')
+    const files = await readdir(backupDir)
+    const list = files.filter(f => f.startsWith(base + '.') && f.endsWith('.bak'))
+    const out: { name: string; path: string; mtime: number; size: number }[] = []
+    for (const f of list) {
+      const p = join(backupDir, f)
+      const s = await stat(p)
+      out.push({ name: f, path: p, mtime: s.mtimeMs, size: s.size })
+    }
+    return out.sort((a, b) => b.mtime - a.mtime)
+  } catch { return [] }
+})
+
+ipcMain.handle('backup:read', async (_event, backupPath: string) => {
+  return await readFile(backupPath, 'utf-8')
+})
+
 // 文件变更检测：返回文件的修改时间戳
 ipcMain.handle('fs:getModifiedTime', async (_event, filePath: string) => {
   try {

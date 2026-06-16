@@ -1632,3 +1632,29 @@ Ctrl+Shift+Q 对选区内所有行(或当前行)切换块引用：全部已 `>` 
 
 ### 非重复性说明
 - 迭代39(GoalSetter)+48(WordBadge)是目标展示，本迭代是「达成反馈」情感化维度
+
+---
+
+## 迭代 53 — 备份浏览与恢复 (Backup Browser)
+
+**日期**: 2026-06-16
+
+### 特性描述
+配合迭代50自动备份：列出当前文件的 .bomo-backup 历史快照（时间/大小），点击预览内容，一键恢复到编辑器（再保存即落盘）。构成完整的版本安全闭环。
+
+### 核心改动
+- **新增** main `backup:list`(读 .bomo-backup 目录、过滤 .bak、返回 name/path/mtime/size) 与 `backup:read`
+- **新增** preload `listBackups`/`readBackup` 桥接 + App.tsx window.api 类型
+- **新增** `src/renderer/src/components/BackupBrowser.tsx` — 列表+预览+恢复(updateTabContent)
+- store showBackupBrowser、CommandPalette `view.backups`、CSS `.backup-*`
+
+### 技术点
+- 备份按 mtime 倒序，列表/预览双栏布局
+- 恢复仅写入编辑器内容(updateTabContent)，由用户决定保存，避免误覆盖
+- 预览截断 5000 字防止巨型备份卡顿
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，43.92s
+
+### 非重复性说明
+- 迭代50是自动留档，本迭代是「浏览+预览+恢复」UI，补齐备份的可用闭环

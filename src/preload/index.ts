@@ -59,6 +59,12 @@ const api = {
   getDefaultPath: (): Promise<string> =>
     ipcRenderer.invoke('app:getDefaultPath'),
 
+  // 备份管理
+  listBackups: (filePath: string): Promise<{ name: string; path: string; mtime: number; size: number }[]> =>
+    ipcRenderer.invoke('backup:list', filePath),
+  readBackup: (backupPath: string): Promise<string> =>
+    ipcRenderer.invoke('backup:read', backupPath),
+
   // 菜单事件监听
   onMenuNewFile: (callback: () => void) => {
     ipcRenderer.on('menu:new-file', callback)
