@@ -2728,3 +2728,30 @@ kbd {
 .pomodoro-btn.primary:hover { opacity: 0.88; color: #fff; }
 .pomodoro-stats { text-align: center; font-size: 12px; color: var(--text-muted); }
 .pomodoro-stats strong { color: var(--accent-color); font-size: 14px; }
+
+/* ===== 朗读模式 TTS ===== */
+.tts-bar {
+  position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%);
+  z-index: 9000; display: flex; align-items: center; gap: 8px;
+  background: var(--bg-primary); border: 1px solid var(--border-subtle);
+  border-radius: 24px; padding: 6px 14px; box-shadow: var(--shadow);
+  font-size: 13px;
+}
+.tts-title { font-weight: 600; color: var(--text-primary); padding-right: 4px; }
+.tts-btn {
+  width: 30px; height: 30px; border-radius: 50%; font-size: 14px;
+  background: var(--bg-tertiary); color: var(--text-primary);
+  border: 1px solid var(--border-subtle); transition: all var(--transition-fast);
+}
+.tts-btn:hover:not(:disabled) { background: var(--accent-color); color: #fff; }
+.tts-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.tts-rate { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 12px; }
+.tts-rate input[type=range] { width: 70px; }
+.tts-voice {
+  background: var(--bg-tertiary); color: var(--text-primary);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+  padding: 3px 6px; font-size: 12px; max-width: 150px;
+}
+.tts-pos { color: var(--accent-color); font-family: var(--font-mono); font-size: 12px; }
+.tts-close { font-size: 18px; color: var(--text-muted); padding: 0 4px; }
+.tts-close:hover { color: var(--text-primary); }

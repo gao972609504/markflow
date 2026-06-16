@@ -73,6 +73,7 @@ function getCommands(): Command[] {
     { id: 'view.readability', label: '可读性分析面板', category: '视图', shortcut: 'Ctrl+Shift+E', action: () => { const s = useEditorStore.getState(); s.setShowReadability(!s.readabilityVisible) } },
     { id: 'view.prompts', label: '写作灵感', category: '视图', shortcut: 'Ctrl+Shift+J', action: () => { const s = useEditorStore.getState(); s.setShowPrompts(!s.showPrompts) } },
     { id: 'view.pomodoro', label: '番茄钟', category: '视图', action: () => { const s = useEditorStore.getState(); s.setShowPomodoro(!s.showPomodoro) } },
+    { id: 'view.tts', label: '朗读模式', category: '视图', action: () => { const s = useEditorStore.getState(); s.setShowTTS(!s.showTTS) } },
     { id: 'edit.toggle-selection-highlight', label: `切换选中匹配高亮 (${store.selectionHighlight ? '开' : '关'})`, category: '编辑', action: () => store.toggleSelectionHighlight() },
   ]
 }
