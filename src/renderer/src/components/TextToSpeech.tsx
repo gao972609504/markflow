@@ -4,7 +4,9 @@
  * — 灵感来自 Obsidian Read Aloud 插件，辅助校对与无障碍阅读
  */
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { EditorView } from '@codemirror/view'
 import { useEditorStore } from '../store/editorStore'
+import { getEditorView } from '../plugins/widgets'
 
 export function TextToSpeech() {
   const { showTTS, setShowTTS, tabs, activeTabId } = useEditorStore()
@@ -15,6 +17,7 @@ export function TextToSpeech() {
   const [paused, setPaused] = useState(false)
   const [chunkIdx, setChunkIdx] = useState(0)
   const [chunks, setChunks] = useState<string[]>([])
+  const [chunkLines, setChunkLines] = useState<number[]>([])
   const utterRef = useRef<SpeechSynthesisUtterance | null>(null)
 
   const activeTab = tabs.find(t => t.id === activeTabId)
@@ -60,17 +63,46 @@ export function TextToSpeech() {
   useEffect(() => { speakingRef.current = speaking }, [speaking])
   useEffect(() => { pausedRef.current = paused }, [paused])
 
+  const preprocess = (raw: string) => raw
+    .replace(/```[\s\S]*?```/g, ' 代码块 ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' 图片 ')
+    .replace(/\$\$[\s\S]*?\$\$/g, ' 数学公式 ')
+    .replace(/[#>*_`~\-\[\]()|]/g, ' ')
+    .trim()
+
   const start = () => {
     if (!activeTab?.content?.trim()) return
-    const text = activeTab.content
-      .replace(/```[\s\S]*?```/g, ' 代码块 ')
-      .replace(/!\[[^\]]*\]\([^)]*\)/g, ' 图片 ')
-      .replace(/\$\$[\s\S]*?\$\$/g, ' 数学公式 ')
-      .replace(/[#>*_`~\-\[\]()|]/g, ' ')
-    const cs = text.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean)
-    setChunks(cs); setSpeaking(true); setPaused(false); setChunkIdx(0)
+    const lines = activeTab.content.split('\n')
+    const groups: { text: string; line: number }[] = []
+    let cur: string[] = []
+    let curStart = 0
+    lines.forEach((ln, i) => {
+      if (ln.trim() === '') {
+        if (cur.length) { groups.push({ text: cur.join('\n'), line: curStart }); cur = [] }
+      } else {
+        if (cur.length === 0) curStart = i
+        cur.push(ln)
+      }
+    })
+    if (cur.length) groups.push({ text: cur.join('\n'), line: curStart })
+    const cs = groups.map(g => preprocess(g.text)).filter(Boolean)
+    const ls = groups.filter(g => preprocess(g.text)).map(g => g.line)
+    setChunks(cs); setChunkLines(ls); setSpeaking(true); setPaused(false); setChunkIdx(0)
     speakFrom(0, cs, rate, voiceURI)
   }
+
+  // 朗读跟随滚动到当前段落
+  useEffect(() => {
+    if (!speaking) return
+    const line = chunkLines[chunkIdx]
+    if (line == null) return
+    const el = document.querySelector('.cm-editor')
+    const view = el ? getEditorView(el as HTMLElement) : null
+    if (view) {
+      const info = view.state.doc.line(line + 1)
+      view.dispatch({ effects: EditorView.scrollIntoView(info.from, { y: 'center' }) })
+    }
+  }, [chunkIdx, speaking, chunkLines])
 
   const togglePause = () => {
     if (!window.speechSynthesis) return

@@ -1433,3 +1433,29 @@ Ctrl+Shift+Q 对选区内所有行(或当前行)切换块引用：全部已 `>` 
 
 ### 非重复性说明
 - 项目此前无日期语义识别；与颜色色块(迭代21)、拼写检查同属装饰类，但本迭代是「日期语义着色」全新维度
+
+---
+
+## 迭代 45 — 朗读跟随滚动 (TTS Auto-scroll)
+
+**日期**: 2026-06-16
+
+### 特性描述
+增强迭代25朗读模式：朗读时编辑器自动滚动并居中显示正在朗读的段落，视读与听读同步。提升校对与长文伴随阅读体验。
+
+### 核心改动
+- **修改** `src/renderer/src/components/TextToSpeech.tsx`
+  - 抽取 preprocess() 单段预处理
+  - start() 重构：按空行分段并记录每段起始行号(chunkLines)，与 chunkTexts 对齐
+  - 新增 useEffect(chunkIdx)：通过 getEditorView + EditorView.scrollIntoView 居中滚动到当前段
+
+### 技术点
+- 段落分组保留原始行号映射，preprocess 仅作用于朗读文本不影响定位
+- chunkLines 与 chunks 同长(filter 同条件)，按下一段时滚动到位
+- scrollIntoView { y: 'center' } 段落居中
+
+### 验证结果
+- `npm run build` 通过，零错误零警告，42.12s
+
+### 非重复性说明
+- 迭代25是纯语音播放，本迭代补齐「视读同步」交互，朗读可用性闭环
