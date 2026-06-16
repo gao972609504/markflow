@@ -58,9 +58,11 @@ interface EditorState {
   readabilityVisible: boolean
   accentPreset: string
   showPrompts: boolean
+  showPomodoro: boolean
   setShowReadability: (show: boolean) => void
   setAccentPreset: (preset: string) => void
   setShowPrompts: (show: boolean) => void
+  setShowPomodoro: (show: boolean) => void
   closedTabsHistory: { filePath: string | null; title: string; content: string }[]
   recentFiles: { filePath: string; title: string; lastOpened: number }[]
   zenMode: boolean
@@ -218,6 +220,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   readabilityVisible: false,
   accentPreset: (() => { try { return localStorage.getItem('markflow-accent') || 'blue' } catch { return 'blue' } })(),
   showPrompts: false,
+  showPomodoro: false,
   closedTabsHistory: [],
   recentFiles: loadRecentFiles(),
   zenMode: false,
@@ -337,6 +340,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setShowReadability: (show: boolean) => set({ readabilityVisible: show }),
   setAccentPreset: (preset: string) => { try { localStorage.setItem('markflow-accent', preset) } catch { /* noop */ }; set({ accentPreset: preset }) },
   setShowPrompts: (show: boolean) => set({ showPrompts: show }),
+  setShowPomodoro: (show: boolean) => set({ showPomodoro: show }),
   reopenClosedTab: () => {
     set(state => {
       if (state.closedTabsHistory.length === 0) return state

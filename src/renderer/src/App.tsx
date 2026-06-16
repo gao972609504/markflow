@@ -24,6 +24,7 @@ import { DailyNotes } from './components/DailyNotes'
 import { BookmarksPanel } from './components/BookmarksPanel'
 import { Readability } from './components/Readability'
 import { WritingPrompts } from './components/WritingPrompts'
+import { Pomodoro } from './components/Pomodoro'
 import { renderMarkdown } from './utils/markdown'
 
 declare global {
@@ -694,6 +695,7 @@ export default function App() {
       <BookmarksPanel />
       <Readability />
       <WritingPrompts />
+      <Pomodoro />
     </div>
   )
 }
