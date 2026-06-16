@@ -348,7 +348,8 @@ export function CommandPalette() {
       cmds = commands.filter(c =>
         c.label.toLowerCase().includes(q) ||
         c.category.toLowerCase().includes(q) ||
-        c.id.toLowerCase().includes(q)
+        c.id.toLowerCase().includes(q) ||
+        (c.shortcut && c.shortcut.toLowerCase().includes(q))
       )
     }
     return cmds
