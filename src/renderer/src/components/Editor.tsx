@@ -463,6 +463,7 @@ export function Editor({ tab }: EditorProps) {
           { key: 'Mod-Alt-s', run: v => sortTable(v, false), shift: v => sortTable(v, true) },
           { key: 'Mod-Alt-T', run: transposeTable },
           { key: 'Mod-Shift-Alt-F', run: normalizeDoc },
+          { key: 'Alt-x', run: toggleTaskCheckbox },
           { key: 'Alt-d', run: insertDate, shift: insertDateTime },
           { key: 'Alt-t', run: insertTime, shift: insertTimestamp },
           { key: 'Alt-w', run: insertWeekday },
@@ -1516,10 +1517,31 @@ function insertToc(view: EditorView): boolean {
   return true
 }
 
+// ============ 任务复选框切换 ============
+
+function toggleTaskCheckbox(view: EditorView): boolean {
+  const { from, to } = view.state.selection.main
+  const doc = view.state.doc
+  const startLine = doc.lineAt(from).number
+  const endLine = doc.lineAt(to).number
+  const changes: { from: number; to: number; insert: string }[] = []
+  for (let i = startLine; i <= endLine; i++) {
+    const line = doc.line(i)
+    const m = line.text.match(/^(\s*)([-*+]|\d+\.)\s\[([ xX])\]/)
+    if (m) {
+      const charOff = line.from + m[1].length + m[2].length + 1 + 1 // indent + marker + space + '['
+      const next = m[3].toLowerCase() === 'x' ? ' ' : 'x'
+      changes.push({ from: charOff, to: charOff + 1, insert: next })
+    }
+  }
+  if (changes.length === 0) return false
+  view.dispatch({ changes })
+  return true
+}
+
 // ============ 文档格式整理 ============
 
-function normalizeDoc(view: EditorView): boolean {
-  const cur = view.state.doc.toString()
+function normalizeDoc(view: EditorView): boolean {  const cur = view.state.doc.toString()
   const normalized = normalizeDocument(cur)
   if (normalized === cur) return false
   const head = view.state.selection.main.head

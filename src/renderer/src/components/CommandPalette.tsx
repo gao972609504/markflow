@@ -60,6 +60,10 @@ function getCommands(): Command[] {
       const cm = document.querySelector('.cm-content')
       if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'L', ctrlKey: true, shiftKey: true, bubbles: true }))
     }},
+    { id: 'editor.toggle-task', label: '切换任务复选框 [ ]/[x]', category: '编辑', shortcut: 'Alt+X', action: () => {
+      const cm = document.querySelector('.cm-content')
+      if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'x', altKey: true, bubbles: true }))
+    }},
     { id: 'insert.date', label: '插入当前日期 (YYYY-MM-DD)', category: '插入', shortcut: 'Alt+D', action: () => {
       const cm = document.querySelector('.cm-content'); if (cm) cm.dispatchEvent(new KeyboardEvent('keydown', { key: 'd', altKey: true, bubbles: true }))
     }},
