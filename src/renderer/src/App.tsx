@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react'
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { useEditorStore, FileTreeNode } from './store/editorStore'
 import { FileTree } from './components/FileTree'
 import { TabBar } from './components/TabBar'
@@ -7,19 +7,12 @@ import { StatusBar } from './components/StatusBar'
 import { FindReplace } from './components/FindReplace'
 import { OutlinePanel } from './components/OutlinePanel'
 import { QuickOpen } from './components/QuickOpen'
-import { CommandPalette } from './components/CommandPalette'
 import { GoToLine } from './components/GoToLine'
 import { InsertToolbar } from './components/InsertToolbar'
 import { TagPanel } from './components/TagPanel'
-import { DocStats } from './components/DocStats'
 import { ShortcutReference } from './components/ShortcutReference'
-import { GlobalSearch } from './components/GlobalSearch'
-import { PresentationView } from './components/PresentationView'
-import { WritingStats } from './components/WritingStats'
 import { SnippetManager } from './components/SnippetManager'
 import { BacklinksPanel } from './components/BacklinksPanel'
-import { WordFrequency } from './components/WordFrequency'
-import { GraphView } from './components/GraphView'
 import { DailyNotes } from './components/DailyNotes'
 import { BookmarksPanel } from './components/BookmarksPanel'
 import { Readability } from './components/Readability'
@@ -39,12 +32,77 @@ import { WordBadge } from './components/WordBadge'
 import { DuplicatePanel } from './components/DuplicatePanel'
 import { GoalToast } from './components/GoalToast'
 import { BackupBrowser } from './components/BackupBrowser'
-import { SettingsDialog } from './components/SettingsDialog'
 import { HeadingBreadcrumb } from './components/HeadingBreadcrumb'
 import { ClipboardHistory } from './components/ClipboardHistory'
 import { DocProperties } from './components/DocProperties'
 import { TaskSchedule } from './components/TaskSchedule'
+import { LazyGate } from './components/LazyGate'
 import { renderMarkdown } from './utils/markdown'
+
+// ── 懒加载：大型对话框/非常驻视图，减小首屏 bundle ──
+// 这些组件均自带 visibility 判断（不可见时 return null），
+// 用 LazyGate 仅在可见时挂载，从而真正延迟 chunk 下载。
+const LazyCommandPalette = React.lazy(() =>
+  import('./components/CommandPalette').then(m => ({ default: m.CommandPalette }))
+)
+const LazyDocStats = React.lazy(() =>
+  import('./components/DocStats').then(m => ({ default: m.DocStats }))
+)
+const LazyGlobalSearch = React.lazy(() =>
+  import('./components/GlobalSearch').then(m => ({ default: m.GlobalSearch }))
+)
+const LazyPresentationView = React.lazy(() =>
+  import('./components/PresentationView').then(m => ({ default: m.PresentationView }))
+)
+const LazyWritingStats = React.lazy(() =>
+  import('./components/WritingStats').then(m => ({ default: m.WritingStats }))
+)
+const LazyWordFrequency = React.lazy(() =>
+  import('./components/WordFrequency').then(m => ({ default: m.WordFrequency }))
+)
+const LazyGraphView = React.lazy(() =>
+  import('./components/GraphView').then(m => ({ default: m.GraphView }))
+)
+const LazySettingsDialog = React.lazy(() =>
+  import('./components/SettingsDialog').then(m => ({ default: m.SettingsDialog }))
+)
+
+// ── memo：对无 props / store-driven 的常驻面板做浅比较包装，避免 App 渲染时连带重渲染 ──
+const MemoFileTree = React.memo(FileTree)
+const MemoTabBar = React.memo(TabBar)
+const MemoOutlinePanel = React.memo(OutlinePanel)
+const MemoTagPanel = React.memo(TagPanel)
+const MemoBacklinksPanel = React.memo(BacklinksPanel)
+const MemoTaskPanel = React.memo(TaskPanel)
+const MemoAssetPanel = React.memo(AssetPanel)
+const MemoFootnotePanel = React.memo(FootnotePanel)
+const MemoSentenceStats = React.memo(SentenceStats)
+const MemoWordBadge = React.memo(WordBadge)
+const MemoHeadingBreadcrumb = React.memo(HeadingBreadcrumb)
+const MemoInsertToolbar = React.memo(InsertToolbar)
+const MemoStatusBar = React.memo(StatusBar)
+const MemoShortcutReference = React.memo(ShortcutReference)
+const MemoSnippetManager = React.memo(SnippetManager)
+const MemoDailyNotes = React.memo(DailyNotes)
+const MemoBookmarksPanel = React.memo(BookmarksPanel)
+const MemoReadability = React.memo(Readability)
+const MemoWritingPrompts = React.memo(WritingPrompts)
+const MemoPomodoro = React.memo(Pomodoro)
+const MemoWritingHeatmap = React.memo(WritingHeatmap)
+const MemoDashboard = React.memo(Dashboard)
+const MemoGoalSetter = React.memo(GoalSetter)
+const MemoFrontMatterEditor = React.memo(FrontMatterEditor)
+const MemoDuplicatePanel = React.memo(DuplicatePanel)
+const MemoGoalToast = React.memo(GoalToast)
+const MemoBackupBrowser = React.memo(BackupBrowser)
+const MemoClipboardHistory = React.memo(ClipboardHistory)
+const MemoDocProperties = React.memo(DocProperties)
+const MemoTaskSchedule = React.memo(TaskSchedule)
+const MemoCustomCSSDialog = React.memo(CustomCSSDialog)
+const MemoTextToSpeech = React.memo(TextToSpeech)
+const MemoQuickOpen = React.memo(QuickOpen)
+const MemoFindReplace = React.memo(FindReplace)
+const MemoGoToLine = React.memo(GoToLine)
 
 declare global {
   interface Window {
@@ -83,8 +141,8 @@ declare global {
 
 export default function App() {
 
-  // ── 文件模板 ──
-  const templates: { name: string; desc: string; content: string; icon: React.ReactNode }[] = [
+  // ── 文件模板（稳定化，避免每次渲染重建数组） ──
+  const templates = useMemo<{ name: string; desc: string; content: string; icon: React.ReactNode }[]>(() => [
     {
       name: '空白文档',
       desc: '从一张白纸开始',
@@ -153,7 +211,7 @@ export default function App() {
       ),
       content: `# 《书名》读书笔记\n\n**作者：** \n**出版日期：** \n**阅读日期：** ${new Date().toLocaleDateString('zh-CN')}\n\n---\n\n## 一句话总结\n\n\n\n## 核心观点\n\n1. \n2. \n3. \n\n## 精彩摘录\n\n> \n\n## 个人感悟\n\n\n\n## 推荐指数\n\n⭐⭐⭐⭐⭐\n`,
     },
-  ]
+  ], [])
   const { theme, accentPreset, sidebarVisible, showFindReplace, activeTabId, tabs, scrollProgress, zenMode, recentFiles, favoriteFiles, eyeCare } = useEditorStore()
   const activeTab = tabs.find((t) => t.id === activeTabId)
   const [isDragging, setIsDragging] = useState(false)
@@ -550,10 +608,10 @@ export default function App() {
         </div>
       )}
       <div className="main-layout">
-        {!zenMode && sidebarVisible && <FileTree />}
+        {!zenMode && sidebarVisible && <MemoFileTree />}
         <div className={`editor-panel${zenMode ? ' zen-mode' : ''}`}>
           {activeTab && !zenMode && <div className="reading-progress-bar" style={{ width: `${scrollProgress}%` }} />}
-          {!zenMode && <TabBar />}
+          {!zenMode && <MemoTabBar />}
           {activeTab && activeTab.filePath && !zenMode && (
             <div className="breadcrumb-bar">
               {activeTab.filePath.split(/[/\\]/).map((segment, idx, arr) => (
@@ -565,11 +623,11 @@ export default function App() {
             </div>
           )}
           {!zenMode && <div className="editor-toolbar-row">
-            <InsertToolbar />
+            <MemoInsertToolbar />
           </div>}
-          <HeadingBreadcrumb />
-          {showFindReplace && <FindReplace />}
-          <GoToLine />
+          <MemoHeadingBreadcrumb />
+          {showFindReplace && <MemoFindReplace />}
+          <MemoGoToLine />
           {activeTab ? (
             <Editor tab={activeTab} />
           ) : (
@@ -700,46 +758,46 @@ export default function App() {
               </div>
             </div>
           )}
-          {activeTab && !zenMode && <StatusBar tab={activeTab} autoSaveStatus={autoSaveStatus} />}
+          {activeTab && !zenMode && <MemoStatusBar tab={activeTab} autoSaveStatus={autoSaveStatus} />}
         </div>
-        {!zenMode && <OutlinePanel />}
-        {!zenMode && <TagPanel />}
-        {!zenMode && <TaskPanel />}
-        {!zenMode && <AssetPanel />}
-        {!zenMode && <FootnotePanel />}
-        {!zenMode && <SentenceStats />}
-        {!zenMode && <BacklinksPanel />}
+        {!zenMode && <MemoOutlinePanel />}
+        {!zenMode && <MemoTagPanel />}
+        {!zenMode && <MemoTaskPanel />}
+        {!zenMode && <MemoAssetPanel />}
+        {!zenMode && <MemoFootnotePanel />}
+        {!zenMode && <MemoSentenceStats />}
+        {!zenMode && <MemoBacklinksPanel />}
       </div>
       {eyeCare && <div className="eye-care-overlay" aria-hidden="true" />}
-      <WordBadge />
-      <QuickOpen />
-      <CommandPalette />
-      <DocStats />
-      <ShortcutReference />
-      <GlobalSearch />
-      <PresentationView />
-      <WritingStats />
-      <SnippetManager />
-      <WordFrequency />
-      <GraphView />
-      <DailyNotes />
-      <BookmarksPanel />
-      <Readability />
-      <WritingPrompts />
-      <Pomodoro />
-      <WritingHeatmap />
-      <Dashboard />
-      <GoalSetter />
-      <FrontMatterEditor />
-      <DuplicatePanel />
-      <GoalToast />
-      <BackupBrowser />
-      <SettingsDialog />
-      <ClipboardHistory />
-      <DocProperties />
-      <TaskSchedule />
-      <CustomCSSDialog />
-      <TextToSpeech />
+      <MemoWordBadge />
+      <MemoQuickOpen />
+      <LazyGate visible={s => s.showCommandPalette} lazy={LazyCommandPalette} />
+      <LazyGate visible={s => s.showDocStats} lazy={LazyDocStats} />
+      <MemoShortcutReference />
+      <LazyGate visible={s => s.showGlobalSearch} lazy={LazyGlobalSearch} />
+      <LazyGate visible={s => s.showPresentation} lazy={LazyPresentationView} />
+      <LazyGate visible={s => s.showWritingStats} lazy={LazyWritingStats} />
+      <MemoSnippetManager />
+      <LazyGate visible={s => s.wordFreqVisible} lazy={LazyWordFrequency} />
+      <LazyGate visible={s => s.showGraphView} lazy={LazyGraphView} />
+      <MemoDailyNotes />
+      <MemoBookmarksPanel />
+      <MemoReadability />
+      <MemoWritingPrompts />
+      <MemoPomodoro />
+      <MemoWritingHeatmap />
+      <MemoDashboard />
+      <MemoGoalSetter />
+      <MemoFrontMatterEditor />
+      <MemoDuplicatePanel />
+      <MemoGoalToast />
+      <MemoBackupBrowser />
+      <LazyGate visible={s => s.showSettings} lazy={LazySettingsDialog} />
+      <MemoClipboardHistory />
+      <MemoDocProperties />
+      <MemoTaskSchedule />
+      <MemoCustomCSSDialog />
+      <MemoTextToSpeech />
     </div>
   )
 }

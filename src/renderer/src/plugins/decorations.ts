@@ -281,8 +281,9 @@ export function buildDecorations(view: EditorView): DecorationSet {
     }
 
     if (vis) { // 仅对可视行进行行内装饰
-        // ── 行内元素 ──
-    inlineDeco(t, line.from, on, deco)
+      // ── 行内元素 ──
+      inlineDeco(t, line.from, on, deco)
+    }
   }
 
   deco.sort((a, b) => a.from - b.from || a.value.startSide - b.value.startSide)
@@ -454,6 +455,5 @@ function inlineDeco(text: string, lf: number, on: boolean, deco: { from: number;
     } else {
       deco.push({ from: f, to: t, value: Decoration.mark({ class: 'cm-math-inline-active' }) })
     }
-  } // end if (vis)
   }
 }

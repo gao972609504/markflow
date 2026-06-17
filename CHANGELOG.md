@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.1] - 2026-06-17
+
+### Fixed
+
+- 修复 27 处 TypeScript 类型错误（统一开启 `strict` + `ES2020` 后暴露）
+  - `slashCommand` 插件 CodeMirror 6 API 误用（`StateEffect.of` / `EditorView.state` / `ChangeSet` 当数组迭代等）
+  - `VersionSnapshot` 引用 `editorStore` 不存在的 `showVersionSnapshot` 状态（已补齐字段与 setter）
+  - `htmlToMarkdown` 对 number 调用 `.map` 的逻辑缺陷
+  - `decorations` 函数缺少返回语句
+- 修复 `transformCase` 句首大写模式（`sentence`）因类型联合遗漏而不可用
+- 移除 CodeMirror 5 残留的 `EditorView.rulers` 死代码（80 列标尺改由 `theme.ts` 的 CSS 实现）
+
+### Changed
+
+- 统一 TypeScript 配置：`tsconfig.web` / `tsconfig.node` 继承根配置，全量开启 `strict`，`target` 提升至 `ES2020`
+- 拆分巨型组件 `Editor.tsx`（2116 → 514 行，−76%）：按职责拆为 `editorPlugins` / `editorCommands` / `clipboardTable` 三个子模块
+- CSS 架构整理：合并 10 处重复弹窗 overlay 规则、status 变量集中管理、修复 `.goal-progress` 定位隐患、补全 `-webkit-backdrop-filter` 前缀、移除 `.cm-ruler` 死规则
+
+### Performance
+
+- 35 个展示型组件用 `React.memo` 包装
+- 8 个重型对话框/面板用 `React.lazy` + `Suspense` 懒加载（首屏拆出独立 chunk）
+- `App.tsx` templates 用 `useMemo` 稳定化，避免每次渲染重建
+
 ## [2.1.0] - 2026-06-12
 
 ### Changed

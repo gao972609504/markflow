@@ -5,7 +5,7 @@
  * 输入 "/" 后弹出快速插入菜单，支持模糊搜索、键盘导航。
  */
 import { EditorView, keymap, ViewPlugin, ViewUpdate, Decoration, DecorationSet, WidgetType } from '@codemirror/view'
-import { EditorState, StateField, StateEffect, Facet, Annotation } from '@codemirror/state'
+import { StateField, StateEffect } from '@codemirror/state'
 import { syntaxTree } from '@codemirror/language'
 
 // ============ 命令定义 ============
@@ -87,7 +87,7 @@ interface SlashState {
   filteredItems: SlashItem[]
 }
 
-const slashEffect = StateEffect.define<SlashState | null>
+const slashEffect = StateEffect.define<SlashState | null>()
 
 const slashState = StateField.define<SlashState | null>({
   create: () => null,
@@ -237,7 +237,7 @@ const slashPlugin = ViewPlugin.fromClass(
     update(update: ViewUpdate) {
       if (!update.docChanged) {
         // 选区变化时不处理
-        renderPanel(this.view, this.view.state.field(slashState, false))
+        renderPanel(this.view, this.view.state.field(slashState, false) ?? null)
         return
       }
 
@@ -245,8 +245,7 @@ const slashPlugin = ViewPlugin.fromClass(
       if (!tr) return
 
       // 检查是否由输入触发（非粘贴/程序修改）
-      const inputType = tr.annotation((EditorView as unknown as { inputAnnotation: Annotation<boolean> }).inputAnnotation)
-      const isUserInput = tr.isUserEvent('input.type') || tr.changes.some(c => c.insert.length > 0)
+      const isUserInput = tr.isUserEvent('input.type')
 
       const state = this.view.state.field(slashState, false)
 
@@ -282,43 +281,46 @@ const slashPlugin = ViewPlugin.fromClass(
 
       // 检查是否输入了 "/"
       if (!isUserInput) return
-      for (const change of tr.changes) {
-        if (change.insert === '/') {
-          const pos = change.from
-          // 检查是否在行首或空格后（不在代码块内）
-          const line = this.view.state.doc.lineAt(pos)
-          const textBefore = line.text.slice(0, pos - line.from)
+      tr.changes.iterChangedRanges((fromA: number, _toA: number, fromB: number, toB: number) => {
+        if (state && state.visible) return
+        const insertText = tr.newDoc.sliceString(fromB, toB)
+        const slashOffset = insertText.lastIndexOf('/')
+        if (slashOffset < 0) return
+        // "/" 在新文档中的位置 = 插入起点 + 其在 inserted 中的偏移
+        const slashPos = fromA + slashOffset
+        // 检查是否在行首或空格后（不在代码块内）
+        const line = this.view.state.doc.lineAt(slashPos)
+        const textBefore = line.text.slice(0, slashPos - line.from)
 
-          // 在代码块内不触发
-          const tree = syntaxTree(this.view.state)
-          let inCodeBlock = false
-          tree.iterate({
-            from: pos,
-            to: pos,
-            enter(node) {
-              if (node.type.name === 'FencedCode' || node.type.name === 'InlineCode') {
-                inCodeBlock = true
-                return false
-              }
+        // 在代码块内不触发
+        const tree = syntaxTree(this.view.state)
+        let inCodeBlock = false
+        tree.iterate({
+          from: slashPos,
+          to: slashPos,
+          enter(node) {
+            if (node.type.name === 'FencedCode' || node.type.name === 'InlineCode') {
+              inCodeBlock = true
+              return false
             }
-          })
-          if (inCodeBlock) continue
-
-          // 行首或前面是空格时触发
-          if (textBefore === '' || textBefore.endsWith(' ')) {
-            const filtered = filterItems('')
-            this.view.dispatch({
-              effects: slashEffect.of({
-                visible: true,
-                pos,
-                filter: '',
-                selectedIndex: 0,
-                filteredItems: filtered,
-              })
-            })
           }
+        })
+        if (inCodeBlock) return
+
+        // 行首或前面是空格时触发
+        if (textBefore === '' || textBefore.endsWith(' ')) {
+          const filtered = filterItems('')
+          this.view.dispatch({
+            effects: slashEffect.of({
+              visible: true,
+              pos: slashPos,
+              filter: '',
+              selectedIndex: 0,
+              filteredItems: filtered,
+            })
+          })
         }
-      }
+      })
     }
 
     destroy() {
@@ -391,11 +393,10 @@ const slashKeymap = keymap.of([
 
 const clickOutsidePlugin = EditorView.domEventHandlers({
   mousedown() {
-    const state = EditorView.state ? null : null // unused
     // 通过 view plugin 的 update 来检查
     return false
   },
-  blur(view) {
+  blur(_event: FocusEvent, view: EditorView) {
     // 延迟关闭，以允许面板点击事件先处理
     setTimeout(() => {
       const state = view.state.field(slashState, false)
@@ -422,7 +423,7 @@ export function createSlashCommandExtension() {
     // 面板渲染插件
     EditorView.updateListener.of((update) => {
       if (update.state.field(slashState, false) !== update.startState.field(slashState, false)) {
-        renderPanel(update.view, update.state.field(slashState, false))
+        renderPanel(update.view, update.state.field(slashState, false) ?? null)
       }
     }),
   ]

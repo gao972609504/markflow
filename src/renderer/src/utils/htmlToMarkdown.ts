@@ -100,7 +100,7 @@ function tableToMarkdown(inner: string): string {
   const cols = Math.max(...rows.map(r => r.length))
   const padded = rows.map(r => { const p = [...r]; while (p.length < cols) p.push(''); return p })
   const header = '| ' + padded[0].join(' | ') + ' |'
-  const sep = '| ' + cols.map(() => '---').join(' | ') + ' |'
+  const sep = '| ' + new Array(cols).fill('---').join(' | ') + ' |'
   const body = padded.slice(1).map(r => '| ' + r.join(' | ') + ' |')
   return '\n\n' + [header, sep, ...body].join('\n') + '\n\n'
 }

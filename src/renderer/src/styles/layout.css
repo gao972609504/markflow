@@ -274,18 +274,8 @@
    4. 0.5px 透明分隔槽，信息分组有节奏
    5. 任务进度用 inline 进度条替代"33%"文字
    6. 28px 高度，padding 12px
+   注：状态栏尺寸变量(--status-*)已统一收归 global.css :root，便于跨文件复用。
 */
-
-:root {
-  --status-h: 28px;
-  --status-icon: 13px;
-  --status-gap: 1px;
-  --status-divider: rgba(125, 125, 125, 0.18);
-}
-
-[data-theme="dark"] {
-  --status-divider: rgba(255, 255, 255, 0.10);
-}
 
 .status-bar {
   display: flex;

@@ -1123,5 +1123,4 @@
 .cm-highlight-mark { background: rgba(255, 213, 79, 0.55); border-radius: 2px; padding: 1px 0; }
 [data-theme="dark"] .cm-highlight-mark { background: rgba(255, 196, 0, 0.28); }
 
-/* 列宽参考线 */
-.cm-ruler { border-left: 1px dashed var(--border-color); opacity: 0.5; }
+/* 列宽参考线：已迁移至 plugins/theme.ts 的 .cm-content::after（80ch 标尺） */

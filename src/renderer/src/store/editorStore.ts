@@ -46,6 +46,7 @@ interface EditorState {
   wordWrap: boolean
   showLineNumbers: boolean
   showDocStats: boolean
+  showVersionSnapshot: boolean
   showShortcuts: boolean
   showPresentation: boolean
   showWritingStats: boolean
@@ -144,6 +145,7 @@ interface EditorState {
   toggleWordWrap: () => void
   toggleLineNumbers: () => void
   setShowDocStats: (show: boolean) => void
+  setShowVersionSnapshot: (show: boolean) => void
   setShowShortcuts: (show: boolean) => void
   setShowPresentation: (show: boolean) => void
   setShowWritingStats: (show: boolean) => void
@@ -246,6 +248,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   wordWrap: true,
   showLineNumbers: true,
   showDocStats: false,
+  showVersionSnapshot: false,
   showShortcuts: false,
   showPresentation: false,
   showWritingStats: false,
@@ -385,6 +388,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   toggleWordWrap: () => set(state => ({ wordWrap: !state.wordWrap })),
   toggleLineNumbers: () => set(state => ({ showLineNumbers: !state.showLineNumbers })),
   setShowDocStats: (show: boolean) => set({ showDocStats: show }),
+  setShowVersionSnapshot: (show: boolean) => set({ showVersionSnapshot: show }),
   setShowShortcuts: (show: boolean) => set({ showShortcuts: show }),
   setShowPresentation: (show: boolean) => set({ showPresentation: show }),
   setShowWritingStats: (show: boolean) => set({ showWritingStats: show }),
