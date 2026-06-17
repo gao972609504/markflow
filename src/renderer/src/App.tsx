@@ -553,8 +553,8 @@ export default function App() {
         const s = useEditorStore.getState()
         s.setShowGraphView(!s.showGraphView)
       }
-      // Ctrl+Shift+D 每日笔记
-      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+      // Ctrl+Shift+N 每日笔记
+      if (e.ctrlKey && e.shiftKey && e.key === 'N') {
         e.preventDefault()
         const s = useEditorStore.getState()
         s.setShowDailyNotes(!s.showDailyNotes)

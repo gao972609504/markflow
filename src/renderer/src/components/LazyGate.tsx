@@ -23,12 +23,7 @@ interface LazyGateProps {
   and?: boolean
 }
 
-export const LazyGate = React.memo(function LazyGate({
-  visible,
-  lazy,
-  fallback = null,
-  and = true,
-}: LazyGateProps) {
+export function LazyGate({ visible, lazy, fallback = null, and = true }: LazyGateProps) {
   const isVisible = useEditorStore(visible) && and
   if (!isVisible) return null
   const Comp = lazy
@@ -37,4 +32,4 @@ export const LazyGate = React.memo(function LazyGate({
       <Comp />
     </Suspense>
   )
-})
+}
