@@ -20,7 +20,7 @@
   left: 0;
   height: 2px;
   background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
-  z-index: 10;
+  z-index: var(--z-content);
   transition: width var(--transition-base) ease-out;
   border-radius: 0 1px 1px 0;
   pointer-events: none;
@@ -187,7 +187,7 @@
 .cm-image-preview-overlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: var(--z-modal);
   background: rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
@@ -522,7 +522,7 @@
   padding: 4px;
   display: flex;
   gap: 2px;
-  z-index: 100;
+  z-index: var(--z-overlay);
 }
 
 .cm-table-toolbar button {
@@ -560,7 +560,7 @@
 
 .cm-slash-panel {
   position: fixed;
-  z-index: 10000;
+  z-index: var(--z-modal);
   min-width: 280px;
   max-width: 340px;
   max-height: 320px;
@@ -694,7 +694,7 @@
 .presentation-overlay {
   position: fixed;
   inset: 0;
-  z-index: 100000;
+  z-index: var(--z-special);
   background: #1a1a2e;
   display: flex;
   flex-direction: column;
@@ -1056,7 +1056,7 @@
 
 .cm-emoji-panel {
   position: absolute;
-  z-index: 100;
+  z-index: var(--z-overlay);
   background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: 8px;

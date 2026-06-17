@@ -852,7 +852,7 @@
 .quick-open-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: var(--z-modal);
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
@@ -869,6 +869,7 @@
 
 .quick-open-modal {
   width: 560px;
+  max-width: 92vw;
   max-height: 420px;
   background: var(--bg-elevated);
   border: 1px solid var(--border-color);
@@ -993,7 +994,7 @@
 /* 右键菜单 */
 .context-menu {
   position: fixed;
-  z-index: 2000;
+  z-index: var(--z-dropdown);
   background: var(--bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -1164,7 +1165,7 @@
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
-  z-index: 100;
+  z-index: var(--z-overlay);
   background: var(--bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -1293,7 +1294,7 @@
 .doc-stats-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: var(--z-modal);
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
@@ -1305,6 +1306,7 @@
 
 .doc-stats-modal {
   width: 460px;
+  max-width: 92vw;
   max-height: 80vh;
   background: var(--bg-elevated);
   border: 1px solid var(--border-color);

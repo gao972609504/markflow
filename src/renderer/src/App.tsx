@@ -481,12 +481,16 @@ export default function App() {
       // Ctrl+P 快速打开
       if (e.ctrlKey && e.key === 'p' && !e.shiftKey) {
         e.preventDefault()
-        useEditorStore.getState().setShowQuickOpen(true)
+        const s = useEditorStore.getState()
+        s.closeAllModals()
+        s.setShowQuickOpen(true)
       }
       // Ctrl+Shift+P 命令面板
       if (e.ctrlKey && e.shiftKey && e.key === 'P') {
         e.preventDefault()
-        useEditorStore.getState().setShowCommandPalette(true)
+        const s = useEditorStore.getState()
+        s.closeAllModals()
+        s.setShowCommandPalette(true)
       }
       // Ctrl++ 字体放大
       if (e.ctrlKey && (e.key === '=' || e.key === '+')) {
@@ -513,7 +517,9 @@ export default function App() {
       // Ctrl+Shift+D 文档统计
       if (e.ctrlKey && e.shiftKey && e.key === 'D') {
         e.preventDefault()
-        useEditorStore.getState().setShowDocStats(true)
+        const s = useEditorStore.getState()
+        s.closeAllModals()
+        s.setShowDocStats(true)
       }
       // Ctrl+Shift+/ 快捷键参考
       if (e.ctrlKey && e.shiftKey && e.key === '/') {
@@ -528,53 +534,64 @@ export default function App() {
       // Ctrl+Shift+H 全局搜索
       if (e.ctrlKey && e.shiftKey && e.key === 'H') {
         e.preventDefault()
-        useEditorStore.getState().setShowGlobalSearch(true)
+        const s = useEditorStore.getState()
+        s.closeAllModals()
+        s.setShowGlobalSearch(true)
       }
       // Ctrl+F5 演示模式
       if (e.ctrlKey && e.key === 'F5') {
         e.preventDefault()
-        useEditorStore.getState().setShowPresentation(true)
+        const s = useEditorStore.getState()
+        s.closeAllModals()
+        s.setShowPresentation(true)
       }
       // Ctrl+Shift+W 写作统计
       if (e.ctrlKey && e.shiftKey && e.key === 'W') {
         e.preventDefault()
         const s = useEditorStore.getState()
+        s.closeAllModals()
         s.setShowWritingStats(!s.showWritingStats)
       }
       // Ctrl+Shift+K 词频分析
       if (e.ctrlKey && e.shiftKey && e.key === 'K') {
         e.preventDefault()
         const s = useEditorStore.getState()
+        s.closeAllModals()
         s.setShowWordFreq(!s.wordFreqVisible)
       }
       // Ctrl+Shift+G 关系图谱
       if (e.ctrlKey && e.shiftKey && e.key === 'G') {
         e.preventDefault()
         const s = useEditorStore.getState()
+        s.closeAllModals()
         s.setShowGraphView(!s.showGraphView)
       }
       // Ctrl+Shift+N 每日笔记
       if (e.ctrlKey && e.shiftKey && e.key === 'N') {
         e.preventDefault()
         const s = useEditorStore.getState()
+        s.closeAllModals()
         s.setShowDailyNotes(!s.showDailyNotes)
       }
       // Ctrl+Shift+M 书签面板
       if (e.ctrlKey && e.shiftKey && e.key === 'M') {
         e.preventDefault()
         const s = useEditorStore.getState()
+        s.closeAllModals()
         s.setShowBookmarks(!s.bookmarksVisible)
       }
       // Ctrl+Shift+E 可读性分析
       if (e.ctrlKey && e.shiftKey && e.key === 'E') {
         e.preventDefault()
         const s = useEditorStore.getState()
+        s.closeAllModals()
         s.setShowReadability(!s.readabilityVisible)
       }
       // Ctrl+Shift+J 写作灵感
       if (e.ctrlKey && e.shiftKey && e.key === 'J') {
         e.preventDefault()
         const s = useEditorStore.getState()
+        s.closeAllModals()
         s.setShowPrompts(!s.showPrompts)
       }
       // F11 禅模式

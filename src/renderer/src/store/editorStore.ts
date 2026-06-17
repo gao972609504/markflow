@@ -103,6 +103,7 @@ interface EditorState {
   setShowAssetPanel: (show: boolean) => void
   setShowHeatmap: (show: boolean) => void
   setShowFootnotePanel: (show: boolean) => void
+  closeAllModals: () => void
   closedTabsHistory: { filePath: string | null; title: string; content: string }[]
   recentFiles: { filePath: string; title: string; lastOpened: number }[]
   zenMode: boolean
@@ -430,6 +431,39 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setShowClipboardHistory: (show: boolean) => set({ showClipboardHistory: show }),
   setShowDocProperties: (show: boolean) => set({ showDocProperties: show }),
   setShowTaskSchedule: (show: boolean) => set({ showTaskSchedule: show }),
+  closeAllModals: () => set({
+    showQuickOpen: false,
+    showCommandPalette: false,
+    showGoToLine: false,
+    showGlobalSearch: false,
+    showDocStats: false,
+    showVersionSnapshot: false,
+    showShortcuts: false,
+    showPresentation: false,
+    showWritingStats: false,
+    showSnippetManager: false,
+    showSettings: false,
+    showGraphView: false,
+    showDailyNotes: false,
+    showPrompts: false,
+    showPomodoro: false,
+    showTTS: false,
+    showCustomCSS: false,
+    showHeatmap: false,
+    showDashboard: false,
+    showGoalSetter: false,
+    showFrontMatter: false,
+    showDuplicatePanel: false,
+    showBackupBrowser: false,
+    showClipboardHistory: false,
+    showDocProperties: false,
+    showTaskSchedule: false,
+    showSentenceStats: false,
+    readabilityVisible: false,
+    wordFreqVisible: false,
+    bookmarksVisible: false,
+    backlinksVisible: false,
+  }),
   reopenClosedTab: () => {
     set(state => {
       if (state.closedTabsHistory.length === 0) return state
